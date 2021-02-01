@@ -10,7 +10,8 @@
   "author": "Jorge Reyero",
   "license": "ISC",
   "dependencies": {
-    "puppeteer": "^5.5.0"
+    "puppeteer": "^5.5.0",
+    "puppeteer-cluster": "^0.22.0"
   },
   "devDependencies": {
     "eslint": "^7.18.0",

@@ -4,151 +4,7 @@
 /* eslint-disable no-plusplus */
 const puppeteer = require('puppeteer');
 const fs = require('fs');
-const { delay } = require('./utils.js');
-
-async function getDNBOdds(page, url) {
-  console.log('get DNB');
-  await page.goto(`${url}#dnb`);
-
-  const dnb = await page.evaluate(() => {
-    // get average odds
-    const localWinDnbAvg = document.querySelector('#odds-data-table > div > table > tfoot > tr.aver > td:nth-child(2)').textContent;
-    const awayWinDnbAvg = document.querySelector('#odds-data-table > div > table > tfoot > tr.aver > td:nth-child(3)').textContent;
-
-    const bookies = Array.from(document.querySelectorAll(
-      '#odds-data-table > div:nth-child(1) > table > tbody > tr.lo',
-    ));
-
-    const dnbLineOdds = bookies.reduce((odds, bookie) => {
-      const nameSelector = bookie.querySelector('.name');
-      if (!nameSelector) return odds;
-      const name = nameSelector.textContent;
-
-      const oddsSelector = Array.from(bookie.querySelectorAll('.odds'));
-
-      const localWinDnbHigh = oddsSelector[0].classList.contains('high');
-      const localWinDnb = oddsSelector[0].querySelector('div') !== null
-        ? oddsSelector[0].querySelector('div').textContent
-        : oddsSelector[0].querySelector('a').textContent;
-
-      const awayWinDnbHigh = oddsSelector[1].classList.contains('high');
-      const awayWinDnb = oddsSelector[1].querySelector('div') !== null
-        ? oddsSelector[1].querySelector('div').textContent
-        : oddsSelector[1].querySelector('a').textContent;
-      odds.push({
-        name, localWinDnbHigh, localWinDnb, awayWinDnb, awayWinDnbHigh,
-      });
-      return odds;
-    }, []);
-    return { dnbLineOdds, localWinDnbAvg, awayWinDnbAvg };
-  });
-
-  return dnb;
-}
-
-async function getDoubleChanceLineOdds(page, url) {
-  console.log('get DC');
-  await page.goto(`${url}#double`);
-
-  const doubleChance = await page.evaluate(() => {
-    // get average odds
-    const localOrDrawAvg = document.querySelector('#odds-data-table > div > table > tfoot > tr.aver > td:nth-child(2)').textContent;
-    const awayOrDrawAvg = document.querySelector('#odds-data-table > div > table > tfoot > tr.aver > td:nth-child(4)').textContent;
-
-    const bookies = Array.from(document.querySelectorAll(
-      '#odds-data-table > div:nth-child(1) > table > tbody > tr.lo',
-    ));
-
-    const doubleChanceLineOdds = bookies.reduce((odds, bookie) => {
-      const nameSelector = bookie.querySelector('.name');
-      if (!nameSelector) return odds;
-      const name = nameSelector.textContent;
-
-      const oddsSelector = Array.from(bookie.querySelectorAll('.odds'));
-      const localOrDrawHigh = oddsSelector[0].classList.contains('high');
-      const localOrDraw = oddsSelector[0].querySelector('div') !== null
-        ? oddsSelector[0].querySelector('div').textContent
-        : oddsSelector[0].querySelector('a').textContent;
-
-      const localOrAway = oddsSelector[1].querySelector('div') !== null
-        ? oddsSelector[1].querySelector('div').textContent
-        : oddsSelector[1].querySelector('a').textContent;
-
-      const awayOrDrawHigh = oddsSelector[2].classList.contains('high');
-      const awayOrDraw = oddsSelector[2].querySelector('div') !== null
-        ? oddsSelector[2].querySelector('div').textContent
-        : oddsSelector[2].querySelector('a').textContent;
-      odds.push({
-        name, localOrDraw, localOrDrawHigh, awayOrDraw, awayOrDrawHigh, localOrAway,
-      });
-      return odds;
-    }, []);
-    return { doubleChanceLineOdds, localOrDrawAvg, awayOrDrawAvg };
-  });
-  return doubleChance;
-}
-
-async function getMoneyLineOdds(page, url) {
-  console.log('get ML');
-  await page.goto(url);
-  const selector = '#bettype-tabs > ul > li.first.active > strong > span';
-  const resultSelector = '.result';
-  const resultLiveSelector = '.result-live';
-  const resultAlertSelector = '.result-alert';
-  if (await page.$(resultSelector) !== null
-    || await page.$(resultAlertSelector) !== null
-    || await page.$(resultLiveSelector) !== null
-    || await page.$(selector) === null) {
-    return { hasBet365Odds: false };
-  }
-  const result = await page.evaluate(() => {
-    const match = document.querySelector('h1').textContent;
-    const date = document.querySelector('.date').textContent;
-
-    // get average odds
-    const localAvg = document
-      .querySelector('#odds-data-table > div > table > tfoot > tr.aver > td:nth-child(2)').textContent;
-    const awayAvg = document
-      .querySelector('#odds-data-table > div > table > tfoot > tr.aver > td:nth-child(4)').textContent;
-
-    let hasBet365Odds = false;
-    const bookies = Array.from(document.querySelectorAll(
-      '#odds-data-table > div:nth-child(1) > table > tbody > tr.lo',
-    ));
-
-    const moneyLineOdds = bookies.reduce((odds, bookie) => {
-      const nameSelector = bookie.querySelector('.name');
-      if (!nameSelector) return odds;
-      const name = nameSelector.textContent;
-
-      if (!hasBet365Odds && name === 'bet365') hasBet365Odds = true;
-
-      const oddsSelector = Array.from(bookie.querySelectorAll('.odds'));
-      const localWinOddHigh = oddsSelector[0].classList.contains('high');
-      const localWin = oddsSelector[0].querySelector('div') !== null
-        ? oddsSelector[0].querySelector('div').textContent
-        : oddsSelector[0].querySelector('a').textContent;
-      const drawOddHigh = oddsSelector[0].classList.contains('high');
-
-      const draw = oddsSelector[1].querySelector('div') !== null
-        ? oddsSelector[1].querySelector('div').textContent
-        : oddsSelector[1].querySelector('a').textContent;
-
-      const awayWidOddHigh = oddsSelector[0].classList.contains('high');
-      const awayWin = oddsSelector[2].querySelector('div') !== null
-        ? oddsSelector[2].querySelector('div').textContent
-        : oddsSelector[2].querySelector('a').textContent;
-      odds.push({
-        name, localWin, localWinOddHigh, draw, drawOddHigh, awayWin, awayWidOddHigh,
-      });
-      return odds;
-    }, []);
-    return {
-      moneyLineOdds, hasBet365Odds, match, date, localAvg, awayAvg,
-    };
-  });
-  return result;
-}
+const football = require('./parsers/football.js');
 
 async function login(page) {
   await page.goto('https://www.oddsportal.com/login/');
@@ -166,14 +22,18 @@ async function getOdds(pages, urls) {
     console.log(`parsing... ${url} at position ${index++}`);
     const {
       hasBet365Odds, moneyLineOdds, match, date, localAvg, awayAvg,
-    } = await getMoneyLineOdds(pages[0], url);
+    } = await football.getMoneyLineOdds(pages[0], url);
 
     console.log('hasBet365Odds ', hasBet365Odds);
     if (!hasBet365Odds) continue;
 
-    const { dnbLineOdds, localWinDnbAvg, awayWinDnbAvg } = await getDNBOdds(pages[1], url);
+    const { dnbLineOdds, localWinDnbAvg, awayWinDnbAvg } = await football.getDNBOdds(pages[1], url);
 
-    const { doubleChanceLineOdds, localOrDrawAvg, awayOrDrawAvg } = await getDoubleChanceLineOdds(pages[2], url);
+    const { doubleChanceLineOdds, localOrDrawAvg, awayOrDrawAvg } = await football.getDoubleChanceLineOdds(pages[2], url);
+
+    // const {
+    //   underOverGoalsOdds, underAvg, overAvg, numGoals,
+    // } = await football.getUnderOverGoalsOdds(pages[0], url);
 
     results.push({
       url,
@@ -189,6 +49,7 @@ async function getOdds(pages, urls) {
       localOrDrawAvg,
       awayOrDrawAvg,
     });
+    // results.push({});
   }
   return results;
 }
@@ -219,6 +80,7 @@ const start = async () => {
     // Go to the web page that we want to scrap
     // const date = yyymmdd(new Date());
     const date = args[0];
+    console.log('lets go');
     await pages[0].goto(`https://www.oddsportal.com/matches/soccer/${date}/`);
 
     // Here we can select elements from the web page

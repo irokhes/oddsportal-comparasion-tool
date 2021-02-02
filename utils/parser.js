@@ -13,7 +13,7 @@ const getSectionSelector = async (page, section) => {
     });
     return index;
   }, section);
-  return `#bettype-tabs > ul > li:nth-child(${sectionIndex})`;
+  return sectionIndex >= 0 ? `#bettype-tabs > ul > li:nth-child(${sectionIndex})` : null;
 };
 module.exports = {
   getMatch,

@@ -12,7 +12,7 @@ const {
 (async () => {
   const cluster = await Cluster.launch({
     concurrency: Cluster.CONCURRENCY_PAGE,
-    maxConcurrency: 5,
+    maxConcurrency: 8,
     monitor: false,
     puppeteerOptions: {
       headless: true,

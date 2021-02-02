@@ -11,15 +11,18 @@ const getOdds = async (page, url) => {
   await page.goto(`${url}`);
   console.log(url);
   odds.match = await getMatch(page);
-
   odds.date = await getDate(page);
+  odds.url = url;
 
+
+  //MONEYLINE
   odds.moneyLine = await getMoneyLineExp(page);
+
+
 
   //DNB
   const selector = await getSectionSelector(page, 'DNB');
-  console.log(selector);
-  if(selector){
+  if (selector) {
     await page.evaluate(selector => {
       document.querySelector(selector).style.display === 'none';
       document.querySelector(selector).style.display = 'block';
@@ -32,7 +35,7 @@ const getOdds = async (page, url) => {
 
   //DoubleChance
   const selectorDC = await getSectionSelector(page, 'DC');
-  if(selector){
+  if (selector) {
     await page.evaluate(selector => {
       document.querySelector(selector).style.display === 'none';
       document.querySelector(selector).style.display = 'block';
@@ -44,7 +47,7 @@ const getOdds = async (page, url) => {
 
   //BothTeamsScore
   const selectorBTS = await getSectionSelector(page, 'BTS');
-  if(selectorBTS){
+  if (selectorBTS) {
     await page.evaluate(selector => {
       document.querySelector(selector).style.display === 'none';
       document.querySelector(selector).style.display = 'block';
@@ -57,7 +60,7 @@ const getOdds = async (page, url) => {
 
   //Over/Under Goals
   const selectorOverUnder = await getSectionSelector(page, 'O/U');
-  if(selectorOverUnder){
+  if (selectorOverUnder) {
     await page.evaluate(selector => {
       if (document.querySelector(selector).style.display === 'none')
         document.querySelector(selector).style.display = 'block';
@@ -65,7 +68,7 @@ const getOdds = async (page, url) => {
     await page.click(selectorOverUnder);
     await page.waitForSelector('#odds-data-table > div:nth-child(1)');
 
-    odds.bts = await getUnderOverGoalsExp(page);
+    odds.overUnder = await getUnderOverGoalsExp(page);
   }
 
 
@@ -88,6 +91,8 @@ const getMoneyLineExp = async (page) => {
     // get average odds
     const localWinAvgOddsSelector = '#odds-data-table > div > table > tfoot > tr.aver > td:nth-child(2)';
     const localAvg = document.querySelector(localWinAvgOddsSelector).textContent;
+    const drawAvgOddsSelector = '#odds-data-table > div > table > tfoot > tr.aver > td:nth-child(3)';
+    const drawAvg = document.querySelector(drawAvgOddsSelector).textContent;
     const awayWinAvgOddsSelector = '#odds-data-table > div > table > tfoot > tr.aver > td:nth-child(4)';
     const awayAvg = document.querySelector(awayWinAvgOddsSelector).textContent;
 
@@ -119,7 +124,7 @@ const getMoneyLineExp = async (page) => {
         : oddsSelector[2].querySelector('a').textContent;
 
       moneyLineOdds = {
-        name, localWin, localWinOddHigh, draw, drawOddHigh, awayWin, awayWidOddHigh,
+        name, localWin, localWinOddHigh, draw, drawAvg, drawOddHigh, awayWin, awayWidOddHigh,
       };
       return true;
     });
@@ -272,18 +277,18 @@ const getUnderOverGoalsExp = async (page, url) => {
       return parseInt(numOfBookies) > 6 ? true : false
     }, i);
 
-    if(!enoughBookies) continue;
+    if (!enoughBookies) continue;
 
     const visibleLine = await page.evaluate((index) => {
       const openCloseLink = document.querySelector(`#odds-data-table > div:nth-child(${index + 1}) > div > .odds-co > a`);
       return openCloseLink && openCloseLink.innerText === 'Compare odds' ? false : true;
-    },i)
+    }, i)
     if (!visibleLine) {
       await page.click(`#odds-data-table > div:nth-child(${i + 1}) > div > strong > a`);
       await page.waitForSelector(`#odds-data-table > div:nth-child(${i + 1}) > table`);
     }
 
-    if(enoughBookies)underOverLines.push(await getUnderOverGoalsOddsExp(page,`#odds-data-table > div:nth-child(${i + 1}) > table`))
+    if (enoughBookies) underOverLines.push(await getUnderOverGoalsOddsExp(page, `#odds-data-table > div:nth-child(${i + 1}) > table`))
   }
   return underOverLines;
 };

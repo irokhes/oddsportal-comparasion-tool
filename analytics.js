@@ -6,7 +6,7 @@ const fs = require('fs');
 const limitPercentage = 1.08;
 const topPercentage = 1.5;
 const maxOddValue = 25;
-const valueBetLimit = 1.02;
+const valueBetLimit = 1.025;
 
 const rules = {
   1: 'avgVsBet365MarginWithBetHighest',
@@ -124,6 +124,7 @@ const start = () => {
     matches.forEach((match) => {
       switch (match.type) {
         case 'BTS':
+          console.log(match);
           result = bothTeamsScore(match);
           if (result) valueBets.push(composeValueBetLine(match, 'bts', '#bts;2'));
           break;

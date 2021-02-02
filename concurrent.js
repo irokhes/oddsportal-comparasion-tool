@@ -47,7 +47,7 @@ const {
 
   const extractOdds = async (url) => {
     const odds = await cluster.execute(url, extractMatchOdds).catch((err) => console.log('error getting All odds: ', err));
-    totalResults.push(odds);
+    if (odds) { totalResults.push(odds); }
     // const moneyLine = await cluster.execute(url, extractMoneyLineOdds).catch((err) => console.log('error getting moneyline: ', err));
     // const dnbOdds = await cluster.execute(url, extractDnbOdds(page, url));
     // const doubleChance = await cluster.execute(url, extractDooubleChanceOdds(page, url));

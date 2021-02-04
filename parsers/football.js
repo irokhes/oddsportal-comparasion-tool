@@ -109,6 +109,8 @@ const getMoneyLineExp = async (page) => {
 
       const oddsSelector = Array.from(bookie.querySelectorAll('.odds'));
       const localWinOddHigh = oddsSelector[0].classList.contains('high');
+      if(oddsSelector[0].querySelector('div') && oddsSelector[0].classList.contains('deactivateOdd'))
+        return false;
       const localWin = oddsSelector[0].querySelector('div') !== null
         ? oddsSelector[0].querySelector('div').textContent
         : oddsSelector[0].querySelector('a').textContent;
@@ -157,6 +159,9 @@ const getDnbExp = async (page) => {
 
       const oddsSelector = Array.from(bookie.querySelectorAll('.odds'));
 
+      if(oddsSelector[0].querySelector('div') && oddsSelector[0].querySelector('div').classList.contains('deactivateOdd'))
+      return false;
+
       const localWinDnbHigh = oddsSelector[0].classList.contains('high');
       const localWinDnb = oddsSelector[0].querySelector('div') !== null
         ? oddsSelector[0].querySelector('div').textContent
@@ -197,6 +202,10 @@ const getDoubleChanceExp = async (page) => {
       if (name !== 'bet365') return false;
 
       const oddsSelector = Array.from(bookie.querySelectorAll('.odds'));
+
+      if(oddsSelector[0].querySelector('div') && oddsSelector[0].querySelector('div').classList.contains('deactivateOdd'))
+        return false;
+
       const localOrDrawHigh = oddsSelector[0].classList.contains('high');
       const localOrDraw = oddsSelector[0].querySelector('div') !== null
         ? oddsSelector[0].querySelector('div').textContent
@@ -245,6 +254,9 @@ const getBothTeamsToScoreExp = async (page, url) => {
       if (name !== 'bet365') return false;
 
       const oddsSelector = Array.from(bookie.querySelectorAll('.odds'));
+      if(oddsSelector[0].querySelector('div') && oddsSelector[0].querySelector('div') .classList.contains('deactivateOdd'))
+        return false;
+
       const bothScoreYesHigh = oddsSelector[0].classList.contains('high');
       const bothScoreYes = oddsSelector[0].querySelector('div') !== null
         ? oddsSelector[0].querySelector('div').textContent

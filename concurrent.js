@@ -1,11 +1,9 @@
 /* eslint-disable no-shadow */
 /* eslint-disable max-len */
 const { Cluster } = require('puppeteer-cluster');
-const { saveFile } = require('./utils/files');
 const { enumerateDaysBetweenDates, getDates } = require('./utils/utils');
 const {
-  getOdds, getMoneyLineOdds, getDNBOdds, getDoubleChanceLineOdds,
-  getUnderOverGoalsLines, getBothTeamsScoreOdds, getUnderOverGoalsOdds,
+  getOdds,
 } = require('./parsers/football.js');
 const db = require('./models/db');
 const Odds = require('./models/odds');
@@ -27,12 +25,6 @@ const Odds = require('./models/odds');
       console.error(`Failed to crawl ${data}: ${err.message}`);
     }
   });
-  const totalResults = [];
-  const addZeroes = (num) => {
-    const dec = num.split('.')[1];
-    const len = dec && dec.length > 2 ? dec.length : 2;
-    return Number(num).toFixed(len);
-  };
 
   async function login(page) {
     await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
@@ -44,39 +36,9 @@ const Odds = require('./models/odds');
   }
 
   const extractMatchOdds = async ({ page, data: url }) => getOdds(page, url);
-  const extractMoneyLineOdds = async ({ page, data: url }) => getMoneyLineOdds(page, url);
-  const extractDnbOdds = async ({ page, data: url }) => getDNBOdds(page, url);
-  const extractDoubleChanceOdds = async ({ page, data: url }) => getDoubleChanceLineOdds(page, url);
-  const extractUnderOverGoalsLines = async ({ page, data: url }) => {
-    const lines = await getUnderOverGoalsLines(page, url);
-    return lines.map((line) => ({ url: `${url}#over-under;2;${addZeroes(line)};0`, numOfGoals: line }));
-  };
-  const extractUnderOverGoalsOdds = ({ page, data }) => getUnderOverGoalsOdds(page, data.url, data.numOfGoals);
-  const extractBothTeamsScoreOdds = ({ page, data: url }) => getBothTeamsScoreOdds(page, url);
 
   const extractOdds = async (url) => {
     cluster.queue(url, extractMatchOdds);
-    // .catch((err) => console.log('error getting All odds: ', err));
-    // const moneyLine = await cluster.execute(url, extractMoneyLineOdds).catch((err) => console.log('error getting moneyline: ', err));
-    // const dnbOdds = await cluster.execute(url, extractDnbOdds(page, url));
-    // const doubleChance = await cluster.execute(url, extractDooubleChanceOdds(page, url));
-
-    // const underOverGoalLines = await cluster.execute(url, extractUnderOverGoalsLines).catch((err) => console.log('error getting over under: ', err));
-
-    // const promises = [];
-    // underOverGoalLines.forEach(async (line) => {
-    //   promises.push(cluster.execute({ url: line.url, numOfGoals: line.numOfGoals }, extractUnderOverGoalsOdds));
-    //   if (underOverGoalLine.name) totalResults.push({ ...underOverGoalLine, type: 'O/U' });
-    // });
-    // const lines = await Promise.all(promises);
-
-    // underOverGoalLines.forEach(async (line) => {
-    //   const underOverGoalLine = await cluster.execute({ url: line.url, numOfGoals: line.numOfGoals }, extractUnderOverGoalsOdds);
-    //   if (underOverGoalLine.name) totalResults.push({ ...underOverGoalLine, type: 'O/U' });
-    // });
-
-    // const bothTeamsScore = await cluster.execute(url, extractBothTeamsScoreOdds).catch((err) => console.log('error getting both teams score line: ', err));
-    // if (bothTeamsScore.name) totalResults.push({ ...bothTeamsScore, type: 'BTS' });
   };
 
   const extractMatches = async ({ page, data: url }) => {
@@ -118,10 +80,8 @@ const Odds = require('./models/odds');
 
     await cluster.idle();
     await cluster.close();
-    // saveFile(startDate, totalResults);
     console.log('Done...');
     db.close();
   };
   start();
-  // document.querySelector('#odds-data-table > div:nth-child(2) > table')
 })();

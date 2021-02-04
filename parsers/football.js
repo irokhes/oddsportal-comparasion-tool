@@ -2,6 +2,7 @@
 /* eslint-disable max-len */
 const { delay } = require('../utils/utils.js');
 const { getMatch, getDate, getActiveTab, getSectionSelector } = require('../utils/parser');
+const Odds = require('../models/odds');
 
 const getOdds = async (page, url) => {
   const odds = {};
@@ -17,8 +18,6 @@ const getOdds = async (page, url) => {
 
   //MONEYLINE
   odds.moneyLine = await getMoneyLineExp(page);
-
-
 
   //DNB
   const selector = await getSectionSelector(page, 'DNB');
@@ -71,9 +70,10 @@ const getOdds = async (page, url) => {
     odds.overUnder = await getUnderOverGoalsExp(page);
   }
 
-
-
-  return odds;
+  // save odds
+  if(!odds) return;
+  const oddsObject = new Odds(odds);
+  await oddsObject.save()
 }
 
 const getMoneyLineExp = async (page) => {

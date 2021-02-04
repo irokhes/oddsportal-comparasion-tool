@@ -3,11 +3,13 @@
 /* eslint-disable no-param-reassign */
 const fs = require('fs');
 const { addZeroes } = require('./utils/utils');
+const db = require('./models/db');
+const Odds = require('./models/odds');
 
 const limitPercentage = 1.08;
 const topPercentage = 1.5;
 const maxOddValue = 25;
-const valueBetLimit = 1.028;
+const valueBetLimit = 1.02;
 
 const rules = {
   1: 'avgVsBet365MarginWithBetHighest',
@@ -51,8 +53,8 @@ const overUnderGoals = (lines) => {
       name, overGoals, underGoals, underGoalsAvg, overGoalsAvg,
     } = line;
     if (!name) return list;
-    if (overGoals < 13 && ((1 / overGoals) + (1 / underGoalsAvg) <= valueBetLimit)) list.push({...line, valueRatio: (1 / overGoals) + (1 / underGoalsAvg)});
-    if (underGoals < 13 && ((1 / underGoals) + (1 / overGoalsAvg) <= valueBetLimit)) list.push({...line, valueRatio: (1 / underGoals) + (1 / overGoalsAvg)});
+    if (overGoals < 13 && ((1 / overGoals) + (1 / underGoalsAvg) <= valueBetLimit)) list.push({ ...line, valueRatio: (1 / overGoals) + (1 / underGoalsAvg) });
+    if (underGoals < 13 && ((1 / underGoals) + (1 / overGoalsAvg) <= valueBetLimit)) list.push({ ...line, valueRatio: (1 / underGoals) + (1 / overGoalsAvg) });
     return list;
   }, []);
   return valueBets;
@@ -133,29 +135,12 @@ const start = () => {
     console.log('Error: ', error);
   }
 };
-const newStart = () => {
+const newStart = async () => {
   try {
     const args = process.argv.slice(2);
-    let initialDate;
-    let endDate;
-    switch (args.length) {
-      case 0:
-        console.log('you need to provide a date: node index.js YYYYMMDD');
-        process.exit(1);
-        break;
-      case 1:
-        // eslint-disable-next-line prefer-destructuring
-        initialDate = args[0];
-        break;
-      default:
-        break;
-    }
-    if (args.length < 1) {
-      console.log('you need to provide a date: node index.js YYYYMMDD');
-      process.exit(1);
-    }
-    const rawdata = fs.readFileSync(`./imported_matches/${initialDate}.json`);
-    const matches = JSON.parse(rawdata);
+    db.connect();
+
+    const matches = await Odds.find({});
     const valueBets = [];
     matches.forEach((match) => {
       if (match.moneyLine && match.moneyLine.name) {
@@ -180,9 +165,11 @@ const newStart = () => {
       }
     });
     const data = JSON.stringify(valueBets);
-    fs.writeFileSync(`./value_bets/${initialDate}_valuebets.json`, data);
+    fs.writeFileSync(`./value_bets/${Date.now()}_valuebets.json`, data);
   } catch (error) {
     console.log('Error: ', error);
+  } finally {
+    db.close();
   }
 };
 newStart();

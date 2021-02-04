@@ -3,20 +3,29 @@
 const { Cluster } = require('puppeteer-cluster');
 const { saveFile } = require('./utils/files');
 const { enumerateDaysBetweenDates, getDates } = require('./utils/utils');
-
 const {
   getOdds, getMoneyLineOdds, getDNBOdds, getDoubleChanceLineOdds,
   getUnderOverGoalsLines, getBothTeamsScoreOdds, getUnderOverGoalsOdds,
 } = require('./parsers/football.js');
+const db = require('./models/db');
+const Odds = require('./models/odds');
 
 (async () => {
   const cluster = await Cluster.launch({
     concurrency: Cluster.CONCURRENCY_PAGE,
     maxConcurrency: 8,
     monitor: false,
+    retryLimit: 3,
     puppeteerOptions: {
       headless: true,
     },
+  });
+  cluster.on('taskerror', (err, data, willRetry) => {
+    if (willRetry) {
+      console.warn(`Encountered an error while crawling ${data}. ${err.message}\nThis job will be retried`);
+    } else {
+      console.error(`Failed to crawl ${data}: ${err.message}`);
+    }
   });
   const totalResults = [];
   const addZeroes = (num) => {
@@ -46,8 +55,8 @@ const {
   const extractBothTeamsScoreOdds = ({ page, data: url }) => getBothTeamsScoreOdds(page, url);
 
   const extractOdds = async (url) => {
-    const odds = await cluster.execute(url, extractMatchOdds).catch((err) => console.log('error getting All odds: ', err));
-    if (odds) { totalResults.push(odds); }
+    cluster.queue(url, extractMatchOdds);
+    // .catch((err) => console.log('error getting All odds: ', err));
     // const moneyLine = await cluster.execute(url, extractMoneyLineOdds).catch((err) => console.log('error getting moneyline: ', err));
     // const dnbOdds = await cluster.execute(url, extractDnbOdds(page, url));
     // const doubleChance = await cluster.execute(url, extractDooubleChanceOdds(page, url));
@@ -75,6 +84,8 @@ const {
 
     try {
       console.log('starting...');
+      await Odds.deleteMany({});
+
       await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
       await page.goto(url);
       (await page.evaluate(() => {
@@ -96,7 +107,7 @@ const {
 
   const start = async () => {
     const { startDate, endDate } = getDates(process.argv.slice(2));
-
+    db.connect();
     cluster.queue(async ({ page }) => {
       await login(page);
       await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
@@ -107,8 +118,9 @@ const {
 
     await cluster.idle();
     await cluster.close();
-    saveFile(startDate, totalResults);
+    // saveFile(startDate, totalResults);
     console.log('Done...');
+    db.close();
   };
   start();
   // document.querySelector('#odds-data-table > div:nth-child(2) > table')

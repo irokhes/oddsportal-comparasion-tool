@@ -10,7 +10,10 @@
   "author": "Jorge Reyero",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^8.2.0",
     "moment": "^2.29.1",
+    "mongoose": "^5.11.15",
+    "mongoose-timestamp": "^0.6.0",
     "puppeteer": "^5.5.0",
     "puppeteer-cluster": "^0.22.0"
   },

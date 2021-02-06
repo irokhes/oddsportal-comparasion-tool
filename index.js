@@ -3,7 +3,7 @@
 const { Cluster } = require('puppeteer-cluster');
 const { enumerateDaysBetweenDates, getDates } = require('./utils/utils');
 const {
-  getOdds,
+  getOdds5Bookies,
 } = require('./parsers/football.js');
 const db = require('./models/db');
 const Odds = require('./models/odds');
@@ -11,7 +11,7 @@ const Odds = require('./models/odds');
 (async () => {
   const cluster = await Cluster.launch({
     concurrency: Cluster.CONCURRENCY_PAGE,
-    maxConcurrency: 8,
+    maxConcurrency: 3,
     monitor: false,
     retryLimit: 3,
     puppeteerOptions: {
@@ -35,7 +35,7 @@ const Odds = require('./models/odds');
     await page.click('button[type="submit"]');
   }
 
-  const extractMatchOdds = async ({ page, data: url }) => getOdds(page, url);
+  const extractMatchOdds = async ({ page, data: url }) => getOdds5Bookies(page, url);
 
   const extractOdds = async (url) => {
     cluster.queue(url, extractMatchOdds);
@@ -45,7 +45,6 @@ const Odds = require('./models/odds');
     page.on('console', (consoleObj) => console.log(consoleObj.text()));
 
     try {
-      console.log('starting...');
       await Odds.deleteMany({});
 
       await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
@@ -59,6 +58,7 @@ const Odds = require('./models/odds');
 
           const matchUrlLinks = Array.from(match.querySelectorAll('td.name.table-participant > a'));
           matchesUrlList.push(matchUrlLinks.length > 1 ? matchUrlLinks[1].href : matchUrlLinks[0].href);
+          return ['https://www.oddsportal.com/soccer/chile/primera-division/deportes-iquique-colo-colo-vam3p4Sr'];
           return matchesUrlList;
         }, []);
       })).forEach((matchUrl) => { extractOdds(matchUrl); });
@@ -69,6 +69,9 @@ const Odds = require('./models/odds');
 
   const start = async () => {
     const { startDate, endDate } = getDates(process.argv.slice(2));
+    console.time('Parsing');
+    console.log('started');
+
     db.connect();
     cluster.queue(async ({ page }) => {
       await login(page);
@@ -81,6 +84,7 @@ const Odds = require('./models/odds');
     await cluster.idle();
     await cluster.close();
     console.log('Done...');
+    console.timeEnd('Parsing');
     db.close();
   };
   start();

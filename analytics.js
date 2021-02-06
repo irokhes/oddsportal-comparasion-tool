@@ -9,12 +9,7 @@ const Odds = require('./models/odds');
 const limitPercentage = 1.08;
 const topPercentage = 1.5;
 const maxOddValue = 25;
-const valueBetLimit = 1.02;
-
-const rules = {
-  1: 'avgVsBet365MarginWithBetHighest',
-  2: 'avgVsBet365Margin',
-};
+const valueBetLimit = 1.15;
 
 const moneyline = (moneyLine) => {
   const {
@@ -60,81 +55,74 @@ const overUnderGoals = (lines) => {
   return valueBets;
 };
 const composeValueBetLine = (match, line, path, valueRatio) => ({
-  match: match.match, date: match.date, line, url: match.url + path, valueRatio
+  match: match.match, date: match.date, line, url: match.url + path
 });
 
-const start = () => {
-  try {
-    const args = process.argv.slice(2);
-    let initialDate;
-    let endDate;
-    switch (args.length) {
-      case 0:
-        console.log('you need to provide a date: node index.js YYYYMMDD');
-        process.exit(1);
-        break;
-      case 1:
-        // eslint-disable-next-line prefer-destructuring
-        initialDate = args[0];
-        break;
-      case 2:
-        // eslint-disable-next-line prefer-destructuring
-        endDate = args[1];
-        break;
 
-      default:
-        break;
-    }
-    if (args.length < 1) {
-      console.log('you need to provide a date: node index.js YYYYMMDD');
-      process.exit(1);
-    }
-    const rawdata = fs.readFileSync(`${initialDate}.json`);
-    const matches = JSON.parse(rawdata);
-    const valueBets = [];
-    let result;
-    matches.forEach((match) => {
-      switch (match.type) {
-        case 'BTS':
-          console.log(match);
-          result = bothTeamsScore(match);
-          if (result) valueBets.push(composeValueBetLine(match, 'bts', '#bts;2'));
-          break;
-        case 'O/U':
-          result = underOverGoals(match);
-          if (result) valueBets.push(composeValueBetLine(match, 'O/U', ''));
-          break;
-        default:
-          const { localWin, awayWin } = moneyline(match.moneyLineOdds, match.localAvg, match.awayAvg);
-          if (localWin) {
-            valueBets.push(composeValueBetLine(match, 'moneyline', ''));
-          } else if (awayWin) {
-            valueBets.push(composeValueBetLine(match, 'moneyline', ''));
-          }
-
-          // eslint-disable-next-line max-len
-          const { localDoubleChance, awayDoubleChance } = doubleChance(match.doubleChanceLineOdds, match.localOrDrawAvg, match.awayOrDrawAvg);
-          if (localDoubleChance) {
-            valueBets.push(composeValueBetLine(match, 'DC', '#double;2'));
-          } else if (awayDoubleChance) {
-            valueBets.push(composeValueBetLine(match, 'DC', '#double;2'));
-          }
-
-          const { localDnb, awayDnb } = drawNoBet(match.dnbLineOdds, match.localWinDnbAvg, match.awayWinDnbAvg);
-          if (localDnb) {
-            valueBets.push(composeValueBetLine(match, 'dnb', '#dnb;2'));
-          } else if (awayDnb) {
-            valueBets.push(composeValueBetLine(match, 'dnb', '#dnb;2'));
-          }
-          break;
-      }
-    });
-    const data = JSON.stringify(valueBets);
-    fs.writeFileSync(`${initialDate}_valuebets.json`, data);
-  } catch (error) {
-    console.log('Error: ', error);
-  }
+const moneyline4Bookies = ({ _Pinnacle, _bet365, _Marathonbet, _1xBet, _188BET }) => {
+  const bookiesLocalWinAvg = (_Pinnacle.localWin + _Marathonbet.localWin + _1xBet.localWin + _188BET.localWin) / 4;
+  const bookiesAwayWinAvg = (_Pinnacle.awayWin + _Marathonbet.awayWin + _1xBet.awayWin + _188BET.awayWin) / 4;
+  if (_Pinnacle.localWin < _bet365.localWin && (bookiesLocalWinAvg * valueBetLimit) < _bet365.localWin)
+    return true
+  if (_Pinnacle.awayWin < _bet365.awayWin && (bookiesAwayWinAvg * valueBetLimit) < _bet365.awayWin)
+    return true
 };
+const drawNoBet4Bookies = ({ _Pinnacle, _bet365, _Marathonbet, _1xBet, _188BET }) => {
+  const bookiesLocalDnbWinAvg = (_Pinnacle.localWinDnb + _Marathonbet.localWinDnb + _1xBet.localWinDnb + _188BET.localWinDnb) / 4;
+  const bookiesAwayDnbWinAvg = (_Pinnacle.awayWinDnb + _Marathonbet.awayWinDnb + _1xBet.awayWinDnb + _188BET.awayWinDnb) / 4;
+  if (_Pinnacle.localWinDnb < _bet365.localWinDnb && (bookiesLocalDnbWinAvg * valueBetLimit) < _bet365.localWinDnb)
+    return true
+  if (_Pinnacle.awayWinDnb < _bet365.awayWinDnb && (bookiesAwayDnbWinAvg * valueBetLimit) < _bet365.awayWinDnb)
+    return true
+}
+const doubleChance4Bookies = ({ _Pinnacle, _bet365, _Marathonbet, _1xBet, _188BET }) => {
+  const bookiesLocalWinOrDrawAvg = (_Pinnacle.localOrDraw + _Marathonbet.localOrDraw + _1xBet.localOrDraw + _188BET.localOrDraw) / 4;
+  const bookiesLocalAwayOrDrawAvg = (_Pinnacle.awayOrDraw + _Marathonbet.awayOrDraw + _1xBet.awayOrDraw + _188BET.awayOrDraw) / 4;
+  if (_Pinnacle.localOrDraw < _bet365.localOrDraw && (bookiesLocalWinOrDrawAvg * valueBetLimit) < _bet365.localOrDraw)
+    return true
+  if (_Pinnacle.awayOrDraw < _bet365.awayOrDraw && (bookiesLocalAwayOrDrawAvg * valueBetLimit) < _bet365.awayOrDraw)
+    return true
+}
+const bothTeamsScore4Bookies = ({ _Pinnacle, _bet365, _Marathonbet, _1xBet, _188BET }) => {
+  const bothScoreYesAvg = (_Pinnacle.bothScoreYes + _Marathonbet.bothScoreYes + _1xBet.bothScoreYes + _188BET.bothScoreYes) / 4;
+  const bothScoreNoAvg = (_Pinnacle.bothScoreNo + _Marathonbet.bothScoreNo + _1xBet.bothScoreNo + _188BET.bothScoreNo) / 4;
+  if (_Pinnacle.bothScoreYes < _bet365.bothScoreYes && (bothScoreYesAvg * valueBetLimit) < _bet365.bothScoreYes)
+    return true
+  if (_Pinnacle.bothScoreNo < _bet365.bothScoreNo && (bothScoreNoAvg * valueBetLimit) < _bet365.bothScoreNo)
+    return true
+}
+const overUnderGoals4Bookies = (lines) => {
+  const valueBets = lines.reduce((list, line) => {
+    const {
+      _Pinnacle, _bet365, _Marathonbet, _1xBet, _188BET
+    } = line;
+    const bookiesOverGoalsAvg = (_Pinnacle.overGoals + _Marathonbet.overGoals + _1xBet.overGoals + _188BET.overGoals) / 4;
+    const bookiesUnderGoalsAvg = (_Pinnacle.underGoals + _Marathonbet.underGoals + _1xBet.underGoals + _188BET.underGoals) / 4;
+    if (_Pinnacle.overGoals < _bet365.overGoals && (bookiesOverGoalsAvg * valueBetLimit) < _bet365.overGoals)
+      list.push(_bet365);
+    if (_Pinnacle.underGoals < _bet365.underGoals && (bookiesUnderGoalsAvg * valueBetLimit) < _bet365.underGoals)
+      list.push(_bet365);
+    return list;
+  }, []);
+  return valueBets;
+};
+const overAH4Bookies = (lines)=> {
+  const valueBets = lines.reduce((list, line) => {
+    const {
+      _Pinnacle, _bet365, _Marathonbet, _1xBet, _188BET
+    } = line;
+    const bookiesLocalAHAvg = (_Pinnacle.localAH + _Marathonbet.localAH + _1xBet.localAH + _188BET.localAH) / 4;
+    const bookiesAwayAHAvg = (_Pinnacle.awayAH + _Marathonbet.awayAH + _1xBet.awayAH + _188BET.awayAH) / 4;
+    if (_Pinnacle.localAH < _bet365.localAH && (bookiesLocalAHAvg * valueBetLimit) < _bet365.localAH)
+      list.push(_bet365);
+    if (_Pinnacle.awayAH < _bet365.awayAH && (bookiesAwayAHAvg * valueBetLimit) < _bet365.awayAH)
+      list.push(_bet365);
+    return list;
+  }, []);
+  return valueBets;
+}
+
+
 const newStart = async () => {
   try {
     const args = process.argv.slice(2);
@@ -145,7 +133,7 @@ const newStart = async () => {
     matches.forEach((match) => {
       if (match.moneyLine && match.moneyLine.name) {
         const valueRatio = moneyline(match.moneyLine);
-        if (valueRatio) valueBets.push(composeValueBetLine(match, 'moneyline', '#bts;2', valueRatio));
+        if (valueRatio) valueBets.push(composeValueBetLine(match, 'moneyline', '', valueRatio));
       }
       if (match.dnb && match.dnb.name) {
         const valueRatio = drawNoBet(match.dnb);
@@ -172,5 +160,45 @@ const newStart = async () => {
     db.close();
   }
 };
-newStart();
-// start();
+// newStart();
+const start = async () => {
+  try {
+    db.connect();
+
+    const matches = await Odds.find({});
+    const valueBets = [];
+    matches.forEach((match) => {
+      if (match.moneyLine) {
+        const valueRatio = moneyline4Bookies(match.moneyLine);
+        if (valueRatio) valueBets.push(composeValueBetLine(match, 'moneyline', '', valueRatio));
+      }
+      if (match.dnb) {
+        const valueRatio = drawNoBet4Bookies(match.dnb);
+        if (valueRatio) valueBets.push(composeValueBetLine(match, 'dnb', '#dnb;2', valueRatio));
+      }
+      if (match.doubleChance) {
+        const valueRatio = doubleChance4Bookies(match.doubleChance, match.moneyLine);
+        if (valueRatio) valueBets.push(composeValueBetLine(match, 'DC', '#double;2', valueRatio));
+      }
+      if (match.bts) {
+        const valueRatio = bothTeamsScore4Bookies(match.bts);
+        if (valueRatio) valueBets.push(composeValueBetLine(match, 'bts', '#bts;2', valueRatio));
+      }
+      if (match.overUnder.length > 0) {
+        const overUnderLines = overUnderGoals4Bookies(match.overUnder);
+        overUnderLines.forEach((line) => valueBets.push(composeValueBetLine(match, 'O/U', `#over-under;2;${addZeroes(line.numOfGoals)};0`, line.valueRatio)));
+      }
+      if (match.asianHandicap.length > 0) {
+        const asianHandicapLines = overAH4Bookies(match.asianHandicap);
+        asianHandicapLines.forEach((line) => valueBets.push(composeValueBetLine(match, 'AH', `#ah;2;${addZeroes(line.numOfGoals)};0`, line.valueRatio)));
+      }
+    });
+    const data = JSON.stringify(valueBets);
+    fs.writeFileSync(`./value_bets/${Date.now()}_valuebets.json`, data);
+  } catch (error) {
+    console.log('Error: ', error);
+  } finally {
+    db.close();
+  }
+};
+start();

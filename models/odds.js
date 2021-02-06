@@ -30,8 +30,10 @@ const OddsSchema = new Schema({
   },
   bts: {
   },
+  asianHandicap: {
+  },
 
 }, { collection: 'odds', timestamp: true });
 
-OddsSchema.index({ home: 1, away: 1 }); // compound index on email + username
+OddsSchema.index({ url: 1 }, { unique: true });
 module.exports = mongoose.model('Odds', OddsSchema); // export model for use

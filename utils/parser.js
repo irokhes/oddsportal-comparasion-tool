@@ -27,7 +27,7 @@ const getInitialOdds = async (page, row, position, tableIndex = 1) => {
   try {
     await page.hover(`#odds-data-table > div:nth-child(${tableIndex}) > table > tbody > tr:nth-child(${row}) > td.right.odds:nth-child(${position}) > :nth-child(1)`);
     openingOdds = await page.evaluate(() => document.querySelector('#tooltipdiv > span').innerHTML.split('Opening odds:<br>')[1].split('<strong>')[1].split('</strong>')[0]);
-  } catch (error) { console.log(error); }
+  } catch (error) { }
   return openingOdds;
 };
 

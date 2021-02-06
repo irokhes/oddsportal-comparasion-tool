@@ -14,11 +14,11 @@ const getOdds5Bookies = async (page, url) => {
   odds.date = await getDate(page);
   odds.url = url;
 
-  //MONEYLINE
-  odds.moneyLine = await getMoneyLines5BookiesWithHistocalData(page);
-  // odds.moneyLine = await getMoneyLine5Bookies(page);
+  // MONEYLINE
+  odds.moneyLine = await getMoneyLines5BookiesWithOpeningOdds(page);
 
   //DNB
+
   const selector = await getSectionSelector(page, 'DNB');
   if (selector) {
     await page.evaluate(selector => {
@@ -27,8 +27,7 @@ const getOdds5Bookies = async (page, url) => {
     }, selector)
     await page.click(selector);
     await page.waitForSelector('#odds-data-table > div > table');
-    odds.dnb = await getDnb5BookiesWithHistocalData(page);
-    // odds.dnb = await getDnb5Bookies(page);
+    odds.dnb = await getDnb5BookiesWithOpeningOdds(page);
   }
 
   //DoubleChance
@@ -40,8 +39,7 @@ const getOdds5Bookies = async (page, url) => {
     }, selectorDC)
     await page.click(selectorDC);
     await page.waitForSelector('#odds-data-table > div > table');
-    odds.doubleChance = await getDoubleChance5BookiesWithHistocalData(page);
-    // odds.doubleChance = await getDoubleChance5Bookies(page);
+    odds.doubleChance = await getDoubleChance5BookiesWithOpeningOdds(page);
   }
 
   //BothTeamsScore
@@ -54,8 +52,7 @@ const getOdds5Bookies = async (page, url) => {
     await page.click(selectorBTS);
 
     await page.waitForSelector('#odds-data-table > div > table');
-    odds.bts = await getBothTeamsToScore5BookiesWithHistocalData(page);
-    // odds.bts = await getBothTeamsToScore5Bookies(page);
+    odds.bts = await getBothTeamsToScore5BookiesWithOpeningOdds(page);
   }
 
   //Over/Under Goals
@@ -81,8 +78,7 @@ const getOdds5Bookies = async (page, url) => {
     await page.click(selectorAH);
     await page.waitForSelector('#odds-data-table > div:nth-child(1)');
 
-    // odds.asianHandicap = await getAHLines5Bookies(page);
-    odds.asianHandicap = [];
+    odds.asianHandicap = await getAHLines5Bookies(page);
   }
 
   // save odds
@@ -153,7 +149,7 @@ const getMoneyLine5Bookies = async (page) => {
   });
   return result;
 };
-const getMoneyLines5BookiesWithHistocalData = async (page) => {
+const getMoneyLines5BookiesWithOpeningOdds = async (page) => {
   const selector = '#bettype-tabs > ul > li.first.active > strong > span';
   const resultSelector = '.result';
   const resultLiveSelector = '.result-live';
@@ -201,13 +197,13 @@ const getMoneyLines5BookiesWithHistocalData = async (page) => {
         ? oddsSelector[1].querySelector('div').textContent
         : oddsSelector[1].querySelector('a').textContent;
 
-      const awayWidOddHigh = oddsSelector[0].classList.contains('high');
+      const awayWidOddHigh = oddsSelector[2].classList.contains('high');
       const awayWin = oddsSelector[2].querySelector('div') !== null
         ? oddsSelector[2].querySelector('div').textContent
         : oddsSelector[2].querySelector('a').textContent;
 
       return {
-        localWin: parseFloat(localWin), localWinOddHigh: parseFloat(localWinOddHigh), awayWin: parseFloat(awayWin), awayWidOddHigh: parseFloat(awayWidOddHigh),
+        localWin: parseFloat(localWin), localWinOddHigh, awayWin: parseFloat(awayWin), awayWidOddHigh: parseFloat(awayWidOddHigh),
       };
     }, i);
     if (!result) continue;
@@ -266,7 +262,7 @@ const getDnb5Bookies = async (page) => {
 
   return result;
 }
-const getDnb5BookiesWithHistocalData = async (page) => {
+const getDnb5BookiesWithOpeningOdds = async (page) => {
   const averages = await page.evaluate(() => {
     // get average odds
     const localWinDnbAvgOddsSelector = '#odds-data-table > div > table > tfoot > tr.aver > td:nth-child(2)';
@@ -304,7 +300,7 @@ const getDnb5BookiesWithHistocalData = async (page) => {
         : oddsSelector[1].querySelector('a').textContent;
 
       return {
-        name, localWinDnb: parseFloat(localWinDnb), localWinDnbHigh: parseFloat(localWinDnbHigh), awayWinDnb: parseFloat(awayWinDnb), awayWinDnbHigh: (awayWinDnbHigh),
+        name, localWinDnb: parseFloat(localWinDnb), localWinDnbHigh, awayWinDnb: parseFloat(awayWinDnb), awayWinDnbHigh: (awayWinDnbHigh),
       };
     }, i);
     if (!result) continue;
@@ -366,7 +362,7 @@ const getDoubleChance5Bookies = async (page) => {
   });
   return doubleChance;
 };
-const getDoubleChance5BookiesWithHistocalData = async (page) => {
+const getDoubleChance5BookiesWithOpeningOdds = async (page) => {
   const averages = await page.evaluate(() => {
     // get average odds
     const localOrDrawAvgOddsSelector = '#odds-data-table > div > table > tfoot > tr.aver > td:nth-child(2)';
@@ -408,7 +404,7 @@ const getDoubleChance5BookiesWithHistocalData = async (page) => {
         ? oddsSelector[2].querySelector('div').textContent
         : oddsSelector[2].querySelector('a').textContent;
       return {
-        name, localOrDraw: parseFloat(localOrDraw), localOrDrawHigh: parseFloat(localOrDrawHigh), awayOrDraw: parseFloat(awayOrDraw), awayOrDrawHigh: parseFloat(awayOrDrawHigh),
+        name, localOrDraw: parseFloat(localOrDraw), localOrDrawHigh, awayOrDraw: parseFloat(awayOrDraw), awayOrDrawHigh: parseFloat(awayOrDrawHigh),
       };
     }, i)
     if (!result) continue;
@@ -468,7 +464,7 @@ const getBothTeamsToScore5Bookies = async (page, url) => {
   });
   return bothTeamsScore;
 };
-const getBothTeamsToScore5BookiesWithHistocalData = async (page, url) => {
+const getBothTeamsToScore5BookiesWithOpeningOdds = async (page, url) => {
   const averages = await page.evaluate(() => {
     // get average odds
     const bothScoreYesAvgSelector = '#odds-data-table > div > table > tfoot > tr.aver > td:nth-child(2)';
@@ -505,17 +501,20 @@ const getBothTeamsToScore5BookiesWithHistocalData = async (page, url) => {
         : oddsSelector[1].querySelector('a').textContent;
 
       return {
-        name, bothScoreYes: parseFloat(bothScoreYes), bothScoreYesHigh: parseFloat(bothScoreYesHigh), bothScoreNo: parseFloat(bothScoreNo), bothScoreNoHigh: (bothScoreNoHigh),
+        name, bothScoreYes: parseFloat(bothScoreYes), bothScoreYesHigh, bothScoreNo: parseFloat(bothScoreNo), bothScoreNoHigh,
       };
     }, i)
     if (!result) continue;
     numOfBookies++;
-    selectedBookies[`_${name}`] = { ...result, name, btsYesOpeningOdds: parseFloat(btsYesOpeningOdds), btsNoOpeningOdds: parseFloat(btsNoOpeningOdds),
-      bothScoreYesAvg: averages.bothScoreYesAvg, bothScoreNoAvg: averages.bothScoreNoAvg }
+    selectedBookies[`_${name}`] = {
+      ...result, name, btsYesOpeningOdds: parseFloat(btsYesOpeningOdds), btsNoOpeningOdds: parseFloat(btsNoOpeningOdds),
+      bothScoreYesAvg: averages.bothScoreYesAvg, bothScoreNoAvg: averages.bothScoreNoAvg
+    }
   }
   return numOfBookies === 5 ? selectedBookies : null
 }
 // END of BOTH TEAMS TO SCOORE
+
 
 // OVER UNDER GOALS
 const getUnderOverGoalsExp = async (page, url) => {
@@ -543,7 +542,7 @@ const getUnderOverGoalsExp = async (page, url) => {
       await page.waitForSelector(`#odds-data-table > div:nth-child(${i + 1}) > table`);
     }
 
-    const line = await getUnderOverGoalsOdds5BookiesWithHistocalData(page, `#odds-data-table > div:nth-child(${i + 1}) > table`, i + 1);
+    const line = await getUnderOverGoalsOdds5BookiesWithOpeningOdds(page, `#odds-data-table > div:nth-child(${i + 1}) > table`, i + 1);
     if (enoughBookies && line) underOverLines.push(line)
   }
   return underOverLines;
@@ -595,25 +594,24 @@ const getUnderOverGoalsOdds5Bookies = async (page, tableSelector) => {
   }, tableSelector);
   return underOverGoals
 }
-const getUnderOverGoalsOdds5BookiesWithHistocalData = async (page, tableSelector, tableIndex) => {
+const getUnderOverGoalsOdds5BookiesWithOpeningOdds = async (page, tableSelector, tableIndex) => {
 
-  const averages = await page.evaluate(() => {
+  const averages = await page.evaluate((tableSelector) => {
     // get average odds
-    const overGolasAvgSelector = '#odds-data-table > div > table > tfoot > tr.aver > td:nth-child(3)';
+    const overGolasAvgSelector = `${tableSelector} > tfoot > tr.aver > td:nth-child(3)`;
     const overGoalsAvg = document.querySelector(overGolasAvgSelector).textContent;
-    const underGoalsAvgSelector = '#odds-data-table > div > table > tfoot > tr.aver > td:nth-child(4)';
+    const underGoalsAvgSelector = `${tableSelector} > tfoot > tr.aver > td:nth-child(4)`;
     const underGoalsAvg = document.querySelector(underGoalsAvgSelector).textContent;
     return { overGoalsAvg, underGoalsAvg };
-  });
+  }, tableSelector);
   const bookies = await getBookies(page, tableIndex);
 
   let numOfBookies = 0;
   let selectedBookies = {};
   for (let i = 0; i < bookies.length; i++) {
     const name = await getName(page, i + 1, tableIndex)
-    console.log(`name ${name}`);
     if (!name || (name !== 'bet365' && name !== 'Pinnacle' && name !== 'Marathonbet' && name !== '1xBet' && name !== '188BET')) continue;
-    console.log(`name ${name}, num bookies before this ${numOfBookies}`);
+
     const overGoalsOpeningOdds = await getInitialOdds(page, i + 1, 3, tableIndex);
     const underGoalsOpeningOdds = await getInitialOdds(page, i + 1, 4, tableIndex);
 
@@ -637,8 +635,8 @@ const getUnderOverGoalsOdds5BookiesWithHistocalData = async (page, tableSelector
         : oddsRowSelector[1].querySelector('a').textContent;
 
       return {
-        name, numOfGoals: parseFloat(numOfGoals), overGoals: parseFloat(overGoals), overGoalsHigh: parseFloat(overGoalsHigh),
-        underGoals: parseFloat(underGoals), underGoalsHigh: (underGoalsHigh),
+        name, numOfGoals: parseFloat(numOfGoals), overGoals: parseFloat(overGoals), overGoalsHigh,
+        underGoals: parseFloat(underGoals), underGoalsHigh,
       };
     }, { tableSelector, i })
 
@@ -654,13 +652,14 @@ const getUnderOverGoalsOdds5BookiesWithHistocalData = async (page, tableSelector
 }
 // END of O/U GOALS
 
+// ASIAN HANDICUP
 const getAH5Bookies = async (page, tableSelector) => {
   const asianHandicap = await page.evaluate((tableSelector) => {
     // get average odds
     const asianHandicapSelector = `${tableSelector} > tfoot > tr.aver > td:nth-child(3)`;
-    const overGoalsAvg = document.querySelector(asianHandicapSelector).textContent;
+    const localAHAvg = document.querySelector(asianHandicapSelector).textContent;
     const underGoalsAvgSelector = `${tableSelector} > tfoot > tr.aver > td:nth-child(4)`;
-    const underGoalsAvg = document.querySelector(underGoalsAvgSelector).textContent;
+    const awayAHAvg = document.querySelector(underGoalsAvgSelector).textContent;
 
 
     const bookies = [...document.querySelectorAll(`${tableSelector} > tbody > tr.lo`)];
@@ -702,6 +701,60 @@ const getAH5Bookies = async (page, tableSelector) => {
   return asianHandicap
 }
 
+const getAHLines5BookiesWithOpeningOdds = async (page, tableSelector, tableIndex) => {
+  const averages = await page.evaluate((tableSelector) => {
+    // get average odds
+    const asianHandicapSelector = `${tableSelector} > tfoot > tr.aver > td:nth-child(3)`;
+    const localAHAvg = document.querySelector(asianHandicapSelector).textContent;
+    const underGoalsAvgSelector = `${tableSelector} > tfoot > tr.aver > td:nth-child(4)`;
+    const awayAHAvg = document.querySelector(underGoalsAvgSelector).textContent;
+    return { localAHAvg, awayAHAvg };
+  }, tableSelector);
+  const bookies = await getBookies(page, tableIndex);
+
+  let numOfBookies = 0;
+  let selectedBookies = {};
+  for (let i = 0; i < bookies.length; i++) {
+    const name = await getName(page, i + 1, tableIndex)
+    if (!name || (name !== 'bet365' && name !== 'Pinnacle' && name !== 'Marathonbet' && name !== '1xBet' && name !== '188BET')) continue;
+
+    const localAHOpeningOdds = await getInitialOdds(page, i + 1, 3, tableIndex);
+    const awayAHOpeningOdds = await getInitialOdds(page, i + 1, 4, tableIndex);
+
+    const result = await page.evaluate(({ tableSelector, i: index }) => {
+      const bookie = document.querySelector(`${tableSelector} > tbody > tr.lo:nth-child(${index + 1})`)
+
+      const handicap = bookie.querySelector('.center').innerText;
+
+      const oddsRowSelector = Array.from(bookie.querySelectorAll('.odds'));
+
+      const oddsSelector = oddsRowSelector[0].querySelector('div');
+      if (oddsSelector && oddsSelector.classList.contains('deactivateOdd')) return null;
+
+      const localAHHigh = oddsRowSelector[0].classList.contains('high');
+      const localAH = oddsRowSelector[0].querySelector('div') !== null
+        ? oddsRowSelector[0].querySelector('div').textContent
+        : oddsRowSelector[0].querySelector('a').textContent;
+
+      const awayAHHigh = oddsRowSelector[1].classList.contains('high');
+      const awayAH = oddsRowSelector[1].querySelector('div') !== null
+        ? oddsRowSelector[1].querySelector('div').textContent
+        : oddsRowSelector[1].querySelector('a').textContent;
+
+      return {
+        handicap, localAH: parseFloat(localAH), awayAH: parseFloat(awayAH), localAHHigh, awayAHHigh
+      };
+
+    }, { tableSelector, i })
+
+    numOfBookies++;
+    selectedBookies[`_${name}`] = {
+      ...result, localAHOpeningOdds: parseFloat(localAHOpeningOdds), awayAHOpeningOdds: parseFloat(awayAHOpeningOdds),
+      localAHAvg: averages.localAHAvg, awayAHAvg: averages.awayAHAvg
+    }
+  }
+  return numOfBookies === 5 ? selectedBookies : null
+}
 
 const getAHLines5Bookies = async (page, url) => {
 
@@ -728,7 +781,7 @@ const getAHLines5Bookies = async (page, url) => {
       await page.waitForSelector(`#odds-data-table > div:nth-child(${i + 1}) > table`);
     }
 
-    const line = await getAH5Bookies(page, `#odds-data-table > div:nth-child(${i + 1}) > table`);
+    const line = await getAHLines5BookiesWithOpeningOdds(page, `#odds-data-table > div:nth-child(${i + 1}) > table`, i + 1);
     if (enoughBookies && line) selectedAsianHandicapLines.push(line)
   }
   return selectedAsianHandicapLines;

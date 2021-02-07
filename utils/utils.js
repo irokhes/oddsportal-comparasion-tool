@@ -1,3 +1,4 @@
+/* eslint-disable no-plusplus */
 const moment = require('moment');
 
 const delay = (time) => new Promise((resolve) => {
@@ -36,9 +37,18 @@ const addZeroes = (num) => {
   const len = dec && dec.length > 2 ? dec.length : 2;
   return Number(num).toFixed(len);
 };
+function getOddsBelowOpeningValue(betytype, openingOddsType, _188BET, _1xBet, _Marathonbet, _Pinnacle) {
+  let currentOddsBelowOrigianl = 0;
+  if (_188BET[betytype] < _188BET[openingOddsType]) { currentOddsBelowOrigianl++; }
+  if (_1xBet[betytype] < _1xBet[openingOddsType]) { currentOddsBelowOrigianl++; }
+  if (_Marathonbet[betytype] < _Marathonbet[openingOddsType]) { currentOddsBelowOrigianl++; }
+  if (_Pinnacle[betytype] < _Pinnacle[openingOddsType]) { currentOddsBelowOrigianl++; }
+  return currentOddsBelowOrigianl;
+}
 module.exports = {
   delay,
   enumerateDaysBetweenDates,
   getDates,
   addZeroes,
+  getOddsBelowOpeningValue,
 };

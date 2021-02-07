@@ -641,7 +641,6 @@ const getUnderOverGoalsOdds5BookiesWithOpeningOdds = async (page, tableSelector,
     }, { tableSelector, i })
 
     if (!result) continue;
-
     numOfBookies++;
     selectedBookies[`_${name}`] = {
       ...result, overGoalsOpeningOdds: parseFloat(overGoalsOpeningOdds), underGoalsOpeningOdds: parseFloat(underGoalsOpeningOdds),
@@ -747,6 +746,7 @@ const getAHLines5BookiesWithOpeningOdds = async (page, tableSelector, tableIndex
 
     }, { tableSelector, i })
 
+    if (!result) continue;
     numOfBookies++;
     selectedBookies[`_${name}`] = {
       ...result, localAHOpeningOdds: parseFloat(localAHOpeningOdds), awayAHOpeningOdds: parseFloat(awayAHOpeningOdds),

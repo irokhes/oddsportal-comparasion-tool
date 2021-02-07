@@ -58,7 +58,6 @@ const Odds = require('./models/odds');
 
           const matchUrlLinks = Array.from(match.querySelectorAll('td.name.table-participant > a'));
           matchesUrlList.push(matchUrlLinks.length > 1 ? matchUrlLinks[1].href : matchUrlLinks[0].href);
-          // return ['https://www.oddsportal.com/soccer/chile/primera-division/deportes-iquique-colo-colo-vam3p4Sr'];
           return matchesUrlList;
         }, []);
       })).forEach((matchUrl) => { extractOdds(matchUrl); });

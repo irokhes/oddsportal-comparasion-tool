@@ -10,6 +10,8 @@ const getOdds5Bookies = async (page, url) => {
   await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
 
   await page.goto(`${url}`);
+  const cookies = await page.cookies()
+  console.log(cookies);
   odds.match = await getMatch(page);
   odds.date = await getDate(page);
   odds.url = url;
@@ -162,6 +164,8 @@ const getMoneyLines5BookiesWithOpeningOdds = async (page) => {
   }
 
   const averages = await page.evaluate(() => {
+    console.log(JSON.stringify(window.globals.requestMap));
+
     // get average odds
     const localWinAvgOddsSelector = '#odds-data-table > div > table > tfoot > tr.aver > td:nth-child(2)';
     const localAvg = document.querySelector(localWinAvgOddsSelector).textContent;

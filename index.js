@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 /* eslint-disable no-shadow */
 /* eslint-disable max-len */
 const { Cluster } = require('puppeteer-cluster');
@@ -72,6 +73,7 @@ const Odds = require('./models/odds');
     console.log('started');
 
     db.connect();
+    // while (1) {
     cluster.queue(async ({ page }) => {
       await login(page);
       await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
@@ -84,6 +86,7 @@ const Odds = require('./models/odds');
     await cluster.close();
     console.log('Done...');
     console.timeEnd('Parsing');
+    // }
     db.close();
   };
   start();

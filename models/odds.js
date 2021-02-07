@@ -33,7 +33,7 @@ const OddsSchema = new Schema({
   asianHandicap: {
   },
 
-}, { collection: 'odds', timestamp: true });
+}, { collection: 'odds', timestamps: true });
 
 OddsSchema.index({ url: 1 }, { unique: true });
 module.exports = mongoose.model('Odds', OddsSchema); // export model for use

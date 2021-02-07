@@ -5,11 +5,12 @@ const fs = require('fs');
 const { addZeroes, getOddsBelowOpeningValue } = require('./utils/utils');
 const db = require('./models/db');
 const Odds = require('./models/odds');
+const ValueBet = require('./models/valueBet');
 
 const limitPercentage = 1.08;
 const topPercentage = 1.5;
 const maxOddValue = 25;
-const valueBetLimit = 1.15;
+const valueBetLimit = 1.015;
 const minimunBookiesWithOddsBelowOpening = 3;
 
 const moneyline = (moneyLine) => {
@@ -46,17 +47,29 @@ const bothTeamsScore = (match) => {
 const overUnderGoals = (lines) => {
   const valueBets = lines.reduce((list, line) => {
     const {
-      name, overGoals, underGoals, underGoalsAvg, overGoalsAvg,
-    } = line;
-    if (!name) return list;
-    if (overGoals < 13 && ((1 / overGoals) + (1 / underGoalsAvg) <= valueBetLimit)) list.push({ ...line, valueRatio: (1 / overGoals) + (1 / underGoalsAvg) });
-    if (underGoals < 13 && ((1 / underGoals) + (1 / overGoalsAvg) <= valueBetLimit)) list.push({ ...line, valueRatio: (1 / underGoals) + (1 / overGoalsAvg) });
+      overGoals, underGoals, underGoalsAvg, overGoalsAvg,
+    } = line._bet365;
+    if (overGoals < 13 && ((1 / overGoals) + (1 / underGoalsAvg) <= valueBetLimit)) list.push({ ...line._bet365, valueRatio: (1 / overGoals) + (1 / underGoalsAvg) });
+    if (underGoals < 13 && ((1 / underGoals) + (1 / overGoalsAvg) <= valueBetLimit)) list.push({ ...line._bet365, valueRatio: (1 / underGoals) + (1 / overGoalsAvg) });
     return list;
   }, []);
   return valueBets;
 };
-const composeValueBetLine = (match, line, path, valueRatio) => ({
-  match: match.match, date: match.date, line, url: match.url + path
+const asianHandicap = (lines) => {
+  const valueBets = lines.reduce((list, line) => {
+    const {
+      localAH, awayAH, localAHAvg, awayAHAvg
+    } = line._bet365;
+
+    if (localAH < 13 && ((1 / localAH) + (1 / awayAHAvg) <= valueBetLimit)) list.push({ ...line._bet365, valueRatio: (1 / localAH) + (1 / awayAHAvg) });
+    if (awayAH < 13 && ((1 / awayAH) + (1 / localAHAvg) <= valueBetLimit)) list.push({ ...line._bet365, valueRatio: (1 / awayAH) + (1 / localAHAvg) });
+    return list;
+  }, []);
+  return valueBets;
+}
+
+const composeValueBetLine = (match, line, path, valueRatio, options) => ({
+  match: match.match, date: match.date, line, url: match.url + path, valueRatio, ...options
 });
 
 
@@ -224,27 +237,35 @@ const newStart = async () => {
     const matches = await Odds.find({});
     const valueBets = [];
     matches.forEach((match) => {
-      if (match.moneyLine && match.moneyLine.name) {
-        const valueRatio = moneyline(match.moneyLine);
+      if (match.moneyLine) {
+        const valueRatio = moneyline(match.moneyLine._bet365, match.dnb);
         if (valueRatio) valueBets.push(composeValueBetLine(match, 'moneyline', '', valueRatio));
       }
-      if (match.dnb && match.dnb.name) {
-        const valueRatio = drawNoBet(match.dnb);
+      if (match.dnb) {
+        const valueRatio = drawNoBet(match.dnb._bet365);
         if (valueRatio) valueBets.push(composeValueBetLine(match, 'dnb', '#dnb;2', valueRatio));
       }
-      if (match.doubleChance && match.doubleChance.name) {
-        const valueRatio = doubleChance(match.doubleChance, match.moneyLine);
+      if (match.doubleChance) {
+        const valueRatio = doubleChance(match.doubleChance._bet365, match.moneyLine);
         if (valueRatio) valueBets.push(composeValueBetLine(match, 'DC', '#double;2', valueRatio));
       }
-      if (match.bts && match.bts.name) {
-        const valueRatio = bothTeamsScore(match.bts);
+      if (match.bts) {
+        const valueRatio = bothTeamsScore(match.bts._bet365);
         if (valueRatio) valueBets.push(composeValueBetLine(match, 'bts', '#bts;2', valueRatio));
       }
-      if (match.overUnder) {
+      if (match.overUnder.length > 0) {
         const overUnderLines = overUnderGoals(match.overUnder);
-        overUnderLines.forEach((line) => valueBets.push(composeValueBetLine(match, 'O/U', `#over-under;2;${addZeroes(line.numOfGoals)};0`, line.valueRatio)));
+        overUnderLines.forEach((line) => valueBets.push(composeValueBetLine(match, 'O/U', `#over-under;2;${addZeroes(line.numOfGoals)};0`, line.valueRatio, { lineValue: line.numOfGoals })));
+      }
+      if (match.asianHandicap.length > 0) {
+        const asianHandicapLines = asianHandicap(match.asianHandicap);
+        asianHandicapLines.forEach((line) => valueBets.push(composeValueBetLine(match, 'AH', `#ah;2;${addZeroes(line.handicap)};0`, line.valueRatio, { lineValue: line.handicap })));
       }
     });
+
+    // Save result to db
+    await saveToDatabase(valueBets);
+
     const data = JSON.stringify(valueBets);
     fs.writeFileSync(`./value_bets/${Date.now()}_valuebets.json`, data);
   } catch (error) {
@@ -253,7 +274,6 @@ const newStart = async () => {
     db.close();
   }
 };
-// newStart();
 const start = async () => {
   try {
     db.connect();
@@ -270,7 +290,7 @@ const start = async () => {
         if (valueRatio) valueBets.push(composeValueBetLine(match, 'dnb', '#dnb;2', valueRatio));
       }
       if (match.doubleChance) {
-        const valueRatio = doubleChance5Bookies(match.doubleChance, match.moneyLine);
+        const valueRatio = doubleChance5Bookies(match.doubleChance, match.doubleChance);
         if (valueRatio) valueBets.push(composeValueBetLine(match, 'DC', '#double;2', valueRatio));
       }
       if (match.bts) {
@@ -286,6 +306,11 @@ const start = async () => {
         asianHandicapLines.forEach((line) => valueBets.push(composeValueBetLine(match, 'AH', `#ah;2;${addZeroes(line.handicap)};0`, line.valueRatio)));
       }
     });
+
+    // Save result to db
+    await saveToDatabase(valueBets);
+
+    //save result to .json file
     const data = JSON.stringify(valueBets);
     fs.writeFileSync(`./value_bets/${Date.now()}_valuebets.json`, data);
   } catch (error) {
@@ -294,6 +319,19 @@ const start = async () => {
     db.close();
   }
 };
-start();
+newStart();
+
+
+async function saveToDatabase(valueBets) {
+  const promises = [];
+  valueBets.forEach(bet => {
+    const filterOptions = { match: bet.match, line: bet.line };
+    if (bet.line === 'AH' || bet.line === 'O/U')
+      filterOptions.line = bet.line;
+    promises.push(ValueBet.findOneAndUpdate(filterOptions, bet, { upsert: true, setDefaultsOnInsert: true }));
+  });
+  await Promise.all(promises);
+}
+// start();
 
 

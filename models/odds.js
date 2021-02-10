@@ -26,12 +26,10 @@ const OddsSchema = new Schema({
   },
   doubleChance: {
   },
-  overUnder: {
-  },
   bts: {
   },
-  asianHandicap: {
-  },
+  overUnder: [],
+  asianHandicap: [],
 
 }, { collection: 'odds', timestamps: true });
 

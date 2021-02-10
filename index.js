@@ -3,11 +3,12 @@
 /* eslint-disable max-len */
 const { Cluster } = require('puppeteer-cluster');
 const { enumerateDaysBetweenDates, getDates } = require('./utils/utils');
+
 const {
   getOdds5Bookies,
-} = require('./parsers/football.js');
+} = require('./parsers/football');
+const { getOdds, getOddsUrls } = require('./parsers/oddsPortalApi');
 const db = require('./models/db');
-const Odds = require('./models/odds');
 
 (async () => {
   const cluster = await Cluster.launch({
@@ -36,7 +37,7 @@ const Odds = require('./models/odds');
     await page.click('button[type="submit"]');
   }
 
-  const extractMatchOdds = async ({ page, data: url }) => getOdds5Bookies(page, url);
+  const extractMatchOdds = async ({ page, data: url }) => getOdds(page, url);
 
   const extractOdds = async (url) => {
     cluster.queue(url, extractMatchOdds);
@@ -46,8 +47,6 @@ const Odds = require('./models/odds');
     page.on('console', (consoleObj) => console.log(consoleObj.text()));
 
     try {
-      await Odds.deleteMany({});
-
       await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
       await page.goto(url);
       (await page.evaluate(() => {
@@ -69,25 +68,28 @@ const Odds = require('./models/odds');
 
   const start = async () => {
     const { startDate, endDate } = getDates(process.argv.slice(2));
-    console.time('Parsing');
     console.log('started');
-
     db.connect();
-    // while (1) {
     cluster.queue(async ({ page }) => {
       await login(page);
-      await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
-      enumerateDaysBetweenDates(startDate, endDate).forEach((date) => {
-        cluster.queue(`https://www.oddsportal.com/matches/soccer/${date}/`, extractMatches);
-      });
     });
 
-    await cluster.idle();
-    await cluster.close();
-    console.log('Done...');
-    console.timeEnd('Parsing');
-    // }
-    db.close();
+    while (1) {
+      console.time('Parsing');
+      cluster.queue(async ({ page }) => {
+        await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
+
+        enumerateDaysBetweenDates(startDate, endDate).forEach((date) => {
+          cluster.queue(`https://www.oddsportal.com/matches/soccer/${date}/`, extractMatches);
+        });
+      });
+
+      await cluster.idle();
+      await cluster.close();
+      console.timeEnd('Parsing');
+      console.log('Done...');
+    }
+    // db.close();
   };
   start();
 })();

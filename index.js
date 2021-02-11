@@ -7,8 +7,9 @@ const { enumerateDaysBetweenDates, getDates } = require('./utils/utils');
 const {
   getOdds5Bookies,
 } = require('./parsers/football');
-const { getOdds, getOddsUrls } = require('./parsers/oddsPortalApi');
+const { getOdds } = require('./parsers/oddsPortalApi');
 const db = require('./models/db');
+const analytics = require('./analytics');
 
 (async () => {
   const cluster = await Cluster.launch({
@@ -70,6 +71,7 @@ const db = require('./models/db');
     const { startDate, endDate } = getDates(process.argv.slice(2));
     console.log('started');
     db.connect();
+    analytics.start();
     cluster.queue(async ({ page }) => {
       await login(page);
     });
@@ -86,10 +88,9 @@ const db = require('./models/db');
 
       await cluster.idle();
       await cluster.close();
-      console.timeEnd('Parsing');
       console.log('Done...');
+      console.timeEnd('Parsing');
     }
-    // db.close();
   };
   start();
 })();

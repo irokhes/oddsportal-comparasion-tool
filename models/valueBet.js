@@ -21,15 +21,15 @@ const ValueBetSchema = new Schema({
     required: true,
   },
   line: {
-    tpye: String,
+    type: String,
     required: false,
   },
   lineValue: {
-    tpye: String,
+    type: String,
     required: false,
   },
   valueRatio: {
-    tpye: Number,
+    type: Number,
     required: false,
   },
   bet: {

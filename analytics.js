@@ -88,7 +88,7 @@ async function saveToDatabase(valueBets) {
       vb.valueRatio = bet.valueRatio
     }else{
       vb = new ValueBet(bet);
-      newValueBets.push({ match: bet.match, date: bet.date, url: bet.url, line: bet.line, valueRatio: parseFloat(bet.valueRatio) })
+      newValueBets.push({ match: bet.match, date: bet.date, url: bet.url, line: bet.line, valueRatio: bet.valueRatio })
     }
     promises.push(vb.save());
   }

@@ -79,7 +79,8 @@ const composeValueBetLine = (match, line, path, valueRatio, lineValue) => ({
 async function saveToDatabase(valueBets) {
   const promises = [];
   const newValueBets = [];
-  valueBets.forEach(bet => {
+  for (let index = 0; index < valueBets.length; index++) {
+    const bet = valueBets[index];
     const filterOptions = { match: bet.match, line: bet.line };
     if (bet.line === 'AH' || bet.line === 'O/U') filterOptions.line = bet.line;
     const vb = await ValueBet.findOne(filterOptions);
@@ -90,7 +91,7 @@ async function saveToDatabase(valueBets) {
       newValueBets.push({ match: result.value.match, date: result.value.date, url: result.value.url, line: result.value.line, valueRatio: result.value.valueRatio })
     }
     promises.push(vb.save());
-  });
+  }
   await Promise.all(promises);
   return newValueBets;
 }

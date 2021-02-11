@@ -5,8 +5,11 @@ const bot = new Telegraf(botToken);
 bot.startPolling();
 
 bot.command('bet', (ctx) => {
+  console.log('command received');
   ctx.reply('Oido cocina!!');
 });
+
+bot.launch();
 
 const sendMessage = (message) => {
   bot.telegram.sendMessage(chatId, message);

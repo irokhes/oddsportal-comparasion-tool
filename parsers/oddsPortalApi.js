@@ -2,7 +2,6 @@
 const { parse3WaysLine, parse2WaysLine, parseOverUnderLine, } = require('./lines');
 const { getMatch, getDate } = require('../utils/parser');
 const Odds = require('../models/odds');
-const Fixture = require('../models/fixtures');
 
 const getValue3WaysValueBet = () => {
     if ((1 / localWin) + (1 / awayAvg) + (1 / drawAvg) <= valueBetLimit) return (1 / localWin) + (1 / awayAvg) + (1 / drawAvg);

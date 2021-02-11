@@ -3,41 +3,46 @@ const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 
-const FixtureSchema = new Schema({
-  url: {
+const BetSchema = new Schema({
+  sport: {
     type: String,
-    required: true,
+    default: 'football',
   },
   match: {
     type: String,
     required: true,
   },
-  mlUrl: {
+  date: {
     type: String,
     required: true,
   },
-  dnbUrl: {
+  url: {
     type: String,
     required: true,
   },
-  dcUrl: {
+  line: {
     tpye: String,
     required: false,
   },
-  btsUrl: {
+  lineValue: {
     tpye: String,
     required: false,
   },
-  ahUrl: {
+  valueRatio: {
     tpye: String,
     required: false,
   },
-  ouUrl: {
-    tpye: String,
-    required: false,
+  bet: {
+    type: Boolean,
+    default: false,
+  },
+  sequence: {
+    type: Number,
   },
 
 }, { timestamps: true });
 
-FixtureSchema.index({ url: 1 }, { unique: true });
-module.exports = mongoose.model('Fixture', FixtureSchema);
+BetSchema.index({ url: 1 });
+BetSchema.index({ url: 1, line: 1 });
+BetSchema.index({ url: 1, line: 1, lineValue: 1 });
+module.exports = mongoose.model('Bet', BetSchema);

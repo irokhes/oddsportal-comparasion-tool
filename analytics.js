@@ -78,18 +78,21 @@ const composeValueBetLine = (match, line, path, valueRatio, lineValue) => ({
 
 async function saveToDatabase(valueBets) {
   const promises = [];
+  const newValueBets = [];
   valueBets.forEach(bet => {
     const filterOptions = { match: bet.match, line: bet.line };
-    if (bet.line === 'AH' || bet.line === 'O/U')
-      filterOptions.line = bet.line;
-    promises.push(ValueBet.findOneAndUpdate(filterOptions, bet, { upsert: true, setDefaultsOnInsert: true, rawResult: true, new: true }));
-  });
-  return (await Promise.all(promises)).reduce((newValueBets, result) => {
-    if (result.lastErrorObject.updatedExisting === false) {
+    if (bet.line === 'AH' || bet.line === 'O/U') filterOptions.line = bet.line;
+    const vb = await ValueBet.findOne(filterOptions);
+    if(vb){
+      vb.valueRatio = bet.valueRatio
+    }else{
+      vb = new ValueBet(bet);
       newValueBets.push({ match: result.value.match, date: result.value.date, url: result.value.url, line: result.value.line, valueRatio: result.value.valueRatio })
     }
-    return newValueBets;
-  }, []);
+    promises.push(vb.save());
+  });
+  await Promise.all(promises);
+  return newValueBets;
 }
 const analyzeBets = async () => {
   try {

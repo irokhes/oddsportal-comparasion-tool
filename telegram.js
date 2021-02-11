@@ -4,12 +4,14 @@ const { botToken, chatId } = require('./config');
 const bot = new Telegraf(botToken);
 bot.startPolling();
 
-bot.command('bet', (ctx) => {
-  console.log('command received');
-  ctx.reply('Oido cocina!!');
+bot.on('channel_post', (ctx, next) => {
+  ctx.update.message = ctx.update.channel_post;
+  return next();
 });
 
-bot.launch();
+bot.command('bet', (ctx) => {
+  ctx.reply('Oido cocina!!');
+});
 
 const sendMessage = (message) => {
   bot.telegram.sendMessage(chatId, message);

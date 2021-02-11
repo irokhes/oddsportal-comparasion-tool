@@ -83,7 +83,6 @@ async function saveToDatabase(valueBets) {
     const bet = valueBets[index];
     const filterOptions = { match: bet.match, line: bet.line };
     if (bet.line === 'AH' || bet.line === 'O/U') filterOptions.line = bet.line;
-    console.log(bet.valueRatio);
     let vb = await ValueBet.findOne(filterOptions);
     if(vb){
       vb.valueRatio = bet.valueRatio

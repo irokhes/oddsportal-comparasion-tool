@@ -29,7 +29,7 @@ const ValueBetSchema = new Schema({
     required: false,
   },
   valueRatio: {
-    tpye: String,
+    tpye: Number,
     required: false,
   },
   bet: {

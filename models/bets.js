@@ -32,8 +32,17 @@ const BetSchema = new Schema({
     tpye: String,
     required: false,
   },
-  sequence: {
+  betTo: {
+    type: String,
+    required: false,
+  },
+  odds: {
     type: Number,
+    required: false,
+  },
+  avgOdds: {
+    type: String,
+    required: false,
   },
 
 }, { timestamps: true });

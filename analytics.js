@@ -117,8 +117,8 @@ const analyzeBets = async () => {
         if (result) valueBets.push(composeValueBetLine(match, 'dnb', '#dnb;2', result));
       }
       if (match.doubleChance) {
-        const valueRatio = doubleChance(match.doubleChance, match.moneyLine);
-        if (valueRatio) valueBets.push(composeValueBetLine(match, 'DC', '#double;2', valueRatio));
+        const result = doubleChance(match.doubleChance, match.moneyLine);
+        if (result) valueBets.push(composeValueBetLine(match, 'DC', '#double;2', result));
       }
       if (match.bts) {
         const result = bothTeamsScore(match.bts);
@@ -126,11 +126,11 @@ const analyzeBets = async () => {
       }
       if (match.overUnder.length > 0) {
         const overUnderLines = overUnderGoals(match.overUnder);
-        overUnderLines.forEach((line) => valueBets.push(composeValueBetLine(match, 'O/U', `#over-under;2;${addZeroes(line.line)};0`, line.valueRatio, line.line)));
+        overUnderLines.forEach((line) => valueBets.push(composeValueBetLine(match, 'O/U', `#over-under;2;${addZeroes(line.line)};0`, line, line.line)));
       }
       if (match.asianHandicap.length > 0) {
         const asianHandicapLines = asianHandicap(match.asianHandicap);
-        asianHandicapLines.forEach((line) => valueBets.push(composeValueBetLine(match, 'AH', `#ah;2;${addZeroes(line.line)};0`, line.valueRatio, line.line)));
+        asianHandicapLines.forEach((line) => valueBets.push(composeValueBetLine(match, 'AH', `#ah;2;${addZeroes(line.line)};0`, line, line.line)));
       }
     });
 

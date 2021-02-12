@@ -54,6 +54,7 @@ const ValueBetSchema = new Schema({
 
 }, { timestamps: true });
 ValueBetSchema.index({ url: 1 });
+ValueBetSchema.index({ sequence: 1 });
 ValueBetSchema.index({ url: 1, line: 1 });
 ValueBetSchema.index({ url: 1, line: 1, lineValue: 1 });
 

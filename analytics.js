@@ -55,7 +55,7 @@ const overUnderGoals = (lines) => {
       overOdds, underOdds, underOddsAvg, overOddsAvg,
     } = line;
     if (overOdds < 13 && ((1 / overOdds) + (1 / underOddsAvg) <= valueBetLimit)) list.push({ ...line, valueRatio: (1 / overOdds) + (1 / underOddsAvg), betTo: 'local', odds: overOdds, avgOdds: overOddsAvg });
-    if (underOdds < 13 && ((1 / underOdds) + (1 / overOddsAvg) <= valueBetLimit)) list.push({ ...line, valueRatio: (1 / underOdds) + (1 / overOddsAvg), betTo: 'away', odds: awayWin, avgOdds: underOddsAvg });
+    if (underOdds < 13 && ((1 / underOdds) + (1 / overOddsAvg) <= valueBetLimit)) list.push({ ...line, valueRatio: (1 / underOdds) + (1 / overOddsAvg), betTo: 'away', odds: underOdds, avgOdds: underOddsAvg });
     return list;
   }, []);
   return valueBets;

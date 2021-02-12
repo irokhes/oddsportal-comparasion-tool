@@ -110,11 +110,11 @@ const analyzeBets = async () => {
     matches.forEach((match) => {
       if (match.moneyLine) {
         const result = moneyline(match.moneyLine, match.doubleChance);
-        if (result.valueRatio) valueBets.push(composeValueBetLine(match, 'moneyline', '', result));
+        if (result) valueBets.push(composeValueBetLine(match, 'moneyline', '', result));
       }
       if (match.dnb) {
         const result = drawNoBet(match.dnb);
-        if (result.valueRatio) valueBets.push(composeValueBetLine(match, 'dnb', '#dnb;2', result));
+        if (result) valueBets.push(composeValueBetLine(match, 'dnb', '#dnb;2', result));
       }
       if (match.doubleChance) {
         const valueRatio = doubleChance(match.doubleChance, match.moneyLine);
@@ -122,7 +122,7 @@ const analyzeBets = async () => {
       }
       if (match.bts) {
         const result = bothTeamsScore(match.bts);
-        if (result.valueRatio) valueBets.push(composeValueBetLine(match, 'bts', '#bts;2', result));
+        if (result) valueBets.push(composeValueBetLine(match, 'bts', '#bts;2', result));
       }
       if (match.overUnder.length > 0) {
         const overUnderLines = overUnderGoals(match.overUnder);

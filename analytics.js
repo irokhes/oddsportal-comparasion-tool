@@ -79,6 +79,7 @@ const composeValueBetLine = (match, line, path, valueRatio, lineValue) => ({
 async function saveToDatabase(valueBets) {
   const promises = [];
   const newValueBets = [];
+  const newEntries = [];
   for (let index = 0; index < valueBets.length; index++) {
     const bet = valueBets[index];
 
@@ -87,19 +88,16 @@ async function saveToDatabase(valueBets) {
 
     let vb = await ValueBet.findOne(filterOptions);
     if(vb){
-      if(vb.valueRatio === bet.valueRatio)
-        continue;
       vb.valueRatio = bet.valueRatio;
-    }{
+    }else{
       vb = new ValueBet(bet);
+      newEntries.push(vb._id.toString());
     }
-
-
     promises.push(vb.save());
   }
   (await Promise.all(promises)).forEach(valueBet =>{
-    if(valueBet.createdAt.getTime() === valueBet.updatedAt.getTime())
-      newValueBets.push({ match: valueBet.match, date: valueBet.date, url: valueBet.url, line: valueBet.line, valueRatio: valueBet.valueRatio, sequence: valueBet.sequence})
+    if(newEntries.includes(valueBet._id.toString()))
+        newValueBets.push({ match: valueBet.match, date: valueBet.date, url: valueBet.url, line: valueBet.line, valueRatio: valueBet.valueRatio, sequence: valueBet.sequence})
   })
   return newValueBets;
 }

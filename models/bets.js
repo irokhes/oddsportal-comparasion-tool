@@ -32,10 +32,6 @@ const BetSchema = new Schema({
     tpye: String,
     required: false,
   },
-  bet: {
-    type: Boolean,
-    default: false,
-  },
   sequence: {
     type: Number,
   },

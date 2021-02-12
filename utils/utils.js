@@ -10,7 +10,6 @@ const enumerateDaysBetweenDates = (startDateString, endDateString) => {
 
   const dates = [];
   for (let m = moment(startDate); m.diff(endDate, 'days') <= 0; m.add(1, 'days')) {
-    console.log(m.format('YYYYMMDD'));
     dates.push(m.format('YYYYMMDD'));
   }
   return dates;

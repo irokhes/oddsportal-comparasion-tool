@@ -6,7 +6,9 @@ const connect = async () => {
   mongoose.Promise = global.Promise;
   console.log('MONGON URi ', config.db.uri);
   const connection = await mongoose.connect(config.db.uri,
-    { useNewUrlParser: true, useCreateIndex: true, useFindAndModify: false }).catch((err) => {
+    {
+      useNewUrlParser: true, useCreateIndex: true, useFindAndModify: false, useUnifiedTopology: true,
+    }).catch((err) => {
     console.error('Error while attempting to connect to database:');
     console.error(err);
     process.exit(1);

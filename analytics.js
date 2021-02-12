@@ -81,23 +81,31 @@ async function saveToDatabase(valueBets) {
   const newValueBets = [];
   for (let index = 0; index < valueBets.length; index++) {
     const bet = valueBets[index];
+
     const filterOptions = { match: bet.match, line: bet.line };
     if (bet.line === 'AH' || bet.line === 'O/U') filterOptions.line = bet.line;
+
     let vb = await ValueBet.findOne(filterOptions);
     if(vb){
-      vb.valueRatio = bet.valueRatio
-    }else{
+      if(vb.valueRatio === bet.valueRatio)
+        continue;
+      vb.valueRatio = bet.valueRatio;
+    }{
       vb = new ValueBet(bet);
-      newValueBets.push({ match: bet.match, date: bet.date, url: bet.url, line: bet.line, valueRatio: bet.valueRatio })
     }
+
+
     promises.push(vb.save());
   }
-  await Promise.all(promises);
+  (await Promise.all(promises)).forEach(valueBet =>{
+    if(valueBet.createdAt.getTime() === valueBet.updatedAt.getTime())
+      newValueBets.push({ match: valueBet.match, date: valueBet.date, url: valueBet.url, line: valueBet.line, valueRatio: valueBet.valueRatio, sequence: valueBet.sequence})
+  })
   return newValueBets;
 }
 const analyzeBets = async () => {
   try {
-    console.log('starting..');
+    console.log('looking for new value bets');
     const matches = await Odds.find({});
     const valueBets = [];
     matches.forEach((match) => {
@@ -134,7 +142,7 @@ const analyzeBets = async () => {
       console.log('new value bet: ', valueBet.url);
       promises.push(sendHtmlMessage(composeNewValueBetMessage(valueBet)));
     })
-    await Promise.all(promises)
+
 
 
     //save result to .json file
@@ -148,7 +156,7 @@ const analyzeBets = async () => {
 };
 
 const start = () => {
-  const job = new CronJob('0 */5 * * * *', async function () {
+  const job = new CronJob('0 */1 * * * *', async function () {
     await analyzeBets();
   });
   job.start();

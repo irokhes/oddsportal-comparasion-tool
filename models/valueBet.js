@@ -44,6 +44,16 @@ const ValueBetSchema = new Schema({
 ValueBetSchema.index({ url: 1 });
 ValueBetSchema.index({ url: 1, line: 1 });
 ValueBetSchema.index({ url: 1, line: 1, lineValue: 1 });
+
+ValueBetSchema.pre('save', function (next) {
+  const doc = this;
+  if (!doc.isNew) return next();
+  counter.findByIdAndUpdate({ _id: 'betSeqNum' }, { $inc: { seq: 1 } }, (error, counter) => {
+    if (error) { return next(error); }
+    doc.sequence = counter.seq;
+    next();
+  });
+});
 module.exports = mongoose.model('ValueBet', ValueBetSchema);
 
 const CounterSchema = Schema({
@@ -51,12 +61,3 @@ const CounterSchema = Schema({
   seq: { type: Number, default: 0 },
 });
 const counter = mongoose.model('counter', CounterSchema);
-
-ValueBetSchema.pre('save', function (next) {
-  const doc = this;
-  counter.findByIdAndUpdate({ _id: 'entityId' }, { $inc: { seq: 1 } }, (error, counter) => {
-    if (error) { return next(error); }
-    doc.sequence = counter.seq;
-    next();
-  });
-});

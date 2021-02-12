@@ -26,27 +26,27 @@ const moneyline = (moneyLine, doubleChance) => {
 };
 const doubleChance = (doubleChanceLine, moneyLine) => {
   const {
-    localwin, awayWin,
+    localwin, awayWin, localWinAvg, awayWinAvg
   } = doubleChanceLine;
   if (!moneyLine) return false
-  if ((1 / localwin) + (1 / moneyLine.awayWinAvg) <= valueBetLimit) return { valueRatio: (1 / localwin) + (1 / moneyLine.awayWinAvg), betTo: 'local', odds: localwin, avgOdds: localAvg };
-  if ((1 / awayWin) + (1 / moneyLine.localWinAvg) <= valueBetLimit) return { valueRatio: (1 / awayWin) + (1 / moneyLine.localWinAvg), betTo: 'local', odds: awayWin, avgOdds: awayAvg };
+  if ((1 / localwin) + (1 / moneyLine.awayWinAvg) <= valueBetLimit) return { valueRatio: (1 / localwin) + (1 / moneyLine.awayWinAvg), betTo: 'local', odds: localwin, avgOdds: localWinAvg };
+  if ((1 / awayWin) + (1 / moneyLine.localWinAvg) <= valueBetLimit) return { valueRatio: (1 / awayWin) + (1 / moneyLine.localWinAvg), betTo: 'local', odds: awayWin, avgOdds: awayWinAvg };
   return false;
 };
 const drawNoBet = (dnb) => {
   const {
     localWin, localWinAvg, awayWin, awayWinAvg,
   } = dnb;
-  if ((1 / localWin) + (1 / awayWinAvg) <= valueBetLimit) return { valueRatio: (1 / localWin) + awayAvg, betTo: 'local', odds: localWin, avgOdds: localAvg };
-  if ((1 / awayWin) + (1 / localWinAvg) <= valueBetLimit) return { valueRatio: (1 / awayWin) + localAvg, betTo: 'away', odds: awayWin, avgOdds: awayAvg };
+  if ((1 / localWin) + (1 / awayWinAvg) <= valueBetLimit) return { valueRatio: (1 / localWin) + awayAvg, betTo: 'local', odds: localWin, avgOdds: localWinAvg };
+  if ((1 / awayWin) + (1 / localWinAvg) <= valueBetLimit) return { valueRatio: (1 / awayWin) + localAvg, betTo: 'away', odds: awayWin, avgOdds: awayWinAvg };
   return false;
 };
 const bothTeamsScore = (match) => {
   const {
     localWin, localWinAvg, awayWin, awayWinAvg,
   } = match;
-  if ((1 / localWin) + (1 / awayWinAvg) <= valueBetLimit) return { valueRatio: (1 / localWin) + awayAvg, betTo: 'local', odds: localWin, avgOdds: localAvg };
-  if ((1 / awayWin) + (1 / localWinAvg) <= valueBetLimit) return { valueRatio: (1 / awayWin) + localAvg, betTo: 'away', odds: awayWin, avgOdds: awayAvg };
+  if ((1 / localWin) + (1 / awayWinAvg) <= valueBetLimit) return { valueRatio: (1 / localWin) + awayAvg, betTo: 'local', odds: localWin, avgOdds: localWinAvg };
+  if ((1 / awayWin) + (1 / localWinAvg) <= valueBetLimit) return { valueRatio: (1 / awayWin) + localAvg, betTo: 'away', odds: awayWin, avgOdds: awayWinAvg };
   return false;
 };
 const overUnderGoals = (lines) => {

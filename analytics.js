@@ -9,10 +9,8 @@ const ValueBet = require('./models/valueBet');
 const { sendHtmlMessage, sendMessage } = require('./telegram');
 const { composeNewValueBetMessage } = require('./utils/messages');
 const CronJob = require('cron').CronJob;
-const { frequency } = require('./config');
+const { frequency, valueBetLimit } = require('./config');
 
-
-const valueBetLimit = 1.015;
 
 const moneyline = (moneyLine, doubleChance) => {
   const {

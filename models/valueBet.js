@@ -32,6 +32,18 @@ const ValueBetSchema = new Schema({
     type: Number,
     required: false,
   },
+  betTo: {
+    type: String,
+    required: false,
+  },
+  odds: {
+    type: Number,
+    required: false,
+  },
+  avgOdds: {
+    type: String,
+    required: false,
+  },
   bet: {
     type: Boolean,
     default: false,

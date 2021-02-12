@@ -35,8 +35,8 @@ const drawNoBet = (dnb) => {
   const {
     localWin, localWinAvg, awayWin, awayWinAvg,
   } = dnb;
-  if ((1 / localWin) + (1 / awayWinAvg) <= valueBetLimit) return { valueRatio: (1 / localWin) + awayAvg, betTo: 'local', odds: localWin, avgOdds: localWinAvg };
-  if ((1 / awayWin) + (1 / localWinAvg) <= valueBetLimit) return { valueRatio: (1 / awayWin) + localAvg, betTo: 'away', odds: awayWin, avgOdds: awayWinAvg };
+  if ((1 / localWin) + (1 / awayWinAvg) <= valueBetLimit) return { valueRatio: (1 / localWin) + (1 / moneyLine.awayWinAvg), betTo: 'local', odds: localWin, avgOdds: localWinAvg };
+  if ((1 / awayWin) + (1 / localWinAvg) <= valueBetLimit) return { valueRatio: (1 / awayWin) + (1 / moneyLine.localWinAvg), betTo: 'away', odds: awayWin, avgOdds: awayWinAvg };
   return false;
 };
 const bothTeamsScore = (match) => {

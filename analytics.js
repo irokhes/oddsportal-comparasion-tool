@@ -9,6 +9,7 @@ const ValueBet = require('./models/valueBet');
 const { sendHtmlMessage, sendMessage } = require('./telegram');
 const { composeNewValueBetMessage } = require('./utils/messages');
 const CronJob = require('cron').CronJob;
+const {frequency} = require('./config');
 
 
 const valueBetLimit = 1.015;
@@ -154,7 +155,7 @@ const analyzeBets = async () => {
 };
 
 const start = () => {
-  const job = new CronJob('0 */1 * * * *', async function () {
+  const job = new CronJob(`0 */${frequency} * * * *`, async function () {
     await analyzeBets();
   });
   job.start();

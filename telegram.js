@@ -1,5 +1,6 @@
 const { Telegraf } = require('telegraf');
 const { botToken, chatId } = require('./config');
+const { startBetTracking } = require('./services/valueBets.service');
 
 const bot = new Telegraf(botToken);
 bot.startPolling();
@@ -9,7 +10,9 @@ bot.on('channel_post', (ctx, next) => {
   return next();
 });
 
-bot.command('bet', (ctx) => {
+bot.command('bet', async (ctx) => {
+  const sequence = parseInt(ctx.message.text.replace('/bet', ''));
+  await startBetTracking(sequence);
   ctx.reply('Oido cocina!!');
 });
 

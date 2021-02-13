@@ -2,7 +2,7 @@
 /* eslint-disable max-len */
 /* eslint-disable no-param-reassign */
 const fs = require('fs');
-const { addZeroes, getOddsBelowOpeningValue } = require('./utils/utils');
+const { addZeroes, getOddsBelowOpeningValue, round } = require('./utils/utils');
 const db = require('./models/db');
 const Odds = require('./models/odds');
 const ValueBet = require('./models/valueBet');
@@ -19,15 +19,15 @@ const moneyline = (moneyLine, doubleChance) => {
   let localAvg = doubleChance && doubleChance.localWinAvg ? (1 / doubleChance.localWinAvg) : (1 / localWinAvg) + (1 / drawAvg);
   let awayAvg = doubleChance && doubleChance.awayWinAvg ? (1 / doubleChance.awayWinAvg) : (1 / awayWinAvg) + (1 / drawAvg);
 
-  if ((1 / localWin) + awayAvg <= valueBetLimit) return { valueRatio: (1 / localWin) + awayAvg, betTo: 'local', odds: localWin, avgOdds: localAvg };
-  if ((1 / awayWin) + localAvg <= valueBetLimit) return { valueRatio: (1 / awayWin) + localAvg, betTo: 'away', odds: awayWin, avgOdds: awayAvg };
+  if ((1 / localWin) + awayAvg <= valueBetLimit) return { valueRatio: round((1 / localWin) + awayAvg, 3), betTo: 'local', odds: localWin, avgOdds: localAvg };
+  if ((1 / awayWin) + localAvg <= valueBetLimit) return { valueRatio: round((1 / awayWin) + localAvg, 3), betTo: 'away', odds: awayWin, avgOdds: awayAvg };
 };
 const percentageRule = (line) => {
   const {
     localWin, awayWin, awayWinAvg, localWinAvg,
   } = line;
   if (localWin < 10 && (localWinAvg * percentageRuleLimit < localWin)) return { percentage: localWinAvg / localWin };
-  if (awayWin < 10 && (awayWinAvg * percentageRuleLimit < awayWin)) return {percentage: awayWinAvg / awayWin};
+  if (awayWin < 10 && (awayWinAvg * percentageRuleLimit < awayWin)) return { percentage: awayWinAvg / awayWin };
   return false;
 };
 const overUnderPercentageRule = (lines) => {
@@ -35,8 +35,8 @@ const overUnderPercentageRule = (lines) => {
     const {
       overOdds, underOdds, underOddsAvg, overOddsAvg,
     } = line;
-    if (overOdds < 10 && (overOddsAvg * percentageRuleLimit < overOdds)) list.push({...line, percentage: overOddsAvg / overOdds});
-    if (underOdds < 10 && (underOddsAvg * percentageRuleLimit < underOdds)) list.push({...line, percentage: underOddsAvg / underOdds});
+    if (overOdds < 10 && (overOddsAvg * percentageRuleLimit < overOdds)) list.push({ ...line, percentage: overOddsAvg / overOdds });
+    if (underOdds < 10 && (underOddsAvg * percentageRuleLimit < underOdds)) list.push({ ...line, percentage: underOddsAvg / underOdds });
     return list;
   }, []);
   return valueBets;
@@ -46,24 +46,24 @@ const doubleChance = (doubleChanceLine, moneyLine) => {
     localwin, awayWin, localWinAvg, awayWinAvg
   } = doubleChanceLine;
   if (!moneyLine) return false
-  if ((1 / localwin) + (1 / moneyLine.awayWinAvg) <= valueBetLimit) return { valueRatio: (1 / localwin) + (1 / moneyLine.awayWinAvg), betTo: 'local', odds: localwin, avgOdds: localWinAvg };
-  if ((1 / awayWin) + (1 / moneyLine.localWinAvg) <= valueBetLimit) return { valueRatio: (1 / awayWin) + (1 / moneyLine.localWinAvg), betTo: 'local', odds: awayWin, avgOdds: awayWinAvg };
+  if ((1 / localwin) + (1 / moneyLine.awayWinAvg) <= valueBetLimit) return { valueRatio: round((1 / localwin) + (1 / moneyLine.awayWinAvg), 3), betTo: 'local', odds: localwin, avgOdds: localWinAvg };
+  if ((1 / awayWin) + (1 / moneyLine.localWinAvg) <= valueBetLimit) return { valueRatio: round((1 / awayWin) + (1 / moneyLine.localWinAvg), 3), betTo: 'local', odds: awayWin, avgOdds: awayWinAvg };
   return false;
 };
 const drawNoBet = (dnb) => {
   const {
     localWin, localWinAvg, awayWin, awayWinAvg,
   } = dnb;
-  if ((1 / localWin) + (1 / awayWinAvg) <= valueBetLimit) return { valueRatio: (1 / localWin) + (1 / awayWinAvg), betTo: 'local', odds: localWin, avgOdds: localWinAvg };
-  if ((1 / awayWin) + (1 / localWinAvg) <= valueBetLimit) return { valueRatio: (1 / awayWin) + (1 / localWinAvg), betTo: 'away', odds: awayWin, avgOdds: awayWinAvg };
+  if ((1 / localWin) + (1 / awayWinAvg) <= valueBetLimit) return { valueRatio: round((1 / localwin) + (1 / moneyLine.awayWinAvg), 3), betTo: 'local', odds: localWin, avgOdds: localWinAvg };
+  if ((1 / awayWin) + (1 / localWinAvg) <= valueBetLimit) return { valueRatio: round((1 / awayWin) + (1 / moneyLine.localWinAvg), 3), betTo: 'away', odds: awayWin, avgOdds: awayWinAvg };
   return false;
 };
 const bothTeamsScore = (match) => {
   const {
     localWin, localWinAvg, awayWin, awayWinAvg,
   } = match;
-  if ((1 / localWin) + (1 / awayWinAvg) <= valueBetLimit) return { valueRatio: (1 / localWin) + awayAvg, betTo: 'local', odds: localWin, avgOdds: localWinAvg };
-  if ((1 / awayWin) + (1 / localWinAvg) <= valueBetLimit) return { valueRatio: (1 / awayWin) + localAvg, betTo: 'away', odds: awayWin, avgOdds: awayWinAvg };
+  if ((1 / localWin) + (1 / awayWinAvg) <= valueBetLimit) return { valueRatio: round((1 / localwin) + (1 / moneyLine.awayWinAvg), 3), betTo: 'local', odds: localWin, avgOdds: localWinAvg };
+  if ((1 / awayWin) + (1 / localWinAvg) <= valueBetLimit) return { valueRatio: round((1 / awayWin) + (1 / moneyLine.localWinAvg), 3), betTo: 'away', odds: awayWin, avgOdds: awayWinAvg };
   return false;
 };
 const overUnderGoals = (lines) => {
@@ -71,8 +71,8 @@ const overUnderGoals = (lines) => {
     const {
       overOdds, underOdds, underOddsAvg, overOddsAvg,
     } = line;
-    if (overOdds < 13 && ((1 / overOdds) + (1 / underOddsAvg) <= valueBetLimit)) list.push({ ...line, valueRatio: (1 / overOdds) + (1 / underOddsAvg), betTo: 'local', odds: overOdds, avgOdds: overOddsAvg });
-    if (underOdds < 13 && ((1 / underOdds) + (1 / overOddsAvg) <= valueBetLimit)) list.push({ ...line, valueRatio: (1 / underOdds) + (1 / overOddsAvg), betTo: 'away', odds: underOdds, avgOdds: underOddsAvg });
+    if (overOdds < 13 && ((1 / overOdds) + (1 / underOddsAvg) <= valueBetLimit)) list.push({ ...line, valueRatio: round((1 / overOdds) + (1 / underOddsAvg), 3), betTo: 'local', odds: overOdds, avgOdds: overOddsAvg });
+    if (underOdds < 13 && ((1 / underOdds) + (1 / overOddsAvg) <= valueBetLimit)) list.push({ ...line, valueRatio: round((1 / underOdds) + (1 / overOddsAvg), 3), betTo: 'away', odds: underOdds, avgOdds: underOddsAvg });
     return list;
   }, []);
   return valueBets;
@@ -83,8 +83,8 @@ const asianHandicap = (lines) => {
       overOdds, underOdds, overOddsAvg, underOddsAvg
     } = line;
 
-    if (overOdds < 13 && ((1 / overOdds) + (1 / underOddsAvg) <= valueBetLimit)) list.push({ ...line, valueRatio: (1 / overOdds) + (1 / underOddsAvg), betTo: 'local', odds: overOdds, avgOdds: overOddsAvg });
-    if (underOdds < 13 && ((1 / underOdds) + (1 / overOddsAvg) <= valueBetLimit)) list.push({ ...line, valueRatio: (1 / underOdds) + (1 / overOddsAvg), betTo: 'away', odds: underOdds, avgOdds: underOddsAvg });
+    if (overOdds < 13 && ((1 / overOdds) + (1 / underOddsAvg) <= valueBetLimit)) list.push({ ...line, valueRatio: round((1 / overOdds) + (1 / underOddsAvg), 3), betTo: 'local', odds: overOdds, avgOdds: overOddsAvg });
+    if (underOdds < 13 && ((1 / underOdds) + (1 / overOddsAvg) <= valueBetLimit)) list.push({ ...line, valueRatio: round((1 / underOdds) + (1 / overOddsAvg), 3), betTo: 'away', odds: underOdds, avgOdds: underOddsAvg });
     return list;
   }, []);
   return valueBets;
@@ -100,7 +100,7 @@ const composePercentageBetLine = (match, line, path, valueBet, lineValue) => ({
 async function saveToDatabase(valueBets) {
   const promises = [];
   const newValueBets = [];
-  const newEntries = [];
+  const entriesToNotify = [];
   for (let index = 0; index < valueBets.length; index++) {
     const bet = valueBets[index];
 
@@ -109,15 +109,16 @@ async function saveToDatabase(valueBets) {
 
     let vb = await ValueBet.findOne(filterOptions);
     if (vb) {
+      if (vb.valueRatio - bet.valueRatio >= 0.02) entriesToNotify.push(vb._id.toString());
       vb.valueRatio = bet.valueRatio;
     } else {
       vb = new ValueBet(bet);
-      newEntries.push(vb._id.toString());
+      entriesToNotify.push(vb._id.toString());
     }
     promises.push(vb.save());
   }
   (await Promise.all(promises)).forEach(valueBet => {
-    if (newEntries.includes(valueBet._id.toString()))
+    if (entriesToNotify.includes(valueBet._id.toString()))
       newValueBets.push({ match: valueBet.match, date: valueBet.date, url: valueBet.url, line: valueBet.line, valueRatio: valueBet.valueRatio, sequence: valueBet.sequence })
   })
   return newValueBets;
@@ -125,7 +126,7 @@ async function saveToDatabase(valueBets) {
 const analyzeBets = async () => {
   try {
     console.log('looking for new value bets');
-    const matches = await Odds.find({});
+    const matches = await Odds.find({ bet: false });
     const valueBets = [];
     matches.forEach((match) => {
       if (match.moneyLine) {

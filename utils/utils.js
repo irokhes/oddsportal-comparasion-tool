@@ -44,10 +44,14 @@ function getOddsBelowOpeningValue(betytype, openingOddsType, _188BET, _1xBet, _M
   if (_Pinnacle[betytype] < _Pinnacle[openingOddsType]) { currentOddsBelowOrigianl++; }
   return currentOddsBelowOrigianl;
 }
+function round(value, decimals) {
+  return Number(`${Math.round(`${value}e${decimals}`)}e-${decimals}`);
+}
 module.exports = {
   delay,
   enumerateDaysBetweenDates,
   getDates,
   addZeroes,
   getOddsBelowOpeningValue,
+  round,
 };

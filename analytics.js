@@ -109,6 +109,7 @@ async function saveToDatabase(valueBets) {
 
     let vb = await ValueBet.findOne(filterOptions);
     if (vb) {
+      if(vb.valueRatio > bet.valueRatio) console.log(`line improved old ${vb.valueRatio} new ${bet.valueRatio}  ${bet.url}`)
       if (vb.valueRatio - bet.valueRatio >= 0.02) entriesToNotify.push(vb._id.toString());
       vb.valueRatio = bet.valueRatio;
     } else {

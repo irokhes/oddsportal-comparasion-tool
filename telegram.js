@@ -1,3 +1,4 @@
+/* eslint-disable radix */
 const { Telegraf } = require('telegraf');
 const { botToken, chatId } = require('./config');
 const { startBetTracking } = require('./services/valueBets.service');

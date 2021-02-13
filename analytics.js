@@ -7,7 +7,7 @@ const db = require('./models/db');
 const Odds = require('./models/odds');
 const ValueBet = require('./models/valueBet');
 const { sendHtmlMessage, sendMessage } = require('./telegram');
-const { composeNewValueBetMessage } = require('./utils/messages');
+const { composeNewValueBetMessage, composeNewPercentageBetMessage } = require('./utils/messages');
 const CronJob = require('cron').CronJob;
 const { frequency, valueBetLimit, percentageRuleLimit } = require('./config');
 

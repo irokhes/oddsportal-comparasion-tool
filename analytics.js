@@ -26,8 +26,10 @@ const percentageRule = (line) => {
   const {
     localWin, awayWin, awayWinAvg, localWinAvg,
   } = line;
-  if (localWin < 10 && (localWinAvg * percentageRuleLimit < localWin)) return { percentage: localWinAvg / localWin };
-  if (awayWin < 10 && (awayWinAvg * percentageRuleLimit < awayWin)) return { percentage: awayWinAvg / awayWin };
+  const localBetMargin = ((localWin * 100) / localWinAvg) - 100;
+  if (localWin < 10 && (localBetMargin > percentageRuleLimit)) return { percentage: localBetMargin };
+  const awayBetMargin = ((awayWin * 100) / awayWinAvg) - 100;
+  if (awayWin < 10 && (awayBetMargin > percentageRuleLimit)) return { percentage: awayBetMargin };
   return false;
 };
 const overUnderPercentageRule = (lines) => {
@@ -35,8 +37,10 @@ const overUnderPercentageRule = (lines) => {
     const {
       overOdds, underOdds, underOddsAvg, overOddsAvg,
     } = line;
-    if (overOdds < 10 && (overOddsAvg * percentageRuleLimit < overOdds)) list.push({ ...line, percentage: overOddsAvg / overOdds });
-    if (underOdds < 10 && (underOddsAvg * percentageRuleLimit < underOdds)) list.push({ ...line, percentage: underOddsAvg / underOdds });
+    const overBetMargin = ((overOdds * 100) / overOddsAvg) - 100;
+    if (overOdds < 10 && (overBetMargin > percentageRuleLimit)) list.push({ ...line, percentage: overBetMargin });
+    const underBetMargin = ((underOdds * 100) / underOddsAvg) - 100;
+    if (underOdds < 10 && (underBetMargin > percentageRuleLimit)) list.push({ ...line, percentage: underBetMargin });
     return list;
   }, []);
   return valueBets;
@@ -109,7 +113,8 @@ async function saveToDatabase(valueBets) {
 
     let vb = await ValueBet.findOne(filterOptions);
     if (vb) {
-      if(vb.valueRatio > bet.valueRatio) console.log(`line improved old ${vb.valueRatio} new ${bet.valueRatio}  ${bet.url}`)
+      console.log(vb.valueRatio - bet.valueRatio)
+      if (vb.valueRatio > bet.valueRatio) console.log(`line improved old ${vb.valueRatio} new ${bet.valueRatio}  ${bet.url}`)
       if (vb.valueRatio - bet.valueRatio >= 0.02) entriesToNotify.push(vb._id.toString());
       vb.valueRatio = bet.valueRatio;
     } else {
@@ -156,33 +161,33 @@ const analyzeBets = async () => {
       }
     });
 
-    // const percentageBets = []
-    // matches.forEach(match => {
-    //   if (match.moneyLine) {
-    //     const result = percentageRule(match.moneyLine);
-    //     if (result) percentageBets.push(composePercentageBetLine(match, 'moneyline', '', result));
-    //   }
-    //   if (match.dnb) {
-    //     const result = percentageRule(match.dnb);
-    //     if (result) percentageBets.push(composePercentageBetLine(match, 'dnb', '#dnb;2', result));
-    //   }
-    //   if (match.doubleChance) {
-    //     const result = percentageRule(match.doubleChance);
-    //     if (result) percentageBets.push(composePercentageBetLine(match, 'DC', '#double;2', result));
-    //   }
-    //   if (match.bts) {
-    //     const result = bothTeamsScore(match.bts);
-    //     if (result) percentageBets.push(composePercentageBetLine(match, 'bts', '#bts;2', result));
-    //   }
-    //   if (match.overUnder.length > 0) {
-    //     const overUnderLines = overUnderPercentageRule(match.overUnder);
-    //     overUnderLines.forEach((line) => percentageBets.push(composePercentageBetLine(match, 'O/U', `#over-under;2;${addZeroes(line.line)};0`, line, line.line)));
-    //   }
-    //   if (match.asianHandicap.length > 0) {
-    //     const asianHandicapLines = overUnderPercentageRule(match.asianHandicap);
-    //     asianHandicapLines.forEach((line) => percentageBets.push(composePercentageBetLine(match, 'AH', `#ah;2;${addZeroes(line.line)};0`, line, line.line)));
-    //   }
-    // });
+    const percentageBets = []
+    matches.forEach(match => {
+      if (match.moneyLine) {
+        const result = percentageRule(match.moneyLine);
+        if (result) percentageBets.push(composePercentageBetLine(match, 'moneyline', '', result));
+      }
+      if (match.dnb) {
+        const result = percentageRule(match.dnb);
+        if (result) percentageBets.push(composePercentageBetLine(match, 'dnb', '#dnb;2', result));
+      }
+      if (match.doubleChance) {
+        const result = percentageRule(match.doubleChance);
+        if (result) percentageBets.push(composePercentageBetLine(match, 'DC', '#double;2', result));
+      }
+      if (match.bts) {
+        const result = bothTeamsScore(match.bts);
+        if (result) percentageBets.push(composePercentageBetLine(match, 'bts', '#bts;2', result));
+      }
+      if (match.overUnder.length > 0) {
+        const overUnderLines = overUnderPercentageRule(match.overUnder);
+        overUnderLines.forEach((line) => percentageBets.push(composePercentageBetLine(match, 'O/U', `#over-under;2;${addZeroes(line.line)};0`, line, line.line)));
+      }
+      if (match.asianHandicap.length > 0) {
+        const asianHandicapLines = overUnderPercentageRule(match.asianHandicap);
+        asianHandicapLines.forEach((line) => percentageBets.push(composePercentageBetLine(match, 'AH', `#ah;2;${addZeroes(line.line)};0`, line, line.line)));
+      }
+    });
 
     // Save result to db
     const newValueBets = await saveToDatabase(valueBets);
@@ -191,10 +196,10 @@ const analyzeBets = async () => {
       console.log('new value bet: ', valueBet.url);
       promises.push(sendHtmlMessage(composeNewValueBetMessage(valueBet)));
     })
-    // percentageBets.forEach(valueBet => {
-    //   console.log(`new percentage bet: ${valueBet.url} %: ${valueBet.percentage}`);
-    //   // promises.push(sendHtmlMessage(composeNewPercentageBetMessage(valueBet)));
-    // })
+    percentageBets.forEach(valueBet => {
+      console.log(`new percentage bet: ${valueBet.url} %: ${valueBet.percentage}`);
+      promises.push(sendHtmlMessage(composeNewPercentageBetMessage(valueBet)));
+    })
 
 
 

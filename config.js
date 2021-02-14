@@ -9,7 +9,7 @@ module.exports = {
   env: NODE_ENV,
   frequency: process.env.CRON_FREQUENCY,
   valueBetLimit: process.env.VALUE_BET_LIMIT || 1.014,
-  percentageRuleLimit: process.env.PERCENTAGE_RULE || 1.2,
+  percentageRuleLimit: process.env.PERCENTAGE_RULE || 10,
   botToken: process.env.BOT_TOKEN,
   chatId: process.env.CHAT_ID,
   db: {

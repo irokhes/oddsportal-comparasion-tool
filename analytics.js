@@ -27,9 +27,9 @@ const percentageRule = (line) => {
     localWin, awayWin, awayWinAvg, localWinAvg,
   } = line;
   const localBetMargin = ((localWin * 100) / localWinAvg) - 100;
-  if (localWin < 10 && (localBetMargin > percentageRuleLimit)) return { percentage: localBetMargin };
+  if (localWin < 6 && (localBetMargin > percentageRuleLimit)) return { percentage: localBetMargin };
   const awayBetMargin = ((awayWin * 100) / awayWinAvg) - 100;
-  if (awayWin < 10 && (awayBetMargin > percentageRuleLimit)) return { percentage: awayBetMargin };
+  if (awayWin < 6 && (awayBetMargin > percentageRuleLimit)) return { percentage: awayBetMargin };
   return false;
 };
 const overUnderPercentageRule = (lines) => {
@@ -38,9 +38,9 @@ const overUnderPercentageRule = (lines) => {
       overOdds, underOdds, underOddsAvg, overOddsAvg,
     } = line;
     const overBetMargin = ((overOdds * 100) / overOddsAvg) - 100;
-    if (overOdds < 10 && (overBetMargin > percentageRuleLimit)) list.push({ ...line, percentage: overBetMargin });
+    if (overOdds < 6 && (overBetMargin > percentageRuleLimit)) list.push({ ...line, percentage: overBetMargin });
     const underBetMargin = ((underOdds * 100) / underOddsAvg) - 100;
-    if (underOdds < 10 && (underBetMargin > percentageRuleLimit)) list.push({ ...line, percentage: underBetMargin });
+    if (underOdds < 6 && (underBetMargin > percentageRuleLimit)) list.push({ ...line, percentage: underBetMargin });
     return list;
   }, []);
   return valueBets;

@@ -132,7 +132,7 @@ async function saveToDatabase(valueBets) {
 const analyzeBets = async () => {
   try {
     console.log('looking for new value bets');
-    const matches = await Odds.find({ bet: false });
+    const matches = await Odds.find();
     const valueBets = [];
     matches.forEach((match) => {
       if (match.moneyLine) {

@@ -21,27 +21,22 @@ const BetSchema = new Schema({
     required: true,
   },
   line: {
-    tpye: String,
-    required: false,
+    type: String,
   },
   lineValue: {
-    tpye: String,
-    required: false,
+    type: String,
   },
   valueRatio: {
-    tpye: String,
-    required: false,
+    type: String,
   },
   sequence: {
     type: Number,
   },
   betTo: {
     type: String,
-    required: false,
   },
   odds: {
     type: Number,
-    required: false,
   },
   lastOddBet365: {
     type: Number,

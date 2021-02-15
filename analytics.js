@@ -137,8 +137,8 @@ const analyzeBets = async () => {
     const valueBets = [];
     const percentageBets = []
     matches.forEach((match) => {
-      valueBets.push(...getMatchValueBets(match, valueBets));
-      percentageBest.push(...getMatchValueBetsByPercentage(match, percentageBets));
+      valueBets.push(...getMatchValueBets(match));
+      percentageBets.push(...getMatchValueBetsByPercentage(match));
     });
 
 

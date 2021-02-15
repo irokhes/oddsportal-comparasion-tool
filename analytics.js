@@ -58,16 +58,16 @@ const drawNoBet = (dnb) => {
   const {
     localWin, localWinAvg, awayWin, awayWinAvg,
   } = dnb;
-  if ((1 / localWin) + (1 / awayWinAvg) <= valueBetLimit) return { valueRatio: round((1 / localwin) + (1 / moneyLine.awayWinAvg), 2), betTo: 'local', odds: localWin, avgOdds: localWinAvg };
-  if ((1 / awayWin) + (1 / localWinAvg) <= valueBetLimit) return { valueRatio: round((1 / awayWin) + (1 / moneyLine.localWinAvg), 2), betTo: 'away', odds: awayWin, avgOdds: awayWinAvg };
+  if ((1 / localWin) + (1 / awayWinAvg) <= valueBetLimit) return { valueRatio: round((1 / localwin) + (1 / awayWinAvg), 2), betTo: 'local', odds: localWin, avgOdds: localWinAvg };
+  if ((1 / awayWin) + (1 / localWinAvg) <= valueBetLimit) return { valueRatio: round((1 / awayWin) + (1 / localWinAvg), 2), betTo: 'away', odds: awayWin, avgOdds: awayWinAvg };
   return false;
 };
 const bothTeamsScore = (match) => {
   const {
     localWin, localWinAvg, awayWin, awayWinAvg,
   } = match;
-  if ((1 / localWin) + (1 / awayWinAvg) <= valueBetLimit) return { valueRatio: round((1 / localwin) + (1 / moneyLine.awayWinAvg), 2), betTo: 'local', odds: localWin, avgOdds: localWinAvg };
-  if ((1 / awayWin) + (1 / localWinAvg) <= valueBetLimit) return { valueRatio: round((1 / awayWin) + (1 / moneyLine.localWinAvg), 2), betTo: 'away', odds: awayWin, avgOdds: awayWinAvg };
+  if ((1 / localWin) + (1 / awayWinAvg) <= valueBetLimit) return { valueRatio: round((1 / localwin) + (1 / awayWinAvg), 2), betTo: 'local', odds: localWin, avgOdds: localWinAvg };
+  if ((1 / awayWin) + (1 / localWinAvg) <= valueBetLimit) return { valueRatio: round((1 / awayWin) + (1 / localWinAvg), 2), betTo: 'away', odds: awayWin, avgOdds: awayWinAvg };
   return false;
 };
 const overUnderGoals = (lines) => {
@@ -185,12 +185,12 @@ function getMatchValueBetsByPercentage(match) {
   if (match.moneyLine) {
     const result = percentageRule(match.moneyLine);
     if (result)
-      results.push(composePercentageBetLine(match, 'moneyline', '', result));
+      results.push(composePercentageBetLine(match, 'ML', '', result));
   }
   if (match.dnb) {
     const result = percentageRule(match.dnb);
     if (result)
-      results.push(composePercentageBetLine(match, 'dnb', '#dnb;2', result));
+      results.push(composePercentageBetLine(match, 'DNB', '#dnb;2', result));
   }
   if (match.doubleChance) {
     const result = percentageRule(match.doubleChance);
@@ -200,7 +200,7 @@ function getMatchValueBetsByPercentage(match) {
   if (match.bts) {
     const result = bothTeamsScore(match.bts);
     if (result)
-      results.push(composePercentageBetLine(match, 'bts', '#bts;2', result));
+      results.push(composePercentageBetLine(match, 'BTS', '#bts;2', result));
   }
   if (match.overUnder.length > 0) {
     const overUnderLines = overUnderPercentageRule(match.overUnder);

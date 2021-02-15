@@ -60,6 +60,14 @@ const BetSchema = new Schema({
 
 }, { timestamps: true });
 
+BetSchema.pre('save', function (next) {
+  const doc = this;
+  if (!doc.isNew) return next();
+  doc.lastAvgOdds = doc.avgOdds;
+  doc.lastOddBet365 = doc.odds;
+  next();
+});
+
 BetSchema.index({ url: 1 });
 BetSchema.index({ url: 1, line: 1 });
 BetSchema.index({ url: 1, line: 1, lineValue: 1 });

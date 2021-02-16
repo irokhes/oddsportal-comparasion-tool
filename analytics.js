@@ -112,6 +112,8 @@ async function saveToDatabase(valueBets) {
     if (bet.line === 'AH' || bet.line === 'O/U') filterOptions.line = bet.line;
 
     let vb = await ValueBet.findOne(filterOptions);
+    if(!vb) continue;
+
     console.log(`old vb ${vb.valueRatio}, new one: ${bet.valueRatio}`);
     if (vb) {
       console.log(vb.valueRatio - bet.valueRatio)

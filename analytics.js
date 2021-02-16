@@ -223,7 +223,7 @@ function getMatchValueBets(match) {
       results.push(composeValueBetLine(match, 'moneyline', '', result));
   }
   if (match.dnb) {
-    const result = drawNoBet(match.homeAway);
+    const result = drawNoBet(match.dnb);
     if (result)
       results.push(composeValueBetLine(match, 'dnb', '#dnb', result));
   }

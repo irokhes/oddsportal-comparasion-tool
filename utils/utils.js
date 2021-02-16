@@ -1,4 +1,6 @@
 /* eslint-disable no-plusplus */
+const { exec } = require('child_process');
+
 const moment = require('moment');
 
 const delay = (time) => new Promise((resolve) => {
@@ -47,6 +49,16 @@ function getOddsBelowOpeningValue(betytype, openingOddsType, _188BET, _1xBet, _M
 function round(value, decimals) {
   return Number(`${Math.round(`${value}e${decimals}`)}e-${decimals}`);
 }
+function execShellCommand(cmd) {
+  return new Promise((resolve, reject) => {
+    exec(cmd, { maxBuffer: 1024 * 1000 }, (error, stdout, stderr) => {
+      if (error) {
+        console.warn(error);
+      }
+      resolve(stdout || stderr);
+    });
+  });
+}
 module.exports = {
   delay,
   enumerateDaysBetweenDates,
@@ -54,4 +66,5 @@ module.exports = {
   addZeroes,
   getOddsBelowOpeningValue,
   round,
+  execShellCommand,
 };

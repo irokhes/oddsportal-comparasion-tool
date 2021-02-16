@@ -54,7 +54,7 @@ const getBookies = (page, index = 1) => page.evaluate((i) => Array.from(document
 )), index);
 
 const isElegibleMatch = async (page) => page.evaluate(() => {
-  const selector = '#bettype-tabs > ul > li.first.active > strong > span';
+  const selector = '#bettype-tabs > ul > li.active > strong > span';
   const resultSelector = '.result';
   const resultLiveSelector = '.result-live';
   const resultAlertSelector = '.result-alert';

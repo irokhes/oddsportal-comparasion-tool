@@ -30,6 +30,7 @@ const parse3WaysLine = (lineJSON) => {
 };
 const parse2WaysLine = (lineJSON) => {
   if (!lineJSON) return undefined;
+
   const parsedLine = Object.keys(lineJSON.odds).reduce((result, key) => {
     if (!lineJSON.act[key]) return result;
     result.localWinSum += lineJSON.odds[key]['0'];
@@ -67,7 +68,7 @@ const parseOverUnderLine = (lineJSON) => {
   }, {
     numOfBookies: 0, overOddsSum: 0, underOddsSum: 0, overOdds: 0, underOdds: 0,
   });
-  return parsedLine.availableInBet365 ? {
+  return parsedLine.availableInBet365 && parsedLine.numOfBookies > 4 ? {
     overOdds: parsedLine.overOdds,
     underOdds: parsedLine.underOdds,
     overOddsAvg: round(parsedLine.overOddsSum / parsedLine.numOfBookies, 3),

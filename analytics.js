@@ -46,10 +46,10 @@ const overUnderPercentageRule = (lines) => {
 };
 const doubleChance = (doubleChanceLine, moneyLine) => {
   const {
-    localwin, awayWin, localWinAvg, awayWinAvg
+    localWin, awayWin, localWinAvg, awayWinAvg
   } = doubleChanceLine;
   if (!moneyLine) return false
-  if ((1 / localwin) + (1 / moneyLine.awayWinAvg) <= valueBetLimit) return { valueRatio: round((1 / localwin) + (1 / moneyLine.awayWinAvg), 3), betTo: 'local', odds: localwin, avgOdds: localWinAvg };
+  if ((1 / localWin) + (1 / moneyLine.awayWinAvg) <= valueBetLimit) return { valueRatio: round((1 / localWin) + (1 / moneyLine.awayWinAvg), 3), betTo: 'local', odds: localWin, avgOdds: localWinAvg };
   if ((1 / awayWin) + (1 / moneyLine.localWinAvg) <= valueBetLimit) return { valueRatio: round((1 / awayWin) + (1 / moneyLine.localWinAvg), 3), betTo: 'local', odds: awayWin, avgOdds: awayWinAvg };
   return false;
 };
@@ -57,7 +57,7 @@ const drawNoBet = (dnb) => {
   const {
     localWin, localWinAvg, awayWin, awayWinAvg,
   } = dnb;
-  if ((1 / localWin) + (1 / awayWinAvg) <= valueBetLimit) return { valueRatio: round((1 / localwin) + (1 / awayWinAvg), 3), betTo: 'local', odds: localWin, avgOdds: localWinAvg };
+  if ((1 / localWin) + (1 / awayWinAvg) <= valueBetLimit) return { valueRatio: round((1 / localWin) + (1 / awayWinAvg), 3), betTo: 'local', odds: localWin, avgOdds: localWinAvg };
   if ((1 / awayWin) + (1 / localWinAvg) <= valueBetLimit) return { valueRatio: round((1 / awayWin) + (1 / localWinAvg), 3), betTo: 'away', odds: awayWin, avgOdds: awayWinAvg };
   return false;
 };
@@ -65,7 +65,7 @@ const bothTeamsScore = (match) => {
   const {
     localWin, localWinAvg, awayWin, awayWinAvg,
   } = match;
-  if ((1 / localWin) + (1 / awayWinAvg) <= valueBetLimit) return { valueRatio: round((1 / localwin) + (1 / awayWinAvg), 3), betTo: 'local', odds: localWin, avgOdds: localWinAvg };
+  if ((1 / localWin) + (1 / awayWinAvg) <= valueBetLimit) return { valueRatio: round((1 / localWin) + (1 / awayWinAvg), 3), betTo: 'local', odds: localWin, avgOdds: localWinAvg };
   if ((1 / awayWin) + (1 / localWinAvg) <= valueBetLimit) return { valueRatio: round((1 / awayWin) + (1 / localWinAvg), 3), betTo: 'away', odds: awayWin, avgOdds: awayWinAvg };
   return false;
 };
@@ -134,8 +134,6 @@ async function saveToDatabase(valueBets) {
 }
 const analyzeBets = async () => {
   try {
-    console.log('looking for new value bets');
-
     const matches = await Odds.find();
     const valueBets = [];
     const percentageBets = []
@@ -158,8 +156,6 @@ const analyzeBets = async () => {
     // })
   } catch (error) {
     console.log('Error: ', error);
-  } finally {
-    console.log('done');
   }
 };
 
@@ -186,25 +182,25 @@ function getMatchValueBetsByPercentage(match) {
   if (match.dnb) {
     const result = percentageRule(match.dnb);
     if (result)
-      results.push(composePercentageBetLine(match, 'DNB', '#dnb;2', result));
+      results.push(composePercentageBetLine(match, 'DNB', '#dnb', result));
   }
   if (match.doubleChance) {
     const result = percentageRule(match.doubleChance);
     if (result)
-      results.push(composePercentageBetLine(match, 'DC', '#double;2', result));
+      results.push(composePercentageBetLine(match, 'DC', '#double', result));
   }
   if (match.bts) {
     const result = bothTeamsScore(match.bts);
     if (result)
-      results.push(composePercentageBetLine(match, 'BTS', '#bts;2', result));
+      results.push(composePercentageBetLine(match, 'BTS', '#bts', result));
   }
   if (match.overUnder.length > 0) {
     const overUnderLines = overUnderPercentageRule(match.overUnder);
-    overUnderLines.forEach((line) => results.push(composePercentageBetLine(match, 'O/U', `#over-under;2;${addZeroes(line.line)};0`, line, line.line)));
+    overUnderLines.forEach((line) => results.push(composePercentageBetLine(match, 'O/U', `#over-under;${addZeroes(line.line)};0`, line, line.line)));
   }
   if (match.asianHandicap.length > 0) {
     const asianHandicapLines = overUnderPercentageRule(match.asianHandicap);
-    asianHandicapLines.forEach((line) => results.push(composePercentageBetLine(match, 'AH', `#ah;2;${addZeroes(line.line)};0`, line, line.line)));
+    asianHandicapLines.forEach((line) => results.push(composePercentageBetLine(match, 'AH', `#ah${addZeroes(line.line)};0`, line, line.line)));
   }
   return results;
 }
@@ -216,28 +212,33 @@ function getMatchValueBets(match) {
     if (result)
       results.push(composeValueBetLine(match, 'moneyline', '', result));
   }
+  if (match.homeAway) {
+    const result = drawNoBet(match.homeAway);
+    if (result)
+      results.push(composeValueBetLine(match, 'dnb', '#dnb', result));
+  }
   if (match.dnb) {
     const result = drawNoBet(match.dnb);
     if (result)
-      results.push(composeValueBetLine(match, 'dnb', '#dnb;2', result));
+      results.push(composeValueBetLine(match, 'dnb', '#home-away', result));
   }
   if (match.doubleChance) {
     const result = doubleChance(match.doubleChance, match.moneyLine);
     if (result)
-      results.push(composeValueBetLine(match, 'DC', '#double;2', result));
+      results.push(composeValueBetLine(match, 'DC', '#double', result));
   }
   if (match.bts) {
     const result = bothTeamsScore(match.bts);
     if (result)
-      results.push(composeValueBetLine(match, 'bts', '#bts;2', result));
+      results.push(composeValueBetLine(match, 'bts', '#bts', result));
   }
   if (match.overUnder.length > 0) {
     const overUnderLines = overUnderGoals(match.overUnder);
-    overUnderLines.forEach((line) => results.push(composeValueBetLine(match, 'O/U', `#over-under;2;${addZeroes(line.line)};0`, line, line.line)));
+    overUnderLines.forEach((line) => results.push(composeValueBetLine(match, 'O/U', `#over-under;${addZeroes(line.line)};0`, line, line.line)));
   }
   if (match.asianHandicap.length > 0) {
     const asianHandicapLines = asianHandicap(match.asianHandicap);
-    asianHandicapLines.forEach((line) => results.push(composeValueBetLine(match, 'AH', `#ah;2;${addZeroes(line.line)};0`, line, line.line)));
+    asianHandicapLines.forEach((line) => results.push(composeValueBetLine(match, 'AH', `#ah;${addZeroes(line.line)};0`, line, line.line)));
   }
   return results;
 }

@@ -22,6 +22,8 @@ const OddsSchema = new Schema({
   },
   moneyLine: {
   },
+  homeAway: {
+  },
   dnb: {
   },
   doubleChance: {

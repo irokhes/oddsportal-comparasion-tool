@@ -44,13 +44,14 @@ const oddsChecker = require('./oddsChecker');
     await page.click('button[type="submit"]');
   }
 
-  const extractMatchOdds = async ({ page, data: url }) => getOdds(page, url);
+  const extractMatchOdds = async ({ page, data }) => getOdds(page, data);
 
-  const extractOdds = async (url) => {
-    cluster.queue(url, extractMatchOdds);
+  const extractOdds = async (url, sport) => {
+    cluster.queue({ url, sport }, extractMatchOdds);
   };
 
-  const extractMatches = async ({ page, data: url }) => {
+  const extractMatches = async ({ page, data }) => {
+    const { url, sport } = data;
     page.on('console', (consoleObj) => console.log(consoleObj.text()));
 
     try {
@@ -67,7 +68,7 @@ const oddsChecker = require('./oddsChecker');
           matchesUrlList.push(matchUrlLinks.length > 1 ? matchUrlLinks[1].href : matchUrlLinks[0].href);
           return matchesUrlList;
         }, []);
-      })).forEach((matchUrl) => { extractOdds(matchUrl); });
+      })).forEach((matchUrl) => { extractOdds(matchUrl, sport); });
     } catch (error) {
       console.log('Error::::::', error);
     }
@@ -75,6 +76,7 @@ const oddsChecker = require('./oddsChecker');
 
   const start = async () => {
     console.log('started');
+    const { startDate, endDate } = getDates(process.argv.slice(2));
     db.connect();
     analytics.start();
     oddsChecker.start();
@@ -88,7 +90,8 @@ const oddsChecker = require('./oddsChecker');
         await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
 
         enumerateDaysBetweenDates(startDate, endDate).forEach((date) => {
-          cluster.queue(`https://www.oddsportal.com/matches/soccer/${date}/`, extractMatches);
+          cluster.queue({ url: `https://www.oddsportal.com/matches/soccer/${date}/`, sport: 'football' }, extractMatches);
+          cluster.queue({ url: `https://www.oddsportal.com/matches/basketball/${date}/`, sport: 'basketball' }, extractMatches);
         });
       });
 

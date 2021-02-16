@@ -24,8 +24,8 @@ const parse3WaysLine = (lineJSON) => {
     localWin: parsedLine.localWin,
     awayWin: parsedLine.awayWin,
     draw: parsedLine.draw,
-    localWinAvg: round(parsedLine.localWinSum / parsedLine.numOfBookies, 2),
-    awayWinAvg: round(parsedLine.awayWinSum / parsedLine.numOfBookies, 2),
+    localWinAvg: round(parsedLine.localWinSum / parsedLine.numOfBookies, 3),
+    awayWinAvg: round(parsedLine.awayWinSum / parsedLine.numOfBookies, 3),
   } : undefined;
 };
 const parse2WaysLine = (lineJSON) => {
@@ -47,8 +47,8 @@ const parse2WaysLine = (lineJSON) => {
   return parsedLine.availableInBet365 ? {
     localWin: parsedLine.localWin,
     awayWin: parsedLine.awayWin,
-    localWinAvg: round(parsedLine.localWinSum / parsedLine.numOfBookies, 2),
-    awayWinAvg: round(parsedLine.awayWinSum / parsedLine.numOfBookies, 2),
+    localWinAvg: round(parsedLine.localWinSum / parsedLine.numOfBookies, 3),
+    awayWinAvg: round(parsedLine.awayWinSum / parsedLine.numOfBookies, 3),
   } : undefined;
 };
 const parseOverUnderLine = (lineJSON) => {
@@ -70,8 +70,8 @@ const parseOverUnderLine = (lineJSON) => {
   return parsedLine.availableInBet365 ? {
     overOdds: parsedLine.overOdds,
     underOdds: parsedLine.underOdds,
-    overOddsAvg: round(parsedLine.overOddsSum / parsedLine.numOfBookies, 2),
-    underOddsAvg: round(parsedLine.underOddsSum / parsedLine.numOfBookies, 2),
+    overOddsAvg: round(parsedLine.overOddsSum / parsedLine.numOfBookies, 3),
+    underOddsAvg: round(parsedLine.underOddsSum / parsedLine.numOfBookies, 3),
   } : undefined;
 };
 module.exports = {

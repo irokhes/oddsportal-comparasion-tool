@@ -39,7 +39,7 @@ const lines = {
   'O/U': { func: lineWithOverUnderBet, line: 'overUnder' },
 };
 const checkOddsForExistingBets = async () => {
-  const bets = await Bet.find();
+  const bets = await Bet.find({ open: true });
   const promises = [];
   for (let i = 0; i < bets.length; i++) {
     const bet = bets[i];
@@ -59,7 +59,7 @@ const checkOddsForExistingBets = async () => {
   await Promise.all(promises);
 };
 const start = () => {
-  const job = new CronJob(`0 */${frequoddsCheckerFequencyency} * * * *`, (async () => {
+  const job = new CronJob(`0 */${oddsCheckerFequency} * * * *`, (async () => {
     await checkOddsForExistingBets();
   }));
   job.start();

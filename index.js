@@ -11,6 +11,7 @@ const {
 const { getOdds } = require('./parsers/oddsPortalApi');
 const db = require('./models/db');
 const analytics = require('./analytics');
+const oddsChecker = require('./oddsChecker');
 
 (async () => {
   const cluster = await Cluster.launch({
@@ -73,10 +74,10 @@ const analytics = require('./analytics');
   };
 
   const start = async () => {
-    const { startDate, endDate } = getDates(process.argv.slice(2));
     console.log('started');
     db.connect();
     analytics.start();
+    oddsChecker.start();
     cluster.queue(async ({ page }) => {
       await login(page);
     });

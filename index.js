@@ -91,7 +91,7 @@ const oddsChecker = require('./oddsChecker');
 
         enumerateDaysBetweenDates(startDate, endDate).forEach((date) => {
           cluster.queue({ url: `https://www.oddsportal.com/matches/soccer/${date}/`, sport: 'football' }, extractMatches);
-          cluster.queue({ url: `https://www.oddsportal.com/matches/basketball/${date}/`, sport: 'basketball' }, extractMatches);
+          // cluster.queue({ url: `https://www.oddsportal.com/matches/basketball/${date}/`, sport: 'basketball' }, extractMatches);
         });
       });
 

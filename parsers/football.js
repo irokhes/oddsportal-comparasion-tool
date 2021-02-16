@@ -1,3 +1,4 @@
+const { parse2WaysLine, parseOverUnderLine, parse3WaysLine} = require('./lines');
 const { MONEYLINE, DNB, DC, AH, OVER_UNDER, BTS } = require('../utils/constants');
 const { execShellCommand } = require('../utils/utils');
 
@@ -23,7 +24,7 @@ const getFootballOdds = async (apiUrl, odds, url) => {
         const moneyLineOdds = moneyLineJSON.d.oddsdata ? moneyLineJSON.d.oddsdata.back[`E-${MONEYLINE}-0-0-0`] : null;
         odds.moneyLine = parse3WaysLine(moneyLineOdds);
     } catch (error) {
-        console.log(`error parsing ML for ${url}`);
+        console.log(`error parsing ML for ${url}, error: ${error}`);
     }
     // DNB
     try {

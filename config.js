@@ -8,7 +8,8 @@ const MONGO_PORT = process.env.MONGO_PORT || 27017;
 const MONGO_URI = process.env.MONGODB_URI || `mongodb://${MONGO_HOST}:${MONGO_PORT}/${APP_NAME}${NODE_ENV}`;
 module.exports = {
   env: NODE_ENV,
-  frequency: process.env.CRON_FREQUENCY,
+  frequency: process.env.CRON_FREQUENCY || 5,
+  oddsCheckerFequency: process.env.ODDS_CHECKER_FQUENCY || 4,
   maxConcurrency: parseInt(process.env.MAX_CONCURRENCY) || 3,
   valueBetLimit: process.env.VALUE_BET_LIMIT || 1.014,
   percentageRuleLimit: process.env.PERCENTAGE_RULE || 10,

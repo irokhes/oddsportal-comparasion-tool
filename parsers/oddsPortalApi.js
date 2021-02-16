@@ -26,8 +26,8 @@ const getOdds = async (page, url) => {
         console.log('we did not get the base url');
         return;
     }
-
-    if (!(await isElegibleMatch(page))) return;
+    const elegibleMatch = await isElegibleMatch(page);
+    if (!elegibleMatch) return;
 
     // console.log(url);
     odds.match = await getMatch(page);

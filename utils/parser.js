@@ -58,7 +58,7 @@ const isElegibleMatch = async (page) => page.evaluate(() => {
   const resultSelector = '.result';
   const resultLiveSelector = '.result-live';
   const resultAlertSelector = '.result-alert';
-  if (document.querySelector(selector) || document.querySelector(resultSelector) || document.querySelector(resultLiveSelector) || document.querySelector(resultAlertSelector)) return false;
+  if (document.querySelector(selector) === null || document.querySelector(resultSelector) || document.querySelector(resultLiveSelector) || document.querySelector(resultAlertSelector)) return false;
   return true;
 });
 

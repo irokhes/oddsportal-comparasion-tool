@@ -65,11 +65,7 @@ const homeAway = (homeAway) => {
   const {
     localWin, localWinAvg, awayWin, awayWinAvg,
   } = homeAway;
-  console.log((1 / localWin) + (1 / awayWinAvg));
-  console.log((1 / localWin) + (1 / awayWinAvg) <= valueBetLimit);
   if ((1 / localWin) + (1 / awayWinAvg) <= valueBetLimit) return { valueRatio: round((1 / localWin) + (1 / awayWinAvg), 3), betTo: 'local', odds: localWin, avgOdds: localWinAvg };
-  console.log((1 / awayWin) + (1 / localWinAvg));
-  console.log((1 / awayWin) + (1 / localWinAvg) <= valueBetLimit);
   if ((1 / awayWin) + (1 / localWinAvg) <= valueBetLimit) return { valueRatio: round((1 / awayWin) + (1 / localWinAvg), 3), betTo: 'away', odds: awayWin, avgOdds: awayWinAvg };
   return false;
 };

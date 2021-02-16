@@ -6,7 +6,11 @@ const startBetTracking = async (sequence) => {
   if (!valueBet) return null;
   valueBet.bet = true;
   await valueBet.save();
-  const bet = new Bet(valueBet.toJSON());
+  const vb = valueBet.toJSON();
+  delete vb._id;
+  delete vb.createdAt;
+  delete vb.updatedAt;
+  const bet = new Bet(vb);
   return bet.save();
 };
 module.exports = {

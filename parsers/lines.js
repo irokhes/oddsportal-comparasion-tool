@@ -1,4 +1,6 @@
 /* eslint-disable no-param-reassign */
+const { round } = require('../utils/utils');
+
 const BET365 = '16';
 const PINNACLE = '18';
 const parse3WaysLine = (lineJSON) => {
@@ -22,8 +24,8 @@ const parse3WaysLine = (lineJSON) => {
     localWin: parsedLine.localWin,
     awayWin: parsedLine.awayWin,
     draw: parsedLine.draw,
-    localWinAvg: parsedLine.localWinSum / parsedLine.numOfBookies,
-    awayWinAvg: parsedLine.awayWinSum / parsedLine.numOfBookies,
+    localWinAvg: round(parsedLine.localWinSum / parsedLine.numOfBookies, 3),
+    awayWinAvg: round(parsedLine.awayWinSum / parsedLine.numOfBookies, 3),
   } : undefined;
 };
 const parse2WaysLine = (lineJSON) => {
@@ -45,8 +47,8 @@ const parse2WaysLine = (lineJSON) => {
   return parsedLine.availableInBet365 ? {
     localWin: parsedLine.localWin,
     awayWin: parsedLine.awayWin,
-    localWinAvg: parsedLine.localWinSum / parsedLine.numOfBookies,
-    awayWinAvg: parsedLine.awayWinSum / parsedLine.numOfBookies,
+    localWinAvg: round(parsedLine.localWinSum / parsedLine.numOfBookies, 3),
+    awayWinAvg: round(parsedLine.awayWinSum / parsedLine.numOfBookies, 3),
   } : undefined;
 };
 const parseOverUnderLine = (lineJSON) => {
@@ -68,8 +70,8 @@ const parseOverUnderLine = (lineJSON) => {
   return parsedLine.availableInBet365 ? {
     overOdds: parsedLine.overOdds,
     underOdds: parsedLine.underOdds,
-    overOddsAvg: parsedLine.overOddsSum / parsedLine.numOfBookies,
-    underOddsAvg: parsedLine.underOddsSum / parsedLine.numOfBookies,
+    overOddsAvg: round(parsedLine.overOddsSum / parsedLine.numOfBookies, 3),
+    underOddsAvg: round(parsedLine.underOddsSum / parsedLine.numOfBookies, 3),
   } : undefined;
 };
 module.exports = {

@@ -3,6 +3,7 @@
 /* eslint-disable max-len */
 const { Cluster } = require('puppeteer-cluster');
 const { enumerateDaysBetweenDates, getDates } = require('./utils/utils');
+const { maxConcurrency } = require('./config');
 
 const {
   getOdds5Bookies,
@@ -10,15 +11,20 @@ const {
 const { getOdds } = require('./parsers/oddsPortalApi');
 const db = require('./models/db');
 const analytics = require('./analytics');
+const oddsChecker = require('./oddsChecker');
 
 (async () => {
   const cluster = await Cluster.launch({
     concurrency: Cluster.CONCURRENCY_PAGE,
-    maxConcurrency: 3,
+    maxConcurrency,
     monitor: false,
     retryLimit: 3,
     puppeteerOptions: {
       headless: true,
+      args: [
+        '--no-sandbox',
+        '--disable-gpu',
+      ],
     },
   });
   cluster.on('taskerror', (err, data, willRetry) => {
@@ -68,10 +74,10 @@ const analytics = require('./analytics');
   };
 
   const start = async () => {
-    const { startDate, endDate } = getDates(process.argv.slice(2));
     console.log('started');
     db.connect();
     analytics.start();
+    oddsChecker.start();
     cluster.queue(async ({ page }) => {
       await login(page);
     });

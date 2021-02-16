@@ -21,22 +21,24 @@ const BetSchema = new Schema({
     required: true,
   },
   line: {
-    tpye: String,
-    required: false,
+    type: String,
   },
   lineValue: {
-    tpye: String,
-    required: false,
+    type: String,
   },
   valueRatio: {
-    tpye: String,
-    required: false,
+    type: String,
+  },
+  sequence: {
+    type: Number,
   },
   betTo: {
     type: String,
-    required: false,
   },
   odds: {
+    type: Number,
+  },
+  lastOddBet365: {
     type: Number,
     required: false,
   },
@@ -44,8 +46,27 @@ const BetSchema = new Schema({
     type: String,
     required: false,
   },
+  lastAvgOdds: {
+    type: Number,
+    required: false,
+  },
+  result: {
+    type: String,
+  },
+  open: {
+    type: Boolean,
+    default: true,
+  },
 
 }, { timestamps: true });
+
+BetSchema.pre('save', function (next) {
+  const doc = this;
+  if (!doc.isNew) return next();
+  doc.lastAvgOdds = doc.avgOdds;
+  doc.lastOddBet365 = doc.odds;
+  next();
+});
 
 BetSchema.index({ url: 1 });
 BetSchema.index({ url: 1, line: 1 });

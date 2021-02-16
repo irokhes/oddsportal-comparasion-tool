@@ -111,7 +111,7 @@ async function saveToDatabase(valueBets) {
     if (bet.line === 'AH' || bet.line === 'O/U') filterOptions.line = bet.line;
 
     let vb = await ValueBet.findOne(filterOptions);
-    console.log(`old vb ${vb.valueRatio}, new one: ${bet.valueRatio}`)
+    console.log(`old vb ${vb.valueRatio}, new one: ${bet.valueRatio}`);
     if (vb) {
       console.log(vb.valueRatio - bet.valueRatio)
       if (vb.valueRatio > bet.valueRatio) console.log(`line improved old ${vb.valueRatio} new ${bet.valueRatio}  ${bet.url}`)
@@ -124,6 +124,7 @@ async function saveToDatabase(valueBets) {
     promises.push(vb.save());
   }
   (await Promise.all(promises)).forEach(valueBet => {
+    console.log(valueBet.toJSON())
     if (entriesToNotify.includes(valueBet._id.toString()))
       newValueBets.push({ match: valueBet.match, date: valueBet.date, url: valueBet.url, line: valueBet.line, valueRatio: valueBet.valueRatio, sequence: valueBet.sequence })
   })

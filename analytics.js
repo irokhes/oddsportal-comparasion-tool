@@ -3,7 +3,6 @@
 /* eslint-disable no-param-reassign */
 const fs = require('fs');
 const { addZeroes, getOddsBelowOpeningValue, round } = require('./utils/utils');
-const db = require('./models/db');
 const Odds = require('./models/odds');
 const ValueBet = require('./models/valueBet');
 const { sendHtmlMessage, sendMessage } = require('./telegram');
@@ -138,7 +137,7 @@ const analyzeBets = async () => {
     const percentageBets = []
     matches.forEach((match) => {
       valueBets.push(...getMatchValueBets(match));
-      percentageBets.push(...getMatchValueBetsByPercentage(match));
+      // percentageBets.push(...getMatchValueBetsByPercentage(match));
     });
 
 
@@ -149,17 +148,10 @@ const analyzeBets = async () => {
       console.log('new value bet: ', valueBet.url);
       promises.push(sendHtmlMessage(composeNewValueBetMessage(valueBet)));
     })
-    percentageBets.forEach(valueBet => {
-      console.log(`new percentage bet: ${valueBet.url} %: ${valueBet.percentage}`);
-      // promises.push(sendHtmlMessage(composeNewPercentageBetMessage(valueBet)));
-    })
-
-
-
-
-    //save result to .json file
-    // const data = JSON.stringify(valueBets);
-    // fs.writeFileSync(`./value_bets/${Date.now()}_valuebets.json`, data);
+    // percentageBets.forEach(valueBet => {
+    //   console.log(`new percentage bet: ${valueBet.url} %: ${valueBet.percentage}`);
+    //   promises.push(sendHtmlMessage(composeNewPercentageBetMessage(valueBet)));
+    // })
   } catch (error) {
     console.log('Error: ', error);
   } finally {

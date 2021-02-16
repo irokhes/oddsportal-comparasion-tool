@@ -8,6 +8,7 @@ const MONGO_URI = process.env.MONGODB_URI || `mongodb://${MONGO_HOST}:${MONGO_PO
 module.exports = {
   env: NODE_ENV,
   frequency: process.env.CRON_FREQUENCY,
+  maxConcurrency: process.env.MAX_CONCURRENCY || 3,
   valueBetLimit: process.env.VALUE_BET_LIMIT || 1.014,
   percentageRuleLimit: process.env.PERCENTAGE_RULE || 10,
   botToken: process.env.BOT_TOKEN,

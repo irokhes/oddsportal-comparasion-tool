@@ -22,12 +22,12 @@ const getOdds = async (page, url) => {
 
     await page.goto(`${url}`);
 
-    if(!apiUrl) {
+    if (!apiUrl) {
         console.log('we did not get the base url');
         return;
     }
 
-    if(!(await isElegibleMatch(page))) return;
+    if (!(await isElegibleMatch(page))) return;
 
     // console.log(url);
     odds.match = await getMatch(page);
@@ -155,7 +155,7 @@ const getOdds = async (page, url) => {
 
     // save odds
     if (!odds || (!odds.moneyLine && !odds.dnb && !odds.doubleChance && !odds.bts && odds.overUnder.length === 0 && odds.asianHandicap.length === 0)) return;
-    await Odds.findOneAndUpdate({url: odds.url}, odds, { upsert: true, setDefaultsOnInsert: true })
+    await Odds.findOneAndUpdate({ url: odds.url }, odds, { upsert: true, setDefaultsOnInsert: true })
 };
 const getOddsUrls = async (page, url) => {
     const fixture = {};

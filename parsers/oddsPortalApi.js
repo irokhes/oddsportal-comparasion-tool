@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 const { parse3WaysLine, parse2WaysLine, parseOverUnderLine, } = require('./lines');
-const { getMatch, getDate } = require('../utils/parser');
+const { getMatch, getDate, isElegibleMatch } = require('../utils/parser');
 const Odds = require('../models/odds');
 
 const getValue3WaysValueBet = () => {
@@ -9,10 +9,11 @@ const getValue3WaysValueBet = () => {
 };
 const getOdds = async (page, url) => {
     const odds = {};
+    let apiUrl;
+
     page.on('console', (consoleObj) => console.log(consoleObj.text()));
     await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
     await page.setRequestInterception(true);
-    let apiUrl;
     page.on('request', (request) => {
         const url = request.url().toString();
         if (url.includes('/feed/match')) { apiUrl = url; }
@@ -20,6 +21,14 @@ const getOdds = async (page, url) => {
     });
 
     await page.goto(`${url}`);
+
+    if(!apiUrl) {
+        console.log('we did not get the base url');
+        return;
+    }
+
+    if(!(await isElegibleMatch(page))) return;
+
     // console.log(url);
     odds.match = await getMatch(page);
     odds.date = await getDate(page);

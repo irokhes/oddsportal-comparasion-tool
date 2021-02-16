@@ -53,6 +53,15 @@ const getBookies = (page, index = 1) => page.evaluate((i) => Array.from(document
   `#odds-data-table > div:nth-child(${i}) > table > tbody > tr.lo`,
 )), index);
 
+const isElegibleMatch = async (page) => page.evaluate(() => {
+  const selector = '#bettype-tabs > ul > li.first.active > strong > span';
+  const resultSelector = '.result';
+  const resultLiveSelector = '.result-live';
+  const resultAlertSelector = '.result-alert';
+  if (document.querySelector(selector) || document.querySelector(resultSelector) || document.querySelector(resultLiveSelector) || document.querySelector(resultAlertSelector)) return false;
+  return true;
+});
+
 module.exports = {
   getMatch,
   getDate,
@@ -62,4 +71,5 @@ module.exports = {
   getName,
   getBookies,
   getAverage,
+  isElegibleMatch,
 };

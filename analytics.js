@@ -212,15 +212,15 @@ function getMatchValueBets(match) {
     if (result)
       results.push(composeValueBetLine(match, 'moneyline', '', result));
   }
-  if (match.homeAway) {
+  if (match.dnb) {
     const result = drawNoBet(match.homeAway);
     if (result)
       results.push(composeValueBetLine(match, 'dnb', '#dnb', result));
   }
-  if (match.dnb) {
+  if (match.homeAway) {
     const result = drawNoBet(match.dnb);
     if (result)
-      results.push(composeValueBetLine(match, 'dnb', '#home-away', result));
+      results.push(composeValueBetLine(match, 'homeAway', '#home-away', result));
   }
   if (match.doubleChance) {
     const result = doubleChance(match.doubleChance, match.moneyLine);

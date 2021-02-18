@@ -5,20 +5,20 @@ const Bet = require('./models/bets');
 const Odds = require('./models/odds');
 const { sendHtmlMessage } = require('./telegram');
 const { oddsCheckerFequency } = require('./config');
-const { composeOddsDropBetMessage } = require('./utils/messages');
+const { composeOddsChangeBetMessage } = require('./utils/messages');
 const { round } = require('./utils/utils');
 
 const lineWith2WaysBet = (bet, line) => {
-  if (bet.betTo === 'home' && line.localAvg - bet.avgOdds > 0.01) {
+  if (bet.betTo === 'home' && line.localWin !== bet.localWin) {
     return {
-      oddsDrop: line.localAvg - bet.avgOdds,
+      oddsChange: line.localWin - bet.localWin,
       odds: line.localWin,
       avgOdds: line.localAvg,
     };
   }
-  if (bet.betTo === 'away' && line.awayAvg - bet.avgOdds > 0.01) {
+  if (bet.betTo === 'away' && line.awayWin !== bet.awayWin) {
     return {
-      oddsDrop: line.awayAvg - bet.avgOdds,
+      oddsChange: line.awayWin - bet.awayWin,
       odds: line.awayWin,
       avgOdds: line.awayAvg,
     };
@@ -29,21 +29,21 @@ const lineWithOverUnderBet = (bet, lines) => {
   lines.some((line) => {
     if (bet.lineValue === line.line && bet.betTo === 'home') {
       console.log(
-        `cambio de odds ${line.overOddsAvg - bet.avgOdds} match: ${bet.match}`,
+        `cambio de odds? ${line.overOdds !== bet.overOdds} match: ${bet.match}`,
       );
     }
     if (bet.lineValue === line.line && bet.betTo === 'away') {
       console.log(
-        `cambio de odds  ${line.underOddsAvg - bet.avgOdds} match: ${bet.match}`,
+        `cambio de odds? ${line.underOdds !== bet.underOdds} match: ${bet.match}`,
       );
     }
     if (
       bet.lineValue === line.line
       && bet.betTo === 'home'
-      && line.overOddsAvg - bet.avgOdds > 0.01
+      && line.overOdds !== bet.overOdds
     ) {
       result = {
-        oddsDrop: line.overOddsAvg - bet.avgOdds,
+        oddsChange: line.overOdds - bet.overOdds,
         odds: line.overOdds,
         avgOdds: line.overOddsAvg,
       };
@@ -52,10 +52,10 @@ const lineWithOverUnderBet = (bet, lines) => {
     if (
       bet.lineValue === line.line
       && bet.betTo === 'away'
-      && line.underOddsAvg - bet.avgOdds > 0.01
+      && line.underOdds !== bet.underOdds
     ) {
       result = {
-        oddsDrop: line.underOddsAvg - bet.avgOdds,
+        oddsChange: line.underOdds - bet.underOdds,
         odds: line.underOdds,
         avgOdds: line.underOddsAvg,
       };
@@ -87,10 +87,10 @@ const checkOddsForExistingBets = async () => {
     });
     if (!odds) continue;
     const result = lines[bet.line].func(bet, odds[lines[bet.line].line]);
-    if (result && result.oddsDrop) {
+    if (result && result.oddsChange) {
       // notify the drop
       promises.push(
-        sendHtmlMessage(composeOddsDropBetMessage(bet, result.oddsDrop)),
+        sendHtmlMessage(composeOddsChangeBetMessage(bet, result.oddsChange)),
       );
       bet.lastOddBet365 = result.odds;
       bet.lastAvgOdds = result.avgOdds;

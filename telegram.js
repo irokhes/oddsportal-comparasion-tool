@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable radix */
 const { Telegraf } = require('telegraf');
 const { botToken, chatId } = require('./config');

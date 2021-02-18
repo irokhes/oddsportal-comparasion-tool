@@ -24,6 +24,9 @@ const oddsChecker = require('./oddsChecker');
       args: [
         '--no-sandbox',
         '--disable-gpu',
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--single-process',
       ],
     },
   });

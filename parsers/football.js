@@ -24,7 +24,7 @@ const getFootballOdds = async (apiUrl, odds, url) => {
         const moneyLineOdds = moneyLineJSON.d.oddsdata ? moneyLineJSON.d.oddsdata.back[`E-${MONEYLINE}-0-0-0`] : null;
         odds.moneyLine = parse3WaysLine(moneyLineOdds);
     } catch (error) {
-        console.log(`error parsing ML for ${url}, error: ${error}`);
+        console.log(`error parsing ML for ${url}`);
     }
     // DNB
     try {

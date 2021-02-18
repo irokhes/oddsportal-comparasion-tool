@@ -3,26 +3,62 @@
 const { CronJob } = require('cron');
 const Bet = require('./models/bets');
 const Odds = require('./models/odds');
-const { sendHtmlMessage, sendMessage } = require('./telegram');
+const { sendHtmlMessage } = require('./telegram');
 const { oddsCheckerFequency } = require('./config');
+const { composeOddsDropBetMessage } = require('./utils/messages');
+const { round } = require('./utils/utils');
 
 const lineWith2WaysBet = (bet, line) => {
-  if (bet.betTo === 'home' && (bet.lastAvgOdds - line.localAvg > 0.01)) {
-    return { oddsDrop: bet.lastAvgOdds - line.localAvg, odds: line.localWin, avgOdds: line.localAvg };
+  if (bet.betTo === 'home' && line.localAvg - bet.avgOdds > 0.01) {
+    return {
+      oddsDrop: line.localAvg - bet.avgOdds,
+      odds: line.localWin,
+      avgOdds: line.localAvg,
+    };
   }
-  if (bet.betTo === 'away' && (bet.lastAvgOdds - line.awayAvg > 0.01)) {
-    return { oddsDrop: bet.lastAvgOdds - line.awayAvg, odds: line.awayWin, avgOdds: line.awayAvg };
+  if (bet.betTo === 'away' && line.awayAvg - bet.avgOdds > 0.01) {
+    return {
+      oddsDrop: line.awayAvg - bet.avgOdds,
+      odds: line.awayWin,
+      avgOdds: line.awayAvg,
+    };
   }
 };
 const lineWithOverUnderBet = (bet, lines) => {
   let result;
   lines.some((line) => {
-    if (bet.betTo === 'home' && (bet.lastAvgOdds - line.localAvg > 0.01)) {
-      result = { oddsDrop: bet.lastAvgOdds - line.overOddsAvg, odds: line.overOdds, avgOdds: line.overOddsAvg };
+    if (bet.lineValue === line.line && bet.betTo === 'home') {
+      console.log(
+        `cambio de odds ${line.overOddsAvg - bet.avgOdds} match: ${bet.match}`,
+      );
+    }
+    if (bet.lineValue === line.line && bet.betTo === 'away') {
+      console.log(
+        `cambio de odds  ${line.underOddsAvg - bet.avgOdds} match: ${bet.match}`,
+      );
+    }
+    if (
+      bet.lineValue === line.line
+      && bet.betTo === 'home'
+      && line.overOddsAvg - bet.avgOdds > 0.01
+    ) {
+      result = {
+        oddsDrop: line.overOddsAvg - bet.avgOdds,
+        odds: line.overOdds,
+        avgOdds: line.overOddsAvg,
+      };
       return true;
     }
-    if (bet.betTo === 'away' && (bet.lastAvgOdds - line.underOddsAvg > 0.01)) {
-      result = { oddsDrop: bet.lastAvgOdds - line.underOddsAvg, odds: line.underOdds, avgOdds: line.underOddsAvg };
+    if (
+      bet.lineValue === line.line
+      && bet.betTo === 'away'
+      && line.underOddsAvg - bet.avgOdds > 0.01
+    ) {
+      result = {
+        oddsDrop: line.underOddsAvg - bet.avgOdds,
+        odds: line.underOdds,
+        avgOdds: line.underOddsAvg,
+      };
       return true;
     }
     return false;
@@ -32,6 +68,7 @@ const lineWithOverUnderBet = (bet, lines) => {
 
 const lines = {
   ML: { func: lineWith2WaysBet, line: 'moneyLine' },
+  HOMEAWAY: { func: lineWith2WaysBet, line: 'homeAway' },
   DNB: { func: lineWith2WaysBet, line: 'dnb' },
   DC: { func: lineWith2WaysBet, line: 'doubleChance' },
   BTS: { func: lineWith2WaysBet, line: 'bts' },
@@ -43,14 +80,18 @@ const checkOddsForExistingBets = async () => {
   const promises = [];
   for (let i = 0; i < bets.length; i++) {
     const bet = bets[i];
-    if (!bet.sequence) continue;
-    const odds = await Odds.findOne({ sequence: bet.sequence });
+    const odds = await Odds.findOne({
+      sport: bet.sport,
+      match: bet.match,
+      date: bet.date,
+    });
     if (!odds) continue;
-    const result = lines[bet.line].func(bet, bet[lines[bet.line].line]);
-
+    const result = lines[bet.line].func(bet, odds[lines[bet.line].line]);
     if (result && result.oddsDrop) {
       // notify the drop
-      promises.push(sendHtmlMessage(bet, result.oddsDrop));
+      promises.push(
+        sendHtmlMessage(composeOddsDropBetMessage(bet, result.oddsDrop)),
+      );
       bet.lastOddBet365 = result.odds;
       bet.lastAvgOdds = result.avgOdds;
       promises.push(bet.save());
@@ -59,9 +100,9 @@ const checkOddsForExistingBets = async () => {
   await Promise.all(promises);
 };
 const start = () => {
-  const job = new CronJob(`0 */${oddsCheckerFequency} * * * *`, (async () => {
+  const job = new CronJob(`0 */${oddsCheckerFequency} * * * *`, async () => {
     await checkOddsForExistingBets();
-  }));
+  });
   job.start();
 };
 

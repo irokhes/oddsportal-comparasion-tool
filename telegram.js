@@ -14,8 +14,7 @@ bot.on('channel_post', (ctx, next) => {
 
 bot.command('bet', async (ctx) => {
   const sequence = parseInt(ctx.message.text.replace('/bet', ''));
-  await startBetTracking(sequence);
-  ctx.reply('Oido cocina!!');
+  await startBetTracking(sequence).catch((error) => ctx.reply('Se ha producido un error al trackear el partido!!'));
 });
 
 const sendMessage = (message) => {

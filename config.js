@@ -11,7 +11,7 @@ module.exports = {
   frequency: process.env.CRON_FREQUENCY || 5,
   oddsCheckerFequency: process.env.ODDS_CHECKER_FQUENCY || 4,
   maxConcurrency: parseInt(process.env.MAX_CONCURRENCY) || 3,
-  valueBetLimit: process.env.VALUE_BET_LIMIT || 1.014,
+  valueBetLimit: process.env.VALUE_BET_LIMIT || 1.0101,
   percentageRuleLimit: process.env.PERCENTAGE_RULE || 10,
   botToken: process.env.BOT_TOKEN,
   chatId: process.env.CHAT_ID,

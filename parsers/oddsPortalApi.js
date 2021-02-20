@@ -1,14 +1,9 @@
 /* eslint-disable max-len */
-const { parse3WaysLine, parse2WaysLine, parseOverUnderLine } = require('./lines');
 const { getMatch, getDate, isElegibleMatch } = require('../utils/parser');
 const { getFootballOdds } = require('./football');
 const { getBasketOdds } = require('./basket');
 const Odds = require('../models/odds');
 
-const getValue3WaysValueBet = () => {
-  if ((1 / localWin) + (1 / awayAvg) + (1 / drawAvg) <= valueBetLimit) return (1 / localWin) + (1 / awayAvg) + (1 / drawAvg);
-  if ((1 / awayWin) + (1 / localAvg) + (1 / drawAvg) <= valueBetLimit) return (1 / awayWin) + (1 / localAvg) + (1 / drawAvg);
-};
 const getOdds = async (page, data) => {
   const { url, sport } = data;
   const isFootball = sport === 'football';

@@ -9,16 +9,16 @@ const { composeOddsChangeBetMessage } = require('./utils/messages');
 const { round } = require('./utils/utils');
 
 const lineWith2WaysBet = (bet, line) => {
-  if (bet.betTo === 'home' && line.localWin !== bet.localWin) {
+  if (bet.betTo === 'home' && line.localWin !== bet.odds) {
     return {
-      oddsChange: line.localWin - bet.localWin,
+      oddsChange: round(line.localWin - bet.lastOddBet365, 3),
       odds: line.localWin,
       avgOdds: line.localAvg,
     };
   }
-  if (bet.betTo === 'away' && line.awayWin !== bet.awayWin) {
+  if (bet.betTo === 'away' && line.awayWin !== bet.lastOddBet365) {
     return {
-      oddsChange: line.awayWin - bet.awayWin,
+      oddsChange: round(line.awayWin - bet.lastOddBet365, 3),
       odds: line.awayWin,
       avgOdds: line.awayAvg,
     };
@@ -29,21 +29,21 @@ const lineWithOverUnderBet = (bet, lines) => {
   lines.some((line) => {
     if (bet.lineValue === line.line && bet.betTo === 'home') {
       console.log(
-        `cambio de odds? ${line.overOdds !== bet.overOdds} match: ${bet.match}`,
+        `cambio de odds? ${line.overOdds !== bet.lastOddBet365} match: ${bet.match}`,
       );
     }
     if (bet.lineValue === line.line && bet.betTo === 'away') {
       console.log(
-        `cambio de odds? ${line.underOdds !== bet.underOdds} match: ${bet.match}`,
+        `cambio de odds? ${line.underOdds !== bet.lastOddBet365} match: ${bet.match}`,
       );
     }
     if (
       bet.lineValue === line.line
       && bet.betTo === 'home'
-      && line.overOdds !== bet.overOdds
+      && line.overOdds !== bet.lastOddBet365
     ) {
       result = {
-        oddsChange: line.overOdds - bet.overOdds,
+        oddsChange: round(line.overOdds - bet.lastOddBet365, 3),
         odds: line.overOdds,
         avgOdds: line.overOddsAvg,
       };
@@ -52,10 +52,10 @@ const lineWithOverUnderBet = (bet, lines) => {
     if (
       bet.lineValue === line.line
       && bet.betTo === 'away'
-      && line.underOdds !== bet.underOdds
+      && line.underOdds !== bet.lastOddBet365
     ) {
       result = {
-        oddsChange: line.underOdds - bet.underOdds,
+        oddsChange: round(line.underOdds - bet.lastOddBet365, 3),
         odds: line.underOdds,
         avgOdds: line.underOddsAvg,
       };

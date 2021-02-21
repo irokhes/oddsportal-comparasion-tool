@@ -407,16 +407,16 @@ function getMatchValueBets(match) {
 }
 
 function getDriftedValueBets(match) {
-  const { handicap, dnb, doubleChance } = match;
+  const { asianHandicap, dnb, doubleChance } = match;
   const driftedBets = [];
-  if(!handicap || !dnb || !doubleChance) return driftedBets;
+  if(!asianHandicap || !dnb || !doubleChance) return driftedBets;
 
   // AH 0
-  handicapZero = handicap.find(line => line.lineValue === '0');
+  handicapZero = asianHandicap.find(line => line.lineValue === '0');
   // AH +0.5
-  handicapZeroPoint5 = handicap.find(line => line.lineValue === '0.5');
+  handicapZeroPoint5 = asianHandicap.find(line => line.lineValue === '0.5');
   // AH -0.5
-  handicapMinusZeroPoint5 = handicap.find(line => line.lineValue === '-0.5');
+  handicapMinusZeroPoint5 = asianHandicap.find(line => line.lineValue === '-0.5');
 
   //averages
   const averageLocalDnbLocalAH = dnb.localWin + handicapZero.overOdds / 2;

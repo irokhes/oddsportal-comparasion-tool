@@ -409,6 +409,8 @@ function getMatchValueBets(match) {
 function getDriftedValueBets(match) {
   const { handicap, dnb, doubleChance } = match;
   const driftedBets = [];
+  if(!handicap || !dnb || !doubleChance) return driftedBets;
+
   // AH 0
   handicapZero = handicap.find(line => line.lineValue === '0');
   // AH +0.5

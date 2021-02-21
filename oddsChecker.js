@@ -27,16 +27,6 @@ const lineWith2WaysBet = (bet, line) => {
 const lineWithOverUnderBet = (bet, lines) => {
   let result;
   lines.some((line) => {
-    if (bet.lineValue === line.line && bet.betTo === 'home') {
-      console.log(
-        `cambio de odds? ${line.overOdds !== bet.lastOddBet365} match: ${bet.match}`,
-      );
-    }
-    if (bet.lineValue === line.line && bet.betTo === 'away') {
-      console.log(
-        `cambio de odds? ${line.underOdds !== bet.lastOddBet365} match: ${bet.match}`,
-      );
-    }
     if (
       bet.lineValue === line.line
       && bet.betTo === 'home'

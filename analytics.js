@@ -8,7 +8,7 @@ const ValueBet = require("./models/valueBet");
 const { sendHtmlMessage, sendMessage } = require("./telegram");
 const {
   composeNewValueBetMessage,
-  composeNewPercentageBetMessage
+  composeDriftedBet
 } = require("./utils/messages");
 const CronJob = require("cron").CronJob;
 const { frequency, valueBetLimit, percentageRuleLimit } = require("./config");
@@ -206,7 +206,7 @@ const composePercentageBetLine = (match, line, path, valueBet, lineValue) => ({
   avgOdds: valueBet.avgOdds
 });
 
-async function saveToDatabase(valueBets) {
+async function saveValueBetsToDatabase(valueBets) {
   const promises = [];
   const newValueBets = [];
   const improvedLines = [];
@@ -249,17 +249,22 @@ const analyzeBets = async () => {
     const matches = await Odds.find();
     const valueBets = [];
     const percentageBets = [];
+    const driftedLines = [];
     matches.forEach(match => {
       valueBets.push(...getMatchValueBets(match));
+      driftedLines.push(...getDriftedValueBets(match));
       // percentageBets.push(...getMatchValueBetsByPercentage(match));
     });
 
     // Save result to db
-    const newValueBets = await saveToDatabase(valueBets);
+    const newValueBets = await saveValueBetsToDatabase(valueBets);
     const promises = [];
     newValueBets.forEach(valueBet => {
       console.log("new value bet: ", valueBet.url);
       promises.push(sendHtmlMessage(composeNewValueBetMessage(valueBet)));
+    });
+    driftedLines.forEach(driftedBet => {
+      console.log(composeDriftedBet(driftedBet));
     });
     // percentageBets.forEach(valueBet => {
     //   console.log(`new percentage bet: ${valueBet.url} %: ${valueBet.percentage}`);
@@ -271,7 +276,7 @@ const analyzeBets = async () => {
 };
 
 const start = () => {
-  const job = new CronJob(`0 */${frequency} * * * *`, async function() {
+  const job = new CronJob(`0 */${frequency} * * * *`, async function () {
     await analyzeBets();
   });
   job.start();
@@ -399,4 +404,49 @@ function getMatchValueBets(match) {
     );
   }
   return results;
+}
+
+function getDriftedValueBets(match) {
+  const { handicap, dnb, doubleChance } = match;
+  const driftedBets = [];
+  const percentageLimit = 7
+  // AH 0
+  handicapZero = handicap.find(line => line.lineValue === '0');
+  // AH +0.5
+  handicapZeroPoint5 = handicap.find(line => line.lineValue === '0.5');
+  // AH -0.5
+  handicapMinusZeroPoint5 = handicap.find(line => line.lineValue === '-0.5');
+
+  //averages
+  const averageLocalDnbLocalAH = dnb.localWin + handicapZero.overOdds / 2;
+  const differenceAsPercentage = (dnb.localWin - handicapZero / averageLocalDnbLocalAH) * 100
+  if(Math.abs(differenceAsPercentage) > percentageLimit) {
+
+    // composeDriftedBetLine(match, "DNB", result)
+    driftedBets.push({match: match.match, data: match.date, url: match.url, betTo: "local", lineValue: handicapZero.lineValue, linesDifference: differenceAsPercentage, ahOdds: handicapZero.overOdds, dnbOdds: dnb.localWin})
+    differenceAsPercentage > 0 ? console.log('ValueBet DNB') : console.log('ValueBet AH Local');
+  }
+
+  const averageAwayDnbLocalAH = dnb.awayWin + handicapZero.underOdds / 2;
+  const differenceAsPercentage = (dnb.awayWin - handicapZero / averageAwayDnbLocalAH) * 100
+  if(Math.abs(differenceAsPercentage) > percentageLimit){
+    driftedBets.push({match: match.match, data: match.date, url: match.url, betTo: "away", lineValue: handicapZero.lineValue, linesDifference: differenceAsPercentage, ahOdds: handicapZero.underOdds, dnbOdds: dnb.awayWin})
+    differenceAsPercentage > 0 ? console.log('ValueBet DNB Away') : console.log('ValueBet AH Away');
+  }
+
+  const averageLocalDCLocalAH = doubleChance.localWin + handicapZeroPoint5.overOdds / 2;
+  const differenceAsPercentage = (doubleChance.localWin - handicapZeroPoint5.overOdds / averageLocalDCLocalAH) * 100
+  if(Math.abs(differenceAsPercentage) > percentageLimit){
+    driftedBets.push({match: match.match, data: match.date, url: match.url, betTo: "home", lineValue: handicapZeroPoint5.lineValue, linesDifference: differenceAsPercentage, ahOdds: handicapZeroPoint5.overOdds, dcOdds: doubleChance.localWin})
+    differenceAsPercentage > 0 ? console.log('ValueBet DC local') : console.log('ValueBet AH local');
+  }
+
+  const averageAwayDCAwayAH = doubleChance.awayWin + handicapMinusZeroPoint5.underOdds / 2;
+  const differenceAsPercentage = (doubleChance.awayWin - handicapMinusZeroPoint5.underOdds / averageAwayDCAwayAH) * 100
+  if(Math.abs(differenceAsPercentage) > percentageLimit){
+    driftedBets.push({match: match.match, data: match.date, url: match.url, betTo: "away", lineValue: handicapMinusZeroPoint5.lineValue, linesDifference: differenceAsPercentage, ahOdds: handicapMinusZeroPoint5.underOdds, dcOdds: doubleChance.awayWin})
+    return differenceAsPercentage > 0 ? console.log('ValueBet DC away') : console.log('ValueBet AH away');
+  }
+
+
 }

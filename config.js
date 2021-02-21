@@ -13,6 +13,7 @@ module.exports = {
   maxConcurrency: parseInt(process.env.MAX_CONCURRENCY) || 3,
   valueBetLimit: process.env.VALUE_BET_LIMIT || 1.0101,
   percentageRuleLimit: process.env.PERCENTAGE_RULE || 10,
+  percentageDriftedBetLimit: process.env.PERCENTAGE_DRIFTED_BET_LIMIT || 7,
   botToken: process.env.BOT_TOKEN,
   chatId: process.env.CHAT_ID,
   db: {

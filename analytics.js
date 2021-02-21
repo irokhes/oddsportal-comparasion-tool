@@ -421,6 +421,8 @@ function getDriftedValueBets(match) {
   //averages
   const averageLocalDnbLocalAH = dnb.localWin + handicapZero.overOdds / 2;
   let differenceAsPercentage = (dnb.localWin - handicapZero / averageLocalDnbLocalAH) * 100
+  console.log(`differenceAsPercentage ${differenceAsPercentage} for LOCAL DNB`);
+
   if(Math.abs(differenceAsPercentage) > percentageDriftedBetLimit) {
 
     // composeDriftedBetLine(match, "DNB", result)
@@ -430,6 +432,8 @@ function getDriftedValueBets(match) {
 
   const averageAwayDnbLocalAH = dnb.awayWin + handicapZero.underOdds / 2;
   differenceAsPercentage = (dnb.awayWin - handicapZero / averageAwayDnbLocalAH) * 100
+  console.log(`differenceAsPercentage ${differenceAsPercentage} for AWAY DNB`);
+
   if(Math.abs(differenceAsPercentage) > percentageDriftedBetLimit){
     driftedBets.push({match: match.match, data: match.date, url: match.url, betTo: "away", lineValue: handicapZero.lineValue, linesDifference: differenceAsPercentage, ahOdds: handicapZero.underOdds, dnbOdds: dnb.awayWin})
     differenceAsPercentage > 0 ? console.log('ValueBet DNB Away') : console.log('ValueBet AH Away');
@@ -437,6 +441,8 @@ function getDriftedValueBets(match) {
 
   const averageLocalDCLocalAH = doubleChance.localWin + handicapZeroPoint5.overOdds / 2;
   differenceAsPercentage = (doubleChance.localWin - handicapZeroPoint5.overOdds / averageLocalDCLocalAH) * 100
+  console.log(`differenceAsPercentage ${differenceAsPercentage} for LOCAL DC`);
+
   if(Math.abs(differenceAsPercentage) > percentageDriftedBetLimit){
     driftedBets.push({match: match.match, data: match.date, url: match.url, betTo: "home", lineValue: handicapZeroPoint5.lineValue, linesDifference: differenceAsPercentage, ahOdds: handicapZeroPoint5.overOdds, dcOdds: doubleChance.localWin})
     differenceAsPercentage > 0 ? console.log('ValueBet DC local') : console.log('ValueBet AH local');
@@ -444,6 +450,8 @@ function getDriftedValueBets(match) {
 
   const averageAwayDCAwayAH = doubleChance.awayWin + handicapMinusZeroPoint5.underOdds / 2;
   differenceAsPercentage = (doubleChance.awayWin - handicapMinusZeroPoint5.underOdds / averageAwayDCAwayAH) * 100
+  console.log(`differenceAsPercentage ${differenceAsPercentage} for AWAY DNB`);
+
   if(Math.abs(differenceAsPercentage) > percentageDriftedBetLimit){
     driftedBets.push({match: match.match, data: match.date, url: match.url, betTo: "away", lineValue: handicapMinusZeroPoint5.lineValue, linesDifference: differenceAsPercentage, ahOdds: handicapMinusZeroPoint5.underOdds, dcOdds: doubleChance.awayWin})
     return differenceAsPercentage > 0 ? console.log('ValueBet DC away') : console.log('ValueBet AH away');

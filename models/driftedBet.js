@@ -4,7 +4,7 @@ const counter = require('./counter');
 
 const { Schema } = mongoose;
 
-const ValueBetSchema = new Schema({
+const DriftedBetSchema = new Schema({
   sport: {
     type: String,
     default: 'football',
@@ -21,27 +21,19 @@ const ValueBetSchema = new Schema({
     type: String,
     required: true,
   },
-  line: {
-    type: String,
-    required: false,
-  },
   lineValue: {
     type: String,
     required: false,
   },
-  valueRatio: {
+  linesDifference: {
     type: Number,
     required: false,
   },
-  betTo: {
+  betToLine: {
     type: String,
     required: false,
   },
-  odds: {
-    type: Number,
-    required: false,
-  },
-  avgOdds: {
+  betTo: {
     type: String,
     required: false,
   },
@@ -54,12 +46,12 @@ const ValueBetSchema = new Schema({
   },
 
 }, { timestamps: true });
-ValueBetSchema.index({ url: 1 });
-ValueBetSchema.index({ sequence: 1 });
-ValueBetSchema.index({ url: 1, line: 1 });
-ValueBetSchema.index({ url: 1, line: 1, lineValue: 1 });
+DriftedBetSchema.index({ url: 1 });
+DriftedBetSchema.index({ sequence: 1 });
+DriftedBetSchema.index({ url: 1, line: 1 });
+DriftedBetSchema.index({ url: 1, line: 1, lineValue: 1 });
 
-ValueBetSchema.pre('save', function (next) {
+DriftedBetSchema.pre('save', function (next) {
   const doc = this;
   if (!doc.isNew) return next();
   counter.findByIdAndUpdate({ _id: 'betSeqNum' }, { $inc: { seq: 1 } }, (error, cnt) => {
@@ -68,4 +60,4 @@ ValueBetSchema.pre('save', function (next) {
     next();
   });
 });
-module.exports = mongoose.model('ValueBet', ValueBetSchema);
+module.exports = mongoose.model('ValueBet', DriftedBetSchema);

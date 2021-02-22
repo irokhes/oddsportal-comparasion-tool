@@ -420,7 +420,7 @@ function getDriftedValueBets(match) {
 
   //averages
   const averageLocalDnbLocalAH = dnb.localWin + handicapZero.overOdds / 2;
-  let differenceAsPercentage = (dnb.localWin - handicapZero / averageLocalDnbLocalAH) * 100
+  let differenceAsPercentage = (dnb.localWin - handicapZero.overOdds / averageLocalDnbLocalAH) * 100
   console.log(`differenceAsPercentage ${differenceAsPercentage} for LOCAL DNB`);
 
   if(Math.abs(differenceAsPercentage) > percentageDriftedBetLimit) {
@@ -431,7 +431,7 @@ function getDriftedValueBets(match) {
   }
 
   const averageAwayDnbLocalAH = dnb.awayWin + handicapZero.underOdds / 2;
-  differenceAsPercentage = (dnb.awayWin - handicapZero / averageAwayDnbLocalAH) * 100
+  differenceAsPercentage = (dnb.awayWin - handicapZero.underOdds / averageAwayDnbLocalAH) * 100
   console.log(`differenceAsPercentage ${differenceAsPercentage} for AWAY DNB`);
 
   if(Math.abs(differenceAsPercentage) > percentageDriftedBetLimit){
@@ -457,5 +457,6 @@ function getDriftedValueBets(match) {
     return differenceAsPercentage > 0 ? console.log('ValueBet DC away') : console.log('ValueBet AH away');
   }
 
+  return driftedBets;
 
 }

@@ -30,6 +30,8 @@ const oddsChecker = require('./oddsChecker');
         '--disable-dev-profile',
         '--single-process',
         '--proxy-server=de.proxymesh.com:31280',
+        '--ignore-certificate-errors',
+        '--ignore-certificate-errors-spki-list ',
       ],
     },
   });

@@ -19,9 +19,7 @@ const getOdds = async (page, data) => {
     request.continue();
   });
 
-  await page.goto(`${url}`, {
-    waitUntil: 'networkidle0',
-  });
+  await page.goto(`${url}`);
 
   if (!apiUrl) {
     console.log('we did not get the base url');
@@ -55,9 +53,7 @@ const getOddsUrls = async (page, url) => {
     request.continue();
   });
 
-  await page.goto(`${url}`, {
-    waitUntil: 'networkidle0',
-  });
+  await page.goto(`${url}`);
   console.log(url);
   fixture.match = await getMatch(page);
   fixture.date = await getDate(page);

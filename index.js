@@ -43,9 +43,7 @@ const oddsChecker = require('./oddsChecker');
   async function login(page) {
     await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
     console.log('login...');
-    await page.goto('https://www.oddsportal.com/login/', {
-      waitUntil: 'networkidle0',
-    });
+    await page.goto('https://www.oddsportal.com/login/');
     await page.type('#login-username1', 'irokhes');
     await page.type('#login-password1', 'Correoocio09');
     await page.click('button[type="submit"]');
@@ -64,9 +62,7 @@ const oddsChecker = require('./oddsChecker');
 
     try {
       await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
-      await page.goto(url, {
-        waitUntil: 'networkidle0',
-      });
+      await page.goto(url);
       (await page.evaluate(() => {
         const matchesListQuerySelector = '#table-matches > table > tbody > tr[xeid]';
         const matches = [...document.querySelectorAll(matchesListQuerySelector)];

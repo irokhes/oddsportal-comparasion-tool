@@ -43,7 +43,7 @@ const oddsChecker = require('./oddsChecker');
   async function login(page) {
     await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
     console.log('login...');
-    await page.goto('https://www.oddsportal.com/login/'{
+    await page.goto('https://www.oddsportal.com/login/', {
       waitUntil: 'networkidle0',
     });
     await page.type('#login-username1', 'irokhes');

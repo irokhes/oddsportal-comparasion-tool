@@ -64,7 +64,9 @@ const oddsChecker = require('./oddsChecker');
 
     try {
       await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
-      await page.goto(url);
+      await page.goto(url, {
+        waitUntil: 'networkidle0',
+      });
       (await page.evaluate(() => {
         const matchesListQuerySelector = '#table-matches > table > tbody > tr[xeid]';
         const matches = [...document.querySelectorAll(matchesListQuerySelector)];

@@ -29,6 +29,7 @@ const oddsChecker = require('./oddsChecker');
         '--disable-web-security',
         '--disable-dev-profile',
         '--single-process',
+        '--proxy-server=de.proxymesh.com:31280',
       ],
     },
   });

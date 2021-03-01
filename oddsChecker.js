@@ -5,7 +5,7 @@ const Bet = require('./models/bets');
 const Odds = require('./models/odds');
 const { sendHtmlMessage } = require('./telegram');
 const { oddsCheckerFequency } = require('./config');
-const { composeOddsChangeBetMessage } = require('./utils/messages');
+const { composeOddsChangeBetMessage, composeAvgOddsChangeBetMessage } = require('./utils/messages');
 const { round } = require('./utils/utils');
 
 const lineWith2WaysBet = (bet, line) => {
@@ -22,7 +22,7 @@ const lineWith2WaysBet = (bet, line) => {
     && (line.localAvg - bet.avgOdds >= 1);
   if (isBetToLocalAndAverageHasChange) {
     return {
-      avgOdddsChange: round(line.localAvg - bet.avgOdds, 3),
+      avgOddsChange: round(line.localAvg - bet.avgOdds, 3),
       odds: line.localWin,
       avgOdds: line.localAvg,
     };
@@ -40,7 +40,7 @@ const lineWith2WaysBet = (bet, line) => {
     && (line.awayAvg - bet.avgOdds >= 1);
   if (isBetToAwayAndAverageHasChange) {
     return {
-      avgOdddsChange: round(line.awayAvg - bet.avgOdds, 3),
+      avgOddsChange: round(line.awayAvg - bet.avgOdds, 3),
       odds: line.awayWin,
       avgOdds: line.awaylAvg,
     };
@@ -62,12 +62,12 @@ const lineWithOverUnderBet = (bet, lines) => {
       return true;
     }
     const isBetToOverAndAverageHasChange = bet.lineValue === line.line
-    && bet.betTo === 'home'
-    && (bet.odds === bet.lastOddBet365 && bet.odds === line.overOdds)
-    && (line.overOddsAvg - bet.avgOdds >= 1);
+      && bet.betTo === 'home'
+      && (bet.odds === bet.lastOddBet365 && bet.odds === line.overOdds)
+      && (line.overOddsAvg - bet.avgOdds >= 1);
     if (isBetToOverAndAverageHasChange) {
       result = {
-        avgOdddsChange: round(line.overOddsAvg - bet.avgOdds, 3),
+        avgOddsChange: round(line.overOddsAvg - bet.avgOdds, 3),
         odds: line.overOdds,
         avgOdds: line.overOddsAvg,
       };
@@ -112,11 +112,13 @@ const checkOddsForExistingBets = async () => {
     });
     if (!odds) continue;
     const result = lines[bet.line].func(bet, odds[lines[bet.line].line]);
-    if (result && result.oddsChange) {
+    if (result && (result.oddsChange || result.avgOddsChange)) {
       // notify the drop
-      promises.push(
-        sendHtmlMessage(composeOddsChangeBetMessage(bet, result)),
-      );
+      const msg = result.oddsChange
+        ? composeOddsChangeBetMessage(bet, result)
+        : composeAvgOddsChangeBetMessage(bet, result);
+      promises.push(sendHtmlMessage(msg));
+
       bet.lastOddBet365 = result.odds;
       bet.lastAvgOdds = result.avgOdds;
       promises.push(bet.save());

@@ -9,7 +9,7 @@ const { composeOddsChangeBetMessage, composeAvgOddsChangeBetMessage } = require(
 const { round } = require('./utils/utils');
 
 const lineWith2WaysBet = (bet, line) => {
-  const isBetToLocalAndLineHasChange = bet.betTo === 'home' && line.localWin !== bet.odds;
+  const isBetToLocalAndLineHasChange = bet.betTo === 'local' && line.localWin !== bet.odds;
   if (isBetToLocalAndLineHasChange) {
     return {
       oddsChange: round(line.localWin - bet.lastOddBet365, 3),
@@ -17,7 +17,7 @@ const lineWith2WaysBet = (bet, line) => {
       avgOdds: line.localAvg,
     };
   }
-  const isBetToLocalAndAverageHasChange = bet.betTo === 'home'
+  const isBetToLocalAndAverageHasChange = bet.betTo === 'local'
     && (bet.odds === bet.lastOddBet365 && bet.odds === line.localWin)
     && (line.localAvg - bet.avgOdds >= 1);
   if (isBetToLocalAndAverageHasChange) {
@@ -51,7 +51,7 @@ const lineWithOverUnderBet = (bet, lines) => {
   let result;
   lines.some((line) => {
     const isBetToOverAndLineHasChange = bet.lineValue === line.line
-      && bet.betTo === 'home'
+      && bet.betTo === 'local'
       && line.overOdds !== bet.lastOddBet365;
     if (isBetToOverAndLineHasChange) {
       result = {
@@ -62,7 +62,7 @@ const lineWithOverUnderBet = (bet, lines) => {
       return true;
     }
     const isBetToOverAndAverageHasChange = bet.lineValue === line.line
-      && bet.betTo === 'home'
+      && bet.betTo === 'local'
       && (bet.odds === bet.lastOddBet365 && bet.odds === line.overOdds)
       && (line.overOddsAvg - bet.avgOdds >= 1);
     if (isBetToOverAndAverageHasChange) {

@@ -242,6 +242,7 @@ async function saveValueBetsToDatabase(valueBets) {
         valueRatio: valueBet.valueRatio,
         sequence: valueBet.sequence,
         betTo: valueBet.betTo,
+        odds: valueBet.odds,
       });
   });
   return newValueBets;

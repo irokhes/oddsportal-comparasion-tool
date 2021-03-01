@@ -240,7 +240,8 @@ async function saveValueBetsToDatabase(valueBets) {
         line: valueBet.line,
         lineValue: valueBet.lineValue,
         valueRatio: valueBet.valueRatio,
-        sequence: valueBet.sequence
+        sequence: valueBet.sequence,
+        betTo: valueBet.betTo,
       });
   });
   return newValueBets;

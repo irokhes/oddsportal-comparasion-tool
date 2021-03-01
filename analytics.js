@@ -252,7 +252,7 @@ const analyzeBets = async () => {
     const driftedLines = [];
     matches.forEach(match => {
       valueBets.push(...getMatchValueBets(match));
-      driftedLines.push(...getDriftedValueBets(match));
+      // driftedLines.push(...getDriftedValueBets(match));
       // percentageBets.push(...getMatchValueBetsByPercentage(match));
     });
 
@@ -260,7 +260,7 @@ const analyzeBets = async () => {
     const newValueBets = await saveValueBetsToDatabase(valueBets);
     const promises = [];
     newValueBets.forEach(valueBet => {
-      console.log("new value bet: ", valueBet.url);
+      console.log(`new value bet: ${valueBet.url}, betTo: ${valueBet.betTo}`);
       promises.push(sendHtmlMessage(composeNewValueBetMessage(valueBet)));
     });
     driftedLines.forEach(driftedBet => {

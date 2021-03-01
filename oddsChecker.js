@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-continue */
 const { CronJob } = require('cron');
@@ -50,8 +51,9 @@ const lineWith2WaysBet = (bet, line) => {
 const lineWithOverUnderBet = (bet, lines) => {
   let result;
   lines.some((line) => {
-    const isBetToOverAndLineHasChange = bet.lineValue === line.line
-      && bet.betTo === 'local'
+    if (bet.lineValue !== line.line) return false;
+
+    const isBetToOverAndLineHasChange = bet.betTo === 'local'
       && line.overOdds !== bet.lastOddBet365;
     if (isBetToOverAndLineHasChange) {
       result = {
@@ -61,8 +63,8 @@ const lineWithOverUnderBet = (bet, lines) => {
       };
       return true;
     }
-    const isBetToOverAndAverageHasChange = bet.lineValue === line.line
-      && bet.betTo === 'local'
+    if (bet.betTo === 'local' && bet.odds === bet.lastOddBet365) console.log(`la linea no se ha movido ${bet.odds}, orignal avg odds ${bet.avgOdds}, actuales ${line.avgOdds} \n ${bet.url}`);
+    const isBetToOverAndAverageHasChange = bet.betTo === 'local'
       && (bet.odds === bet.lastOddBet365 && bet.odds === line.overOdds)
       && (line.overOddsAvg - bet.avgOdds >= 1);
     if (isBetToOverAndAverageHasChange) {
@@ -73,15 +75,24 @@ const lineWithOverUnderBet = (bet, lines) => {
       };
       return true;
     }
+    if (bet.betTo === 'away' && bet.odds === bet.lastOddBet365) console.log(`la linea no se ha movido ${bet.odds}, orignal avg odds ${bet.avgOdds}, actuales ${line.avgOdds} \n ${bet.url}`);
 
-    const isBetToUnderAndLineHasChange = bet.lineValue === line.line
-      && bet.betTo === 'away'
+    const isBetToUnderAndLineHasChange = bet.betTo === 'away'
       && line.underOdds !== bet.lastOddBet365;
-    if (
-      isBetToUnderAndLineHasChange
-    ) {
+    if (isBetToUnderAndLineHasChange) {
       result = {
         oddsChange: round(line.underOdds - bet.lastOddBet365, 3),
+        odds: line.underOdds,
+        avgOdds: line.underOddsAvg,
+      };
+      return true;
+    }
+    const isBetToUnderAndAverageHasChange = bet.betTo === 'away'
+      && (bet.odds === bet.lastOddBet365 && bet.odds === line.underOdds)
+      && (line.underOddsAvg - bet.avgOdds >= 1);
+    if (isBetToUnderAndAverageHasChange) {
+      result = {
+        avgOddsChange: round(line.underOddsAvg - bet.avgOdds, 3),
         odds: line.underOdds,
         avgOdds: line.underOddsAvg,
       };

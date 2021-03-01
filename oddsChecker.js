@@ -9,29 +9,51 @@ const { composeOddsChangeBetMessage } = require('./utils/messages');
 const { round } = require('./utils/utils');
 
 const lineWith2WaysBet = (bet, line) => {
-  if (bet.betTo === 'home' && line.localWin !== bet.odds) {
+  const isBetToLocalAndLineHasChange = bet.betTo === 'home' && line.localWin !== bet.odds;
+  if (isBetToLocalAndLineHasChange) {
     return {
       oddsChange: round(line.localWin - bet.lastOddBet365, 3),
       odds: line.localWin,
       avgOdds: line.localAvg,
     };
   }
-  if (bet.betTo === 'away' && line.awayWin !== bet.lastOddBet365) {
+  const isBetToLocalAndAverageHasChange = bet.betTo === 'home'
+    && (bet.odds === bet.lastOddBet365 && bet.odds === line.localWin)
+    && (line.localAvg - bet.avgOdds >= 1);
+  if (isBetToLocalAndAverageHasChange) {
+    return {
+      avgOdddsChange: round(line.localAvg - bet.avgOdds, 3),
+      odds: line.localWin,
+      avgOdds: line.localAvg,
+    };
+  }
+  const isBetToAwayAndLineHasChange = bet.betTo === 'away' && line.awayWin !== bet.lastOddBet365;
+  if (isBetToAwayAndLineHasChange) {
     return {
       oddsChange: round(line.awayWin - bet.lastOddBet365, 3),
       odds: line.awayWin,
       avgOdds: line.awayAvg,
     };
   }
+  const isBetToAwayAndAverageHasChange = bet.betTo === 'away'
+    && (bet.odds === bet.lastOddBet365 && bet.odds === line.awayWin)
+    && (line.awayAvg - bet.avgOdds >= 1);
+  if (isBetToAwayAndAverageHasChange) {
+    return {
+      avgOdddsChange: round(line.awayAvg - bet.avgOdds, 3),
+      odds: line.awayWin,
+      avgOdds: line.awaylAvg,
+    };
+  }
+  return null;
 };
 const lineWithOverUnderBet = (bet, lines) => {
   let result;
   lines.some((line) => {
-    if (
-      bet.lineValue === line.line
+    const isBetToOverAndLineHasChange = bet.lineValue === line.line
       && bet.betTo === 'home'
-      && line.overOdds !== bet.lastOddBet365
-    ) {
+      && line.overOdds !== bet.lastOddBet365;
+    if (isBetToOverAndLineHasChange) {
       result = {
         oddsChange: round(line.overOdds - bet.lastOddBet365, 3),
         odds: line.overOdds,
@@ -39,10 +61,24 @@ const lineWithOverUnderBet = (bet, lines) => {
       };
       return true;
     }
-    if (
-      bet.lineValue === line.line
+    const isBetToOverAndAverageHasChange = bet.lineValue === line.line
+    && bet.betTo === 'home'
+    && (bet.odds === bet.lastOddBet365 && bet.odds === line.overOdds)
+    && (line.overOddsAvg - bet.avgOdds >= 1);
+    if (isBetToOverAndAverageHasChange) {
+      result = {
+        avgOdddsChange: round(line.overOddsAvg - bet.avgOdds, 3),
+        odds: line.overOdds,
+        avgOdds: line.overOddsAvg,
+      };
+      return true;
+    }
+
+    const isBetToUnderAndLineHasChange = bet.lineValue === line.line
       && bet.betTo === 'away'
-      && line.underOdds !== bet.lastOddBet365
+      && line.underOdds !== bet.lastOddBet365;
+    if (
+      isBetToUnderAndLineHasChange
     ) {
       result = {
         oddsChange: round(line.underOdds - bet.lastOddBet365, 3),
@@ -55,7 +91,6 @@ const lineWithOverUnderBet = (bet, lines) => {
   });
   return result;
 };
-
 const lines = {
   ML: { func: lineWith2WaysBet, line: 'moneyLine' },
   HOMEAWAY: { func: lineWith2WaysBet, line: 'homeAway' },
@@ -80,7 +115,7 @@ const checkOddsForExistingBets = async () => {
     if (result && result.oddsChange) {
       // notify the drop
       promises.push(
-        sendHtmlMessage(composeOddsChangeBetMessage(bet, result.oddsChange)),
+        sendHtmlMessage(composeOddsChangeBetMessage(bet, result)),
       );
       bet.lastOddBet365 = result.odds;
       bet.lastAvgOdds = result.avgOdds;

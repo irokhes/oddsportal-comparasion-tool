@@ -238,6 +238,7 @@ async function saveValueBetsToDatabase(valueBets) {
         date: valueBet.date,
         url: valueBet.url,
         line: valueBet.line,
+        lineValue: valueBet.lineValue,
         valueRatio: valueBet.valueRatio,
         sequence: valueBet.sequence
       });

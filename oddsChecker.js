@@ -63,7 +63,7 @@ const lineWithOverUnderBet = (bet, lines) => {
       };
       return true;
     }
-    if (bet.betTo === 'local' && bet.odds === bet.lastOddBet365) console.log(`la linea no se ha movido ${bet.odds}, orignal avg odds ${bet.avgOdds}, actuales ${line.overOddsAvg} \n ${bet.url}`);
+    if (bet.betTo === 'local' && bet.odds === bet.lastOddBet365) console.log(`la linea no se ha movido ${bet.odds}, orignal avg odds ${bet.lastAvgOdds}, actuales ${line.overOddsAvg} \n ${bet.url}`);
     const isBetToOverAndAverageHasChange = bet.betTo === 'local'
       && (bet.odds === bet.lastOddBet365 && bet.odds === line.overOdds)
       && (line.overOddsAvg - bet.lastAvgOdds >= 0.01);
@@ -75,7 +75,7 @@ const lineWithOverUnderBet = (bet, lines) => {
       };
       return true;
     }
-    if (bet.betTo === 'away' && bet.odds === bet.lastOddBet365) console.log(`la linea no se ha movido ${bet.odds}, orignal avg odds ${bet.avgOdds}, actuales ${line.underOddsAvg} \n ${bet.url}`);
+    if (bet.betTo === 'away' && bet.odds === bet.lastOddBet365) console.log(`la linea no se ha movido ${bet.odds}, orignal avg odds ${bet.lastAvgOdds}, actuales ${line.underOddsAvg} \n ${bet.url}`);
 
     const isBetToUnderAndLineHasChange = bet.betTo === 'away'
       && line.underOdds !== bet.lastOddBet365;

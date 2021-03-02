@@ -274,7 +274,7 @@ const analyzeBets = async () => {
     //   promises.push(sendHtmlMessage(composeNewPercentageBetMessage(valueBet)));
     // })
   } catch (error) {
-    console.log("Error: ", error);
+    // console.log("Error: ", error);
   }
 };
 

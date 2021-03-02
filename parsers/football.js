@@ -24,7 +24,7 @@ const getFootballOdds = async (apiUrl, odds, url) => {
         const moneyLineOdds = moneyLineJSON.d.oddsdata ? moneyLineJSON.d.oddsdata.back[`E-${MONEYLINE}-0-0-0`] : null;
         odds.moneyLine = parse3WaysLine(moneyLineOdds);
     } catch (error) {
-        console.log(`error parsing ML for ${url}`);
+        // console.log(`error parsing ML for ${url}`);
     }
     // DNB
     try {
@@ -32,7 +32,7 @@ const getFootballOdds = async (apiUrl, odds, url) => {
         const dnbLine = dnbJSON.d.oddsdata ? dnbJSON.d.oddsdata.back[`E-${DNB}-0-0-0`] : null;
         odds.dnb = parse2WaysLine(dnbLine)
     } catch (error) {
-        console.log(`error parsing DNB for ${url}`);
+        // console.log(`error parsing DNB for ${url}`);
     }
     // BTS
     try {
@@ -40,7 +40,7 @@ const getFootballOdds = async (apiUrl, odds, url) => {
         const bttsLine = bttsJSON.d.oddsdata ? bttsJSON.d.oddsdata.back[`E-${BTS}-0-0-0`] : null;
         odds.bts = parse2WaysLine(bttsLine)
     } catch (error) {
-        console.log(`error parsing BTS for ${url}`);
+        // console.log(`error parsing BTS for ${url}`);
     }
     // DC
     try {
@@ -48,7 +48,7 @@ const getFootballOdds = async (apiUrl, odds, url) => {
         const dcLine = dcJSON.d.oddsdata ? dcJSON.d.oddsdata.back[`E-${DC}-0-0-0`] : null;
         odds.doubleChance = parse3WaysLine(dcLine)
     } catch (error) {
-        console.log(`error parsing DC for ${url}`);
+        // console.log(`error parsing DC for ${url}`);
 
     }
     // OVER UNDER GOALS
@@ -65,7 +65,7 @@ const getFootballOdds = async (apiUrl, odds, url) => {
             });
         }
     } catch (error) {
-        console.log(`error parsing O/U for ${url}`);
+        // console.log(`error parsing O/U for ${url}`);
 
     }
     // ASIAN HANDICAP
@@ -82,7 +82,7 @@ const getFootballOdds = async (apiUrl, odds, url) => {
             });
         }
     } catch (error) {
-        console.log(`error parsing AH for ${url}`);
+        // console.log(`error parsing AH for ${url}`);
     }
 
     return odds;

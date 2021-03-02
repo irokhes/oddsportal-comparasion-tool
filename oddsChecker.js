@@ -20,7 +20,7 @@ const lineWith2WaysBet = (bet, line) => {
   }
   const isBetToLocalAndAverageHasChange = bet.betTo === 'local'
     && (bet.odds === bet.lastOddBet365 && bet.odds === line.localWin)
-    && (line.localAvg - bet.avgOdds >= 1);
+    && (line.localAvg - bet.avgOdds >= 0.01);
   if (isBetToLocalAndAverageHasChange) {
     return {
       avgOddsChange: round(line.localAvg - bet.avgOdds, 3),
@@ -38,7 +38,7 @@ const lineWith2WaysBet = (bet, line) => {
   }
   const isBetToAwayAndAverageHasChange = bet.betTo === 'away'
     && (bet.odds === bet.lastOddBet365 && bet.odds === line.awayWin)
-    && (line.awayAvg - bet.avgOdds >= 1);
+    && (line.awayAvg - bet.avgOdds >= 0.01);
   if (isBetToAwayAndAverageHasChange) {
     return {
       avgOddsChange: round(line.awayAvg - bet.avgOdds, 3),
@@ -66,7 +66,7 @@ const lineWithOverUnderBet = (bet, lines) => {
     if (bet.betTo === 'local' && bet.odds === bet.lastOddBet365) console.log(`la linea no se ha movido ${bet.odds}, orignal avg odds ${bet.avgOdds}, actuales ${line.overOddsAvg} \n ${bet.url}`);
     const isBetToOverAndAverageHasChange = bet.betTo === 'local'
       && (bet.odds === bet.lastOddBet365 && bet.odds === line.overOdds)
-      && (line.overOddsAvg - bet.avgOdds >= 1);
+      && (line.overOddsAvg - bet.avgOdds >= 0.01);
     if (isBetToOverAndAverageHasChange) {
       result = {
         avgOddsChange: round(line.overOddsAvg - bet.avgOdds, 3),
@@ -89,7 +89,7 @@ const lineWithOverUnderBet = (bet, lines) => {
     }
     const isBetToUnderAndAverageHasChange = bet.betTo === 'away'
       && (bet.odds === bet.lastOddBet365 && bet.odds === line.underOdds)
-      && (line.underOddsAvg - bet.avgOdds >= 1);
+      && (line.underOddsAvg - bet.avgOdds >= 0.01);
     if (isBetToUnderAndAverageHasChange) {
       result = {
         avgOddsChange: round(line.underOddsAvg - bet.avgOdds, 3),

@@ -6,7 +6,7 @@ const Bet = require('./models/bets');
 const Odds = require('./models/odds');
 const { sendHtmlMessage } = require('./telegram');
 const { oddsCheckerFequency } = require('./config');
-const { composeOddsChangeBetMessage, composeAvgOddsChangeBetMessage } = require('./utils/messages');
+const { composeOddsChangeBetMessage } = require('./utils/messages');
 const { round } = require('./utils/utils');
 
 const lineWith2WaysBet = (bet, line) => {
@@ -125,10 +125,7 @@ const checkOddsForExistingBets = async () => {
     const result = lines[bet.line].func(bet, odds[lines[bet.line].line]);
     if (result && (result.oddsChange || result.avgOddsChange)) {
       // notify the drop
-      const msg = result.oddsChange
-        ? composeOddsChangeBetMessage(bet, result)
-        : composeAvgOddsChangeBetMessage(bet, result);
-      promises.push(sendHtmlMessage(msg));
+      promises.push(sendHtmlMessage(composeOddsChangeBetMessage(bet, result)));
 
       bet.lastOddBet365 = result.odds;
       bet.lastAvgOdds = result.avgOdds;

@@ -4,13 +4,12 @@ const { round, binarySearch } = require('../utils/utils');
 
 const BET365 = '16';
 const PINNACLE = '18';
-const excludedBookies = [45, 49, 411, 453, 455, 419, 141, 392, 129, 53, 163, 322, 139, 558, 46, 164, 149, 531, 414, 406, 165, 472, 160, 157, 372, 454, 467];
+const excludedBookies = [45, 49, 411, 453, 455, 419, 141, 392, 129, 53, 163, 322, 139, 558, 46, 164, 149, 531, 414, 406, 165, 472, 160, 157, 372, 467];
 
 const parse3WaysLine = (lineJSON) => {
   if (!lineJSON) return undefined;
   const parsedLine = Object.keys(lineJSON.odds).reduce(
     (result, key) => {
-      if (excludedBookies.includes(key)) { console.log(`${key} included!!!!`); }
       if (binarySearch(excludedBookies, key) !== -1) { console.log(`key ${key} search result ${binarySearch(excludedBookies, key)}`); }
       if (!lineJSON.act[key] || binarySearch(excludedBookies, key) !== -1) return result;
       result.localWinSum += lineJSON.odds[key]['0'];
@@ -49,7 +48,6 @@ const parse2WaysLine = (lineJSON) => {
 
   const parsedLine = Object.keys(lineJSON.odds).reduce(
     (result, key) => {
-      if (excludedBookies.includes(key)) { console.log(`${key} included!!!!`); }
       if (binarySearch(excludedBookies, key) !== -1) { console.log(`key ${key} search result ${binarySearch(excludedBookies, key)}`); }
       if (!lineJSON.act[key] || binarySearch(excludedBookies, key) !== -1) return result;
       result.localWinSum += lineJSON.odds[key]['0'];
@@ -85,7 +83,6 @@ const parseOverUnderLine = (lineJSON) => {
   if (!lineJSON) return undefined;
   const parsedLine = Object.keys(lineJSON.odds).reduce(
     (result, key) => {
-      if (excludedBookies.includes(key)) { console.log(`${key} included!!!!`); }
       if (binarySearch(excludedBookies, key) !== -1) { console.log(`key ${key} search result ${binarySearch(excludedBookies, key)}`); }
       if (!lineJSON.act[key] || binarySearch(excludedBookies, key) !== -1) return result;
       result.overOddsSum += lineJSON.odds[key]['0'];

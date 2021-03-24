@@ -20,5 +20,5 @@ bot.command('bet', async (ctx) => {
 const sendMessage = (message) => {
   bot.telegram.sendMessage(chatId, message);
 };
-const sendHtmlMessage = (message) => bot.telegram.sendMessage(chatId, message, { parse_mode: 'HTML' }).catch(console.error);
+const sendHtmlMessage = (message) => bot.telegram.sendMessage(chatId, message, { parse_mode: 'HTML', disable_web_page_preview: true }).catch(console.error);
 module.exports = { sendMessage, sendHtmlMessage };

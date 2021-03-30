@@ -29,6 +29,8 @@ const oddsChecker = require('./oddsChecker');
         '--disable-web-security',
         '--disable-dev-profile',
         '--single-process',
+        '--disable-web-security',
+        '--disable-features=SameSiteByDefaultCookies,CookiesWithoutSameSiteMustBeSecure',
       ],
     },
   });
@@ -86,7 +88,7 @@ const oddsChecker = require('./oddsChecker');
     db.connect();
     analytics.start();
     oddsChecker.start();
-    cluster.queue(async ({ page }) => {
+    cluster.execute(async ({ page }) => {
       await login(page);
     });
 
@@ -97,7 +99,7 @@ const oddsChecker = require('./oddsChecker');
 
         enumerateDaysBetweenDates(startDate, endDate).forEach((date) => {
           cluster.queue({ url: `https://www.oddsportal.com/matches/soccer/${date}/`, sport: 'football' }, extractMatches);
-          cluster.queue({ url: `https://www.oddsportal.com/matches/basketball/${date}/`, sport: 'basketball' }, extractMatches);
+          // cluster.queue({ url: `https://www.oddsportal.com/matches/basketball/${date}/`, sport: 'basketball' }, extractMatches);
         });
       });
 

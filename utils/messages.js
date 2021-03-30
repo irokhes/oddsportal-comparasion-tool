@@ -1,5 +1,10 @@
 /* eslint-disable max-len */
-const composeNewValueBetMessage = (valueBet) => `Linea: ${valueBet.line} ${valueBet.line === 'AH' || valueBet.line === 'O/U' ? valueBet.lineValue : ''} cuota: ${valueBet.odds}  Bet to: ${valueBet.betTo}"\n\n<a href="${valueBet.url} target="_blank">${valueBet.match}</a>\n\nValue Ratio: ${valueBet.valueRatio}\n\n Seq: ${valueBet.sequence}`;
+const composeNewValueBetMessage = (valueBet) => {
+  const line = `Linea: ${valueBet.line} ${valueBet.line === 'AH' || valueBet.line === 'O/U' ? valueBet.lineValue : ''} cuota: ${valueBet.odds}  Bet to: ${valueBet.betTo}\n`;
+  const trend = `Tendencia: 🟢  ${valueBet.upTrend}% - 🔴  ${valueBet.downTrend}%\n`;
+  return `${line}${trend}<a href="${valueBet.url} target="_blank">${valueBet.match}</a>\n\nValue Ratio: ${valueBet.valueRatio}\n\n Seq: ${valueBet.sequence}`;
+  // return `Linea: ${valueBet.line} ${valueBet.line === 'AH' || valueBet.line === 'O/U' ? valueBet.lineValue : ''} cuota: ${valueBet.odds}  Bet to: ${valueBet.betTo}\n\n<a href="${valueBet.url} target="_blank">${valueBet.match}</a>\n\nValue Ratio: ${valueBet.valueRatio}\n\n Seq: ${valueBet.sequence}`;
+};
 const composeNewPercentageBetMessage = (valueBet) => `PERCENTAGE\n\nLinea: ${valueBet.line}\n\n<a href="${valueBet.url}" target="_blank">${valueBet.match}</a>\n\nValue Percentage: ${valueBet.percentage}\n\n`;
 const composeDriftedBet = (driftedBet) => `Diferencia entre lineas AH ${driftedBet.lineValue}  ${driftedBet.dnb ? driftedBet.dnbOdds : driftedBet.dcOdds}\n\n<a href="${driftedBet.url}" target="_blank">${driftedBet.match}</a>\n\n`;
 const composeOddsChangeBetMessage = (bet, result) => (result.oddsChange

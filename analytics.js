@@ -14,7 +14,7 @@ const CronJob = require("cron").CronJob;
 const { frequency, valueBetLimit, percentageRuleLimit, percentageDriftedBetLimit } = require("./config");
 
 const moneyline = (moneyLine, doubleChance) => {
-  const { localWin, awayWin, awayWinAvg, localWinAvg, drawAvg } = moneyLine;
+  const { localWin, awayWin, awayWinAvg, localWinAvg, drawAvg, localUpTrend, localDownTrend, awayUpTrend, awayDownTrend } = moneyLine;
   let localAvg =
     doubleChance && doubleChance.localWinAvg
       ? 1 / doubleChance.localWinAvg
@@ -29,14 +29,18 @@ const moneyline = (moneyLine, doubleChance) => {
       valueRatio: round(1 / localWin + awayAvg, 3),
       betTo: "local",
       odds: localWin,
-      avgOdds: localAvg
+      avgOdds: localAvg,
+      upTrend: localUpTrend,
+      downTrend: localDownTrend,
     };
   if (1 / awayWin + localAvg <= valueBetLimit)
     return {
       valueRatio: round(1 / awayWin + localAvg, 3),
       betTo: "away",
       odds: awayWin,
-      avgOdds: awayAvg
+      avgOdds: awayAvg,
+      upTrend: awayUpTrend,
+      downTrend: awayDownTrend,
     };
 };
 const percentageRule = line => {
@@ -63,39 +67,47 @@ const overUnderPercentageRule = lines => {
   return valueBets;
 };
 const doubleChance = (doubleChanceLine, moneyLine) => {
-  const { localWin, awayWin, localWinAvg, awayWinAvg } = doubleChanceLine;
+  const { localWin, awayWin, localWinAvg, awayWinAvg, localUpTrend, localDownTrend, awayUpTrend, awayDownTrend } = doubleChanceLine;
   if (!moneyLine) return false;
   if (1 / localWin + 1 / moneyLine.awayWinAvg <= valueBetLimit)
     return {
       valueRatio: round(1 / localWin + 1 / moneyLine.awayWinAvg, 3),
       betTo: "local",
       odds: localWin,
-      avgOdds: localWinAvg
+      avgOdds: localWinAvg,
+      upTrend: localUpTrend,
+      downTrend: localDownTrend,
     };
   if (1 / awayWin + 1 / moneyLine.localWinAvg <= valueBetLimit)
     return {
       valueRatio: round(1 / awayWin + 1 / moneyLine.localWinAvg, 3),
-      betTo: "local",
+      betTo: "away",
       odds: awayWin,
-      avgOdds: awayWinAvg
+      avgOdds: awayWinAvg,
+      upTrend: awayUpTrend,
+      downTrend: awayDownTrend,
     };
   return false;
 };
 const drawNoBet = dnb => {
-  const { localWin, localWinAvg, awayWin, awayWinAvg } = dnb;
+  const { localWin, localWinAvg, awayWin, awayWinAvg, localUpTrend, localDownTrend, awayUpTrend, awayDownTrend } = dnb;
   if (1 / localWin + 1 / awayWinAvg <= valueBetLimit)
     return {
       valueRatio: round(1 / localWin + 1 / awayWinAvg, 3),
       betTo: "local",
       odds: localWin,
-      avgOdds: localWinAvg
+      avgOdds: localWinAvg,
+      upTrend: localUpTrend,
+      downTrend: localDownTrend,
     };
   if (1 / awayWin + 1 / localWinAvg <= valueBetLimit)
     return {
       valueRatio: round(1 / awayWin + 1 / localWinAvg, 3),
       betTo: "away",
       odds: awayWin,
-      avgOdds: awayWinAvg
+      avgOdds: awayWinAvg,
+      upTrend: awayUpTrend,
+      downTrend: awayDownTrend,
     };
   return false;
 };
@@ -118,33 +130,39 @@ const homeAway = homeAway => {
   return false;
 };
 const bothTeamsScore = match => {
-  const { localWin, localWinAvg, awayWin, awayWinAvg } = match;
+  const { localWin, localWinAvg, awayWin, awayWinAvg, localUpTrend, localDownTrend, awayUpTrend, awayDownTrend } = match;
   if (1 / localWin + 1 / awayWinAvg <= valueBetLimit)
     return {
       valueRatio: round(1 / localWin + 1 / awayWinAvg, 3),
       betTo: "local",
       odds: localWin,
-      avgOdds: localWinAvg
+      avgOdds: localWinAvg,
+      upTrend: localUpTrend,
+      downTrend: localDownTrend,
     };
   if (1 / awayWin + 1 / localWinAvg <= valueBetLimit)
     return {
       valueRatio: round(1 / awayWin + 1 / localWinAvg, 3),
       betTo: "away",
       odds: awayWin,
-      avgOdds: awayWinAvg
+      avgOdds: awayWinAvg,
+      upTrend: awayUpTrend,
+      downTrend: awayDownTrend,
     };
   return false;
 };
 const overUnderGoals = lines => {
   const valueBets = lines.reduce((list, line) => {
-    const { overOdds, underOdds, underOddsAvg, overOddsAvg } = line;
+    const { overOdds, underOdds, underOddsAvg, overOddsAvg, localUpTrend, localDownTrend, awayUpTrend, awayDownTrend } = line;
     if (overOdds < 13 && 1 / overOdds + 1 / underOddsAvg <= valueBetLimit)
       list.push({
         ...line,
         valueRatio: round(1 / overOdds + 1 / underOddsAvg, 3),
         betTo: "local",
         odds: overOdds,
-        avgOdds: overOddsAvg
+        avgOdds: overOddsAvg,
+        upTrend: localUpTrend,
+        downTrend: localDownTrend,
       });
     if (underOdds < 13 && 1 / underOdds + 1 / overOddsAvg <= valueBetLimit)
       list.push({
@@ -152,7 +170,9 @@ const overUnderGoals = lines => {
         valueRatio: round(1 / underOdds + 1 / overOddsAvg, 3),
         betTo: "away",
         odds: underOdds,
-        avgOdds: underOddsAvg
+        avgOdds: underOddsAvg,
+        upTrend: awayUpTrend,
+        downTrend: awayDownTrend,
       });
     return list;
   }, []);
@@ -160,7 +180,7 @@ const overUnderGoals = lines => {
 };
 const asianHandicap = lines => {
   const valueBets = lines.reduce((list, line) => {
-    const { overOdds, underOdds, overOddsAvg, underOddsAvg } = line;
+    const { overOdds, underOdds, overOddsAvg, underOddsAvg, localUpTrend, localDownTrend, awayUpTrend, awayDownTrend } = line;
 
     if (overOdds < 13 && 1 / overOdds + 1 / underOddsAvg <= valueBetLimit)
       list.push({
@@ -168,7 +188,9 @@ const asianHandicap = lines => {
         valueRatio: round(1 / overOdds + 1 / underOddsAvg, 3),
         betTo: "local",
         odds: overOdds,
-        avgOdds: overOddsAvg
+        avgOdds: overOddsAvg,
+        upTrend: localUpTrend,
+        downTrend: localDownTrend,
       });
     if (underOdds < 13 && 1 / underOdds + 1 / overOddsAvg <= valueBetLimit)
       list.push({
@@ -176,7 +198,9 @@ const asianHandicap = lines => {
         valueRatio: round(1 / underOdds + 1 / overOddsAvg, 3),
         betTo: "away",
         odds: underOdds,
-        avgOdds: underOddsAvg
+        avgOdds: underOddsAvg,
+        upTrend: awayUpTrend,
+        downTrend: awayDownTrend,
       });
     return list;
   }, []);
@@ -192,7 +216,9 @@ const composeValueBetLine = (match, line, path, valueBet, lineValue) => ({
   valueRatio: valueBet.valueRatio,
   betTo: valueBet.betTo,
   odds: valueBet.odds,
-  avgOdds: valueBet.avgOdds
+  avgOdds: valueBet.avgOdds,
+  upTrend: awayUpTrend,
+  downTrend: awayDownTrend,
 });
 const composePercentageBetLine = (match, line, path, valueBet, lineValue) => ({
   match: match.match,
@@ -412,7 +438,7 @@ function getMatchValueBets(match) {
 function getDriftedValueBets(match) {
   const { asianHandicap, dnb, doubleChance } = match;
   const driftedBets = [];
-  if(!asianHandicap || !dnb || !doubleChance) return driftedBets;
+  if (!asianHandicap || !dnb || !doubleChance) return driftedBets;
 
   // AH 0
   handicapZero = asianHandicap.find(line => line.line === '0');
@@ -422,35 +448,35 @@ function getDriftedValueBets(match) {
   handicapMinusZeroPoint5 = asianHandicap.find(line => line.line === '-0.5');
 
   //averages
-  if(handicapZero){
+  if (handicapZero) {
     const averageLocalDnbLocalAH = (dnb.localWin + handicapZero.overOdds) / 2;
-    let differenceAsPercentage = round((dnb.localWin - handicapZero.overOdds) / averageLocalDnbLocalAH * 100,2);
-    if(Math.abs(differenceAsPercentage) > percentageDriftedBetLimit) {
-      driftedBets.push({match: match.match, data: match.date, url: match.url, betTo: "local", lineValue: handicapZero.line, linesDifference: differenceAsPercentage, ahOdds: handicapZero.overOdds, dnbOdds: dnb.localWin})
+    let differenceAsPercentage = round((dnb.localWin - handicapZero.overOdds) / averageLocalDnbLocalAH * 100, 2);
+    if (Math.abs(differenceAsPercentage) > percentageDriftedBetLimit) {
+      driftedBets.push({ match: match.match, data: match.date, url: match.url, betTo: "local", lineValue: handicapZero.line, linesDifference: differenceAsPercentage, ahOdds: handicapZero.overOdds, dnbOdds: dnb.localWin })
       differenceAsPercentage > 0 ? console.log('ValueBet DNB ', differenceAsPercentage) : console.log('ValueBet AH Local ', differenceAsPercentage);
     }
     const averageAwayDnbLocalAH = (dnb.awayWin + handicapZero.underOdds) / 2;
-    differenceAsPercentage = round((dnb.awayWin - handicapZero.underOdds) / averageAwayDnbLocalAH * 100,2);
-    if(Math.abs(differenceAsPercentage) > percentageDriftedBetLimit){
-      driftedBets.push({match: match.match, date: match.date, url: match.url, betTo: "away", lineValue: handicapZero.line, linesDifference: differenceAsPercentage, ahOdds: handicapZero.underOdds, dnbOdds: dnb.awayWin})
+    differenceAsPercentage = round((dnb.awayWin - handicapZero.underOdds) / averageAwayDnbLocalAH * 100, 2);
+    if (Math.abs(differenceAsPercentage) > percentageDriftedBetLimit) {
+      driftedBets.push({ match: match.match, date: match.date, url: match.url, betTo: "away", lineValue: handicapZero.line, linesDifference: differenceAsPercentage, ahOdds: handicapZero.underOdds, dnbOdds: dnb.awayWin })
       differenceAsPercentage > 0 ? console.log('ValueBet DNB Away ', differenceAsPercentage) : console.log('ValueBet AH Away ', differenceAsPercentage);
     }
   }
 
-  if(handicapZeroPoint5){
+  if (handicapZeroPoint5) {
     const averageLocalDCLocalAH = (doubleChance.localWin + handicapZeroPoint5.overOdds) / 2;
-    differenceAsPercentage = round((doubleChance.localWin - handicapZeroPoint5.overOdds) / averageLocalDCLocalAH * 100,2);
-    if(Math.abs(differenceAsPercentage) > percentageDriftedBetLimit){
-      driftedBets.push({match: match.match, data: match.date, url: match.url, betTo: "home", lineValue: handicapZeroPoint5.line, linesDifference: differenceAsPercentage, ahOdds: handicapZeroPoint5.overOdds, dcOdds: doubleChance.localWin})
+    differenceAsPercentage = round((doubleChance.localWin - handicapZeroPoint5.overOdds) / averageLocalDCLocalAH * 100, 2);
+    if (Math.abs(differenceAsPercentage) > percentageDriftedBetLimit) {
+      driftedBets.push({ match: match.match, data: match.date, url: match.url, betTo: "home", lineValue: handicapZeroPoint5.line, linesDifference: differenceAsPercentage, ahOdds: handicapZeroPoint5.overOdds, dcOdds: doubleChance.localWin })
       differenceAsPercentage > 0 ? console.log('ValueBet DC local ', differenceAsPercentage) : console.log('ValueBet AH local ', differenceAsPercentage);
     }
   }
 
-  if(handicapMinusZeroPoint5){
+  if (handicapMinusZeroPoint5) {
     const averageAwayDCAwayAH = (doubleChance.awayWin + handicapMinusZeroPoint5.underOdds) / 2;
-    differenceAsPercentage = round((doubleChance.awayWin - handicapMinusZeroPoint5.underOdds) / averageAwayDCAwayAH * 100,2);
-    if(Math.abs(differenceAsPercentage) > percentageDriftedBetLimit){
-      driftedBets.push({match: match.match, data: match.date, url: match.url, betTo: "away", lineValue: handicapMinusZeroPoint5.line, linesDifference: differenceAsPercentage, ahOdds: handicapMinusZeroPoint5.underOdds, dcOdds: doubleChance.awayWin})
+    differenceAsPercentage = round((doubleChance.awayWin - handicapMinusZeroPoint5.underOdds) / averageAwayDCAwayAH * 100, 2);
+    if (Math.abs(differenceAsPercentage) > percentageDriftedBetLimit) {
+      driftedBets.push({ match: match.match, data: match.date, url: match.url, betTo: "away", lineValue: handicapMinusZeroPoint5.line, linesDifference: differenceAsPercentage, ahOdds: handicapMinusZeroPoint5.underOdds, dcOdds: doubleChance.awayWin })
       differenceAsPercentage > 0 ? console.log('ValueBet DC away ', differenceAsPercentage) : console.log('ValueBet AH away ', differenceAsPercentage);
     }
   }

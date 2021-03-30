@@ -23,6 +23,12 @@ const parse3WaysLine = (lineJSON) => {
         result.localIsInitalOdd = !lineJSON.movement[key]['0'];
         result.awayIsInitalOdd = !lineJSON.movement[key]['2'];
       }
+
+      if (lineJSON.movement[key]['0'] === 'up') result.localUpTrend += 1;
+      if (lineJSON.movement[key]['0'] === 'down') result.localDownTrend += 1;
+      if (lineJSON.movement[key]['2'] === 'up') result.awayUpTrend += 1;
+      if (lineJSON.movement[key]['2'] === 'down') result.awayDownTrend += 1;
+
       return result;
     },
     {
@@ -31,6 +37,10 @@ const parse3WaysLine = (lineJSON) => {
       awayWinSum: 0,
       localWin: 0,
       awayWin: 0,
+      localUpTrend: 0,
+      localDownTrend: 0,
+      awayUpTrend: 0,
+      awayDownTrend: 0,
     },
   );
   return parsedLine.availableInBet365
@@ -40,6 +50,10 @@ const parse3WaysLine = (lineJSON) => {
       draw: parsedLine.draw,
       localWinAvg: round(parsedLine.localWinSum / parsedLine.numOfBookies, 3),
       awayWinAvg: round(parsedLine.awayWinSum / parsedLine.numOfBookies, 3),
+      localUpTrend: round((parsedLine.localUpTrend / parsedLine.numOfBookies) * 100, 1),
+      localDownTrend: round((parsedLine.localDownTrend / parsedLine.numOfBookies) * 100, 1),
+      awayUpTrend: round((parsedLine.awayUpTrend / parsedLine.numOfBookies) * 100, 1),
+      awayDownTrend: round((parsedLine.awayDownTrend / parsedLine.numOfBookies) * 100, 1),
     }
     : undefined;
 };
@@ -60,6 +74,12 @@ const parse2WaysLine = (lineJSON) => {
         result.localIsInitalOdd = !lineJSON.movement[key]['0'];
         result.awayIsInitalOdd = !lineJSON.movement[key]['1'];
       }
+
+      if (lineJSON.movement[key]['0'] === 'up') result.localUpTrend += 1;
+      if (lineJSON.movement[key]['0'] === 'down') result.localDownTrend += 1;
+      if (lineJSON.movement[key]['1'] === 'up') result.awayUpTrend += 1;
+      if (lineJSON.movement[key]['1'] === 'down') result.awayDownTrend += 1;
+
       return result;
     },
     {
@@ -68,6 +88,10 @@ const parse2WaysLine = (lineJSON) => {
       awayWinSum: 0,
       localWin: 0,
       awayWin: 0,
+      localUpTrend: 0,
+      localDownTrend: 0,
+      awayUpTrend: 0,
+      awayDownTrend: 0,
     },
   );
   return parsedLine.availableInBet365
@@ -76,6 +100,10 @@ const parse2WaysLine = (lineJSON) => {
       awayWin: parsedLine.awayWin,
       localWinAvg: round(parsedLine.localWinSum / parsedLine.numOfBookies, 3),
       awayWinAvg: round(parsedLine.awayWinSum / parsedLine.numOfBookies, 3),
+      localUpTrend: round((parsedLine.localUpTrend / parsedLine.numOfBookies) * 100, 1),
+      localDownTrend: round((parsedLine.localDownTrend / parsedLine.numOfBookies) * 100, 1),
+      awayUpTrend: round((parsedLine.awayUpTrend / parsedLine.numOfBookies) * 100, 1),
+      awayDownTrend: round((parsedLine.awayDownTrend / parsedLine.numOfBookies) * 100, 1),
     }
     : undefined;
 };
@@ -95,6 +123,12 @@ const parseOverUnderLine = (lineJSON) => {
         result.underOdds = lineJSON.odds[key]['1'];
         result.underIsInitalOdd = !lineJSON.movement[key]['1'];
       }
+
+      if (lineJSON.movement[key]['0'] === 'up') result.localUpTrend += 1;
+      if (lineJSON.movement[key]['0'] === 'down') result.localDownTrend += 1;
+      if (lineJSON.movement[key]['1'] === 'up') result.awayUpTrend += 1;
+      if (lineJSON.movement[key]['1'] === 'down') result.awayDownTrend += 1;
+
       return result;
     },
     {
@@ -103,6 +137,10 @@ const parseOverUnderLine = (lineJSON) => {
       underOddsSum: 0,
       overOdds: 0,
       underOdds: 0,
+      localUpTrend: 0,
+      localDownTrend: 0,
+      awayUpTrend: 0,
+      awayDownTrend: 0,
     },
   );
   return parsedLine.availableInBet365 && parsedLine.numOfBookies > 4
@@ -110,10 +148,11 @@ const parseOverUnderLine = (lineJSON) => {
       overOdds: parsedLine.overOdds,
       underOdds: parsedLine.underOdds,
       overOddsAvg: round(parsedLine.overOddsSum / parsedLine.numOfBookies, 3),
-      underOddsAvg: round(
-        parsedLine.underOddsSum / parsedLine.numOfBookies,
-        3,
-      ),
+      underOddsAvg: round(parsedLine.underOddsSum / parsedLine.numOfBookies, 3),
+      localUpTrend: round((parsedLine.localUpTrend / parsedLine.numOfBookies) * 100, 1),
+      localDownTrend: round((parsedLine.localDownTrend / parsedLine.numOfBookies) * 100, 1),
+      awayUpTrend: round((parsedLine.awayUpTrend / parsedLine.numOfBookies) * 100, 1),
+      awayDownTrend: round((parsedLine.awayDownTrend / parsedLine.numOfBookies) * 100, 1),
     }
     : undefined;
 };

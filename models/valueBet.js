@@ -42,7 +42,15 @@ const ValueBetSchema = new Schema({
     required: false,
   },
   avgOdds: {
-    type: String,
+    type: Number,
+    required: false,
+  },
+  upTrend: {
+    type: Number,
+    required: false,
+  },
+  downTrend: {
+    type: Number,
     required: false,
   },
   bet: {

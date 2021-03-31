@@ -217,8 +217,8 @@ const composeValueBetLine = (match, line, path, valueBet, lineValue) => ({
   betTo: valueBet.betTo,
   odds: valueBet.odds,
   avgOdds: isNaN(valueBet.avgOdds) ? 0 : valueBet.avgOdds,
-  upTrend: valueBet.awayUpTrend,
-  downTrend: valueBet.awayDownTrend,
+  upTrend: valueBet.upTrend,
+  downTrend: valueBet.downTrend,
 });
 const composePercentageBetLine = (match, line, path, valueBet, lineValue) => ({
   match: match.match,

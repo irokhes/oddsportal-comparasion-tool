@@ -43,7 +43,7 @@ const lineWith2WaysBet = (bet, line) => {
     return {
       avgOddsChange: round(line.awayAvg - bet.avgOdds, 3),
       odds: line.awayWin,
-      avgOdds: line.awaylAvg,
+      avgOdds: line.awayAvg,
     };
   }
   return null;

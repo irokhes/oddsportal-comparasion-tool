@@ -43,7 +43,7 @@ const BetSchema = new Schema({
     required: false,
   },
   avgOdds: {
-    type: String,
+    type: Number,
     required: false,
   },
   lastAvgOdds: {

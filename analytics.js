@@ -216,9 +216,9 @@ const composeValueBetLine = (match, line, path, valueBet, lineValue) => ({
   valueRatio: valueBet.valueRatio,
   betTo: valueBet.betTo,
   odds: valueBet.odds,
-  avgOdds: valueBet.avgOdds,
-  upTrend: awayUpTrend,
-  downTrend: awayDownTrend,
+  avgOdds: isNaN(valueBet.avgOdds) ? 0 : valueBet.avgOdds,
+  upTrend: valueBet.awayUpTrend,
+  downTrend: valueBet.awayDownTrend,
 });
 const composePercentageBetLine = (match, line, path, valueBet, lineValue) => ({
   match: match.match,
@@ -239,7 +239,7 @@ async function saveValueBetsToDatabase(valueBets) {
   const entriesToNotify = [];
   for (let index = 0; index < valueBets.length; index++) {
     const bet = valueBets[index];
-
+    if(isNaN(bet.avgOdds))console.log(bet);
     const filterOptions = { match: bet.match, line: bet.line };
     if (bet.line === "AH" || bet.line === "O/U") filterOptions.line = bet.line;
     let vb = await ValueBet.findOne(filterOptions);
@@ -269,6 +269,9 @@ async function saveValueBetsToDatabase(valueBets) {
         sequence: valueBet.sequence,
         betTo: valueBet.betTo,
         odds: valueBet.odds,
+        avgOdds: valueBet.avgOdds,
+        upTrend: valueBet.upTrend,
+        downTrend: valueBet.downTrend
       });
   });
   return newValueBets;

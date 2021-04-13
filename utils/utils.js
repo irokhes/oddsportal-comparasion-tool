@@ -16,14 +16,13 @@ const enumerateDaysBetweenDates = (startDateString, endDateString) => {
   }
   return dates;
 };
-
-function getDates(args) {
-  if (args.length < 1) {
-    console.log('you need to provide a date: node index.js YYYYMMDD');
-    process.exit(1);
+const getDates = () => {
+  const dates = [];
+  for (let index = 0; index < 15; index++) {
+    dates.push(moment().add(index, 'days').format('YYYYMMDD'));
   }
-  return { startDate: args[0], endDate: args.length > 1 ? args[1] : args[0] };
-}
+  return dates;
+};
 
 const yyymmdd = (date) => {
   const mm = date.getMonth() + 1; // getMonth() is zero-based

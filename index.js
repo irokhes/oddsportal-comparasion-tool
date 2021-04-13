@@ -84,7 +84,6 @@ const oddsChecker = require('./oddsChecker');
 
   const start = async () => {
     console.log('started');
-    const { startDate, endDate } = getDates(process.argv.slice(2));
     db.connect();
     analytics.start();
     oddsChecker.start();
@@ -94,8 +93,8 @@ const oddsChecker = require('./oddsChecker');
       console.time('Parsing');
       cluster.queue(async ({ page }) => {
         await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
-
-        enumerateDaysBetweenDates(startDate, endDate).forEach((date) => {
+        getDates().forEach((date) => {
+          console.log(date);
           cluster.queue({ url: `https://www.oddsportal.com/matches/soccer/${date}/`, sport: 'football' }, extractMatches);
           // cluster.queue({ url: `https://www.oddsportal.com/matches/basketball/${date}/`, sport: 'basketball' }, extractMatches);
         });

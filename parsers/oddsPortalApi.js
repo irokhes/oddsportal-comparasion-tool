@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 const { getMatch, getDate, isElegibleMatch } = require('../utils/parser');
-const { getDate } = require('../utils/utils');
+const { getDateObj } = require('../utils/utils');
 const { getFootballOdds } = require('./football');
 const { getBasketOdds } = require('./basket');
 const Odds = require('../models/odds');

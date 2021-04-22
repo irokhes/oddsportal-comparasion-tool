@@ -8,11 +8,13 @@ const bot = new Telegraf(botToken);
 bot.startPolling();
 
 bot.on('channel_post', (ctx, next) => {
+  console.log(ctx.message.chat.id);
   ctx.update.message = ctx.update.channel_post;
   return next();
 });
 
 bot.command('info', async (ctx) => {
+  console.log(ctx.message.chat.id);
   ctx.reply(ctx.message.chat.id);
 });
 

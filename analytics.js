@@ -545,9 +545,7 @@ function getMatchRecosBets(match) {
           );
         }
         if (match.overUnder.length > 0) {
-          console.log('checking recos');
           const overUnderLines = overUnderReco(match.overUnder);
-          console.log(overUnderLines);
           overUnderLines.forEach(line =>
             results.push(
               composeValueBetLine(

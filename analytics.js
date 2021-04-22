@@ -35,8 +35,8 @@ const getDiffValue = (value) => {
   return 0.96
 }
 const twoLinesReco = ({ localWin, awayWin, awayWinAvg, localWinAvg, localUpTrend, localDownTrend, awayUpTrend, awayDownTrend }) => {
-  localDiff = getDiffValue(localWin);
-  awayDiff = getDiffValue(awayWin);
+  const localDiff = getDiffValue(localWin);
+  const awayDiff = getDiffValue(awayWin);
   if(localWin <= 4 && localWin > localWinAvg && ((localWin * localDiff) >= localWinAvg)){
     return {
       betTo: "local",
@@ -59,8 +59,8 @@ const twoLinesReco = ({ localWin, awayWin, awayWinAvg, localWinAvg, localUpTrend
 const overUnderReco = lines => {
   const valueBets = lines.reduce((list, line) => {
     const { overOdds, underOdds, underOddsAvg, overOddsAvg, localUpTrend, localDownTrend, awayUpTrend, awayDownTrend } = line;
-    localDiff = getDiffValue(overOdds);
-    awayDiff = getDiffValue(underOdds);
+    const localDiff = getDiffValue(overOdds);
+    const awayDiff = getDiffValue(underOdds);
     if(overOdds <= 4 && overOdds > overOddsAvg)
       // console.log(`localDiff ${localDiff} over: ${overOdds}, avg: ${overOddsAvg} result: ${overOdds * localDiff}`);
     if(overOdds <= 4 && overOdds > overOddsAvg && ((overOdds * localDiff) >= overOddsAvg)){

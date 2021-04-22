@@ -21,7 +21,7 @@ const getDates = () => {
   for (let index = 0; index < 15; index++) {
     dates.push(moment().add(index, 'days').format('YYYYMMDD'));
   }
-  return { startDate: args[0], endDate: args.length > 1 ? args[1] : args[0] };
+  return dates;
 };
 function getDateObj(dateString) {
   //

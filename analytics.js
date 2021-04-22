@@ -526,33 +526,35 @@ function getMatchRecosBets(match) {
   if (match.dnb) {
     const result = twoLinesReco(match.dnb);
     if (result)
-      results.push(
-        composeValueBetLine(match, "DNB", `#dnb${delimiter}`, result)
+    results.push(
+      composeValueBetLine(match, "DNB", `#dnb${delimiter}`, result)
       );
-  }
-  if (match.doubleChance) {
-    const result = twoLinesReco(match.doubleChance);
-    if (result)
+    }
+    if (match.doubleChance) {
+      const result = twoLinesReco(match.doubleChance);
+      if (result)
       results.push(
         composeValueBetLine(match, "DC", `#double${delimiter}`, result)
-      );
-  }
-  if (match.bts) {
-    const result = twoLinesReco(match.bts);
-    if (result)
-      results.push(
-        composeValueBetLine(match, "BTS", `#bts${delimiter}`, result)
-      );
-  }
-  if (match.overUnder.length > 0) {
-    const overUnderLines = overUnderReco(match.overUnder);
-    overUnderLines.forEach(line =>
-      results.push(
-        composeValueBetLine(
-          match,
-          "O/U",
-          `#over-under${delimiter};${addZeroes(line.line)};0`,
-          line,
+        );
+      }
+      if (match.bts) {
+        const result = twoLinesReco(match.bts);
+        if (result)
+        results.push(
+          composeValueBetLine(match, "BTS", `#bts${delimiter}`, result)
+          );
+        }
+        if (match.overUnder.length > 0) {
+          console.log('checking recos');
+          const overUnderLines = overUnderReco(match.overUnder);
+          console.log(overUnderLines);
+          overUnderLines.forEach(line =>
+            results.push(
+              composeValueBetLine(
+                match,
+                "O/U",
+                `#over-under${delimiter};${addZeroes(line.line)};0`,
+                line,
           line.line
         )
       )

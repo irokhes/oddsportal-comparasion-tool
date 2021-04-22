@@ -1,9 +1,10 @@
 // import npm modules
 const mongoose = require('mongoose');
+const counter = require('./counter');
 
 const { Schema } = mongoose;
 
-const BetSchema = new Schema({
+const RecoBetSchema = new Schema({
   sport: {
     type: String,
     default: 'football',
@@ -16,33 +17,27 @@ const BetSchema = new Schema({
     type: String,
     required: true,
   },
-  // dateObj: {
-  //   type: Date,
-  //   required: true,
-  // },
   url: {
     type: String,
     required: true,
   },
   line: {
     type: String,
+    required: false,
   },
   lineValue: {
     type: String,
+    required: false,
   },
   valueRatio: {
-    type: String,
-  },
-  sequence: {
     type: Number,
+    required: false,
   },
   betTo: {
     type: String,
+    required: false,
   },
   odds: {
-    type: Number,
-  },
-  lastOddBet365: {
     type: Number,
     required: false,
   },
@@ -50,29 +45,23 @@ const BetSchema = new Schema({
     type: Number,
     required: false,
   },
-  lastAvgOdds: {
+  upTrend: {
     type: Number,
     required: false,
   },
-  result: {
-    type: String,
+  downTrend: {
+    type: Number,
+    required: false,
   },
-  open: {
+  bet: {
     type: Boolean,
-    default: true,
+    default: false,
   },
 
 }, { timestamps: true });
+RecoBetSchema.index({ url: 1 });
+RecoBetSchema.index({ sequence: 1 });
+RecoBetSchema.index({ url: 1, line: 1 });
+RecoBetSchema.index({ url: 1, line: 1, lineValue: 1 });
 
-BetSchema.pre('save', function (next) {
-  const doc = this;
-  if (!doc.isNew) return next();
-  doc.lastAvgOdds = doc.avgOdds;
-  doc.lastOddBet365 = doc.odds;
-  next();
-});
-
-BetSchema.index({ url: 1 });
-BetSchema.index({ url: 1, line: 1 });
-BetSchema.index({ url: 1, line: 1, lineValue: 1 });
-module.exports = mongoose.model('Bet', BetSchema);
+module.exports = mongoose.model('RecoBet', RecoBetSchema);

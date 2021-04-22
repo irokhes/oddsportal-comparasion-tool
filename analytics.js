@@ -5,14 +5,89 @@ const fs = require("fs");
 const { addZeroes, getOddsBelowOpeningValue, round } = require("./utils/utils");
 const Odds = require("./models/odds");
 const ValueBet = require("./models/valueBet");
+const RecoBet = require("./models/recoBet");
 const { sendHtmlMessage, sendMessage } = require("./telegram");
 const {
   composeNewValueBetMessage,
+  composeNewRecoBetMessage,
   composeDriftedBet
 } = require("./utils/messages");
 const CronJob = require("cron").CronJob;
 const { frequency, valueBetLimit, percentageRuleLimit, percentageDriftedBetLimit } = require("./config");
 
+const getDiffValue = (value) => {
+  if (value > 2.5) return 0.85;
+  if (value > 2.4) return 0.87;
+  if (value > 2.3) return 0.88;
+  if (value > 2.2) return 0.88;
+  if (value > 2.1) return 0.88;
+  if (value > 2) return 0.9;
+  if (value > 1.9) return 0.9;
+  if (value > 1.8) return 0.9;
+  if (value > 1.7) return 0.9;
+  if (value > 1.6) return 0.9;
+  if (value > 1.5) return 0.92;
+  if (value > 1.4) return 0.93;
+  if (value > 1.3) return 0.93;
+  if (value > 1.2) return 0.93;
+  if (value > 1.1) return 0.94;
+  return 0.96
+}
+const twoLinesReco = ({ localWin, awayWin, awayWinAvg, localWinAvg, localUpTrend, localDownTrend, awayUpTrend, awayDownTrend }) => {
+  localDiff = getDiffValue(localWin);
+  awayDiff = getDiffValue(awayWin);
+  if(localWin <= 4 && localWin > localWinAvg && ((localWin * localDiff) >= localWinAvg)){
+    return {
+      valueRatio: round(1 / localWin + awayAvg, 3),
+      betTo: "local",
+      odds: localWin,
+      avgOdds: localAvg,
+      upTrend: localUpTrend,
+      downTrend: localDownTrend,
+    };
+  }
+  if(awayWin <= 4 && awayWin > awayWinAvg && ((awayWin * localDiff) >= awayWinAvg)){
+    return {
+      valueRatio: round(1 / awayWin + localAvg, 3),
+      betTo: "away",
+      odds: awayWin,
+      avgOdds: awayAvg,
+      upTrend: awayUpTrend,
+      downTrend: awayDownTrend,
+    };
+  }
+}
+const overUnderReco = lines => {
+  const valueBets = lines.reduce((list, line) => {
+    const { overOdds, underOdds, underOddsAvg, overOddsAvg, localUpTrend, localDownTrend, awayUpTrend, awayDownTrend } = line;
+    localDiff = getDiffValue(overOdds);
+    awayDiff = getDiffValue(underOdds);
+    if(overOdds <= 4 && overOdds > overOddsAvg && ((overOdds * localDiff) >= overOddsAvg)){
+      list.push({
+        ...line,
+        valueRatio: round(1 / overOdds + 1 / underOddsAvg, 3),
+        betTo: "local",
+        odds: overOdds,
+        avgOdds: overOddsAvg,
+        upTrend: localUpTrend,
+        downTrend: localDownTrend,
+      });
+    }
+    if(underOdds <= 4 && underOdds > underOddsAvg && ((underOdds * localDiff) >= underOddsAvg)){
+      list.push({
+        ...line,
+        valueRatio: round(1 / underOdds + 1 / overOddsAvg, 3),
+        betTo: "away",
+        odds: underOdds,
+        avgOdds: underOddsAvg,
+        upTrend: awayUpTrend,
+        downTrend: awayDownTrend,
+      });
+    }
+    return list;
+  }, []);
+  return valueBets;
+};
 const moneyline = (moneyLine, doubleChance) => {
   const { localWin, awayWin, awayWinAvg, localWinAvg, drawAvg, localUpTrend, localDownTrend, awayUpTrend, awayDownTrend } = moneyLine;
   let localAvg =
@@ -276,24 +351,74 @@ async function saveValueBetsToDatabase(valueBets) {
   });
   return newValueBets;
 }
+async function saveRecoBetsToDatabase(recoBets) {
+  const promises = [];
+  const newRecoBets = [];
+  const improvedLines = [];
+  const entriesToNotify = [];
+  for (let index = 0; index < recoBets.length; index++) {
+    const bet = recoBets[index];
+    if(isNaN(bet.avgOdds))console.log(bet);
+    const filterOptions = { match: bet.match, line: bet.line };
+    if (bet.line === "AH" || bet.line === "O/U") filterOptions.line = bet.line;
+    let vb = await RecoBet.findOne(filterOptions);
+
+    if (vb) {
+      if (!vb.bet && vb.valueRatio > bet.valueRatio)
+        console.log(
+          `line improved old ${vb.valueRatio} new ${bet.valueRatio}  ${bet.url}`
+        );
+      // if (vb.valueRatio - bet.valueRatio >= 0.02) entriesToNotify.push(vb._id.toString());
+      vb.valueRatio = bet.valueRatio;
+    } else {
+      vb = new ValueBet(bet);
+      entriesToNotify.push(vb._id.toString());
+    }
+    promises.push(vb.save());
+  }
+  (await Promise.all(promises)).forEach(valueBet => {
+    if (entriesToNotify.includes(valueBet._id.toString()))
+      newRecoBets.push({
+        match: valueBet.match,
+        date: valueBet.date,
+        url: valueBet.url,
+        line: valueBet.line,
+        lineValue: valueBet.lineValue,
+        valueRatio: valueBet.valueRatio,
+        sequence: valueBet.sequence,
+        betTo: valueBet.betTo,
+        odds: valueBet.odds,
+        avgOdds: valueBet.avgOdds,
+        upTrend: valueBet.upTrend,
+        downTrend: valueBet.downTrend
+      });
+  });
+  return newRecoBets;
+}
 const analyzeBets = async () => {
   try {
     const matches = await Odds.find();
     const valueBets = [];
+    const recoBets = [];
     const percentageBets = [];
     const driftedLines = [];
     matches.forEach(match => {
       valueBets.push(...getMatchValueBets(match));
+      recoBets.push(...getMatchRecosBets(match));
       // driftedLines.push(...getDriftedValueBets(match));
       // percentageBets.push(...getMatchValueBetsByPercentage(match));
     });
 
     // Save result to db
     const newValueBets = await saveValueBetsToDatabase(valueBets);
+    const newRecoBets = await saveRecoBetsToDatabase(recoBets);
     const promises = [];
     newValueBets.forEach(valueBet => {
       console.log(`new value bet: ${valueBet.url}, betTo: ${valueBet.betTo}`);
       promises.push(sendHtmlMessage(composeNewValueBetMessage(valueBet)));
+    });
+    newRecoBets.forEach(recoBet => {
+      promises.push(sendHtmlMessage(composeNewRecoBetMessage(recoBet)));
     });
     // driftedLines.forEach(driftedBet => {
     //   console.log(composeDriftedBet(driftedBet));
@@ -315,58 +440,6 @@ const start = () => {
 };
 
 module.exports = { start };
-
-function getMatchValueBetsByPercentage(match) {
-  const results = [];
-  if (match.moneyLine) {
-    const result = percentageRule(match.moneyLine);
-    if (result) results.push(composePercentageBetLine(match, "ML", "", result));
-  }
-  if (match.dnb) {
-    const result = percentageRule(match.dnb);
-    if (result)
-      results.push(composePercentageBetLine(match, "DNB", "#dnb", result));
-  }
-  if (match.doubleChance) {
-    const result = percentageRule(match.doubleChance);
-    if (result)
-      results.push(composePercentageBetLine(match, "DC", "#double", result));
-  }
-  if (match.bts) {
-    const result = bothTeamsScore(match.bts);
-    if (result)
-      results.push(composePercentageBetLine(match, "BTS", "#bts", result));
-  }
-  if (match.overUnder.length > 0) {
-    const overUnderLines = overUnderPercentageRule(match.overUnder);
-    overUnderLines.forEach(line =>
-      results.push(
-        composePercentageBetLine(
-          match,
-          "O/U",
-          `#over-under;${addZeroes(line.line)}`,
-          line,
-          line.line
-        )
-      )
-    );
-  }
-  if (match.asianHandicap.length > 0) {
-    const asianHandicapLines = overUnderPercentageRule(match.asianHandicap);
-    asianHandicapLines.forEach(line =>
-      results.push(
-        composePercentageBetLine(
-          match,
-          "AH",
-          `#ah;${addZeroes(line.line)}`,
-          line,
-          line.line
-        )
-      )
-    );
-  }
-  return results;
-}
 
 function getMatchValueBets(match) {
   const lineDelimiterBySport = {
@@ -429,6 +502,121 @@ function getMatchValueBets(match) {
           match,
           "AH",
           `#ah${delimiter};${addZeroes(line.line)};0`,
+          line,
+          line.line
+        )
+      )
+    );
+  }
+  return results;
+}
+
+function getMatchRecosBets(match) {
+  const lineDelimiterBySport = {
+    football: ";2",
+    basketball: ";1"
+  };
+  const delimiter = lineDelimiterBySport[match.sport];
+  const results = [];
+  if (match.moneyLine) {
+    const result = twoLinesReco(match.moneyLine);
+    if (result) results.push(composeRecoBetLine(match, "ML", "", result));
+  }
+  if (match.dnb) {
+    const result = twoLinesReco(match.dnb);
+    if (result)
+      results.push(
+        composeValueBetLine(match, "DNB", `#dnb${delimiter}`, result)
+      );
+  }
+  if (match.doubleChance) {
+    const result = twoLinesReco(match.doubleChance);
+    if (result)
+      results.push(
+        composeValueBetLine(match, "DC", `#double${delimiter}`, result)
+      );
+  }
+  if (match.bts) {
+    const result = twoLinesReco(match.bts);
+    if (result)
+      results.push(
+        composeValueBetLine(match, "BTS", `#bts${delimiter}`, result)
+      );
+  }
+  if (match.overUnder.length > 0) {
+    const overUnderLines = overUnderReco(match.overUnder);
+    overUnderLines.forEach(line =>
+      results.push(
+        composeValueBetLine(
+          match,
+          "O/U",
+          `#over-under${delimiter};${addZeroes(line.line)};0`,
+          line,
+          line.line
+        )
+      )
+    );
+  }
+  if (match.asianHandicap.length > 0) {
+    const asianHandicapLines = overUnderReco(match.asianHandicap);
+    asianHandicapLines.forEach(line =>
+      results.push(
+        composeValueBetLine(
+          match,
+          "AH",
+          `#ah${delimiter};${addZeroes(line.line)};0`,
+          line,
+          line.line
+        )
+      )
+    );
+  }
+  return results;
+}
+
+function getMatchValueBetsByPercentage(match) {
+  const results = [];
+  if (match.moneyLine) {
+    const result = percentageRule(match.moneyLine);
+    if (result) results.push(composePercentageBetLine(match, "ML", "", result));
+  }
+  if (match.dnb) {
+    const result = percentageRule(match.dnb);
+    if (result)
+      results.push(composePercentageBetLine(match, "DNB", "#dnb", result));
+  }
+  if (match.doubleChance) {
+    const result = percentageRule(match.doubleChance);
+    if (result)
+      results.push(composePercentageBetLine(match, "DC", "#double", result));
+  }
+  if (match.bts) {
+    const result = bothTeamsScore(match.bts);
+    if (result)
+      results.push(composePercentageBetLine(match, "BTS", "#bts", result));
+  }
+  if (match.overUnder.length > 0) {
+    const overUnderLines = overUnderPercentageRule(match.overUnder);
+    overUnderLines.forEach(line =>
+      results.push(
+        composePercentageBetLine(
+          match,
+          "O/U",
+          `#over-under;${addZeroes(line.line)}`,
+          line,
+          line.line
+        )
+      )
+    );
+  }
+  if (match.asianHandicap.length > 0) {
+    const asianHandicapLines = overUnderPercentageRule(match.asianHandicap);
+    asianHandicapLines.forEach(line =>
+      results.push(
+        composePercentageBetLine(
+          match,
+          "AH",
+          `#ah;${addZeroes(line.line)}`,
           line,
           line.line
         )

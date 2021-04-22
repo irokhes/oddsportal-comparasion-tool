@@ -21,8 +21,11 @@ const getDates = () => {
   for (let index = 0; index < 15; index++) {
     dates.push(moment().add(index, 'days').format('YYYYMMDD'));
   }
-  return dates;
-};
+  return { startDate: args[0], endDate: args.length > 1 ? args[1] : args[0] };
+}
+function getDate(dateString) {
+  //
+}
 
 const yyymmdd = (date) => {
   const mm = date.getMonth() + 1; // getMonth() is zero-based
@@ -84,6 +87,7 @@ module.exports = {
   delay,
   enumerateDaysBetweenDates,
   getDates,
+  getDate,
   addZeroes,
   getOddsBelowOpeningValue,
   round,

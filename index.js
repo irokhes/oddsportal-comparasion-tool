@@ -63,6 +63,7 @@ const oddsChecker = require('./oddsChecker');
     page.on('console', (consoleObj) => console.log(consoleObj.text()));
 
     try {
+      console.log('url ', url);
       await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
       await page.goto(url);
       (await page.evaluate(() => {
@@ -94,7 +95,6 @@ const oddsChecker = require('./oddsChecker');
       cluster.queue(async ({ page }) => {
         await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
         getDates().forEach((date) => {
-          console.log('date ', date);
           cluster.queue({ url: `https://www.oddsportal.com/matches/soccer/${date}/`, sport: 'football' }, extractMatches);
           // cluster.queue({ url: `https://www.oddsportal.com/matches/basketball/${date}/`, sport: 'basketball' }, extractMatches);
         });

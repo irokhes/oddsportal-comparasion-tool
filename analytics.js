@@ -418,9 +418,9 @@ const analyzeBets = async () => {
       console.log(`new value bet: ${valueBet.url}, betTo: ${valueBet.betTo}`);
       promises.push(sendHtmlMessage(composeNewValueBetMessage(valueBet)));
     });
-    // newRecoBets.forEach(recoBet => {
-    //   promises.push(sendHtmlMessage(composeNewRecoBetMessage(recoBet),recosChannelId));
-    // });
+    newRecoBets.forEach(recoBet => {
+      promises.push(sendHtmlMessage(composeNewRecoBetMessage(recoBet),recosChannelId));
+    });
     // driftedLines.forEach(driftedBet => {
     //   console.log(composeDriftedBet(driftedBet));
     // });

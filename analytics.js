@@ -61,8 +61,6 @@ const overUnderReco = lines => {
     const { overOdds, underOdds, underOddsAvg, overOddsAvg, localUpTrend, localDownTrend, awayUpTrend, awayDownTrend } = line;
     const localDiff = getDiffValue(overOdds);
     const awayDiff = getDiffValue(underOdds);
-    if(overOdds <= 4 && overOdds > overOddsAvg)
-      // console.log(`localDiff ${localDiff} over: ${overOdds}, avg: ${overOddsAvg} result: ${overOdds * localDiff}`);
     if(overOdds <= 4 && overOdds > overOddsAvg && ((overOdds * localDiff) >= overOddsAvg)){
       list.push({
         ...line,
@@ -73,8 +71,6 @@ const overUnderReco = lines => {
         downTrend: localDownTrend,
       });
     }
-    if(overOdds <= 4 && overOdds > overOddsAvg)
-      // console.log(`awayDiff ${awayDiff} under: ${underOdds}, avg: ${underOddsAvg} result: ${underOdds * awayDiff}`);
     if(underOdds <= 4 && underOdds > underOddsAvg && ((underOdds * awayDiff) >= underOddsAvg)){
       list.push({
         ...line,

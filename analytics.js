@@ -3,6 +3,7 @@
 /* eslint-disable no-param-reassign */
 const fs = require("fs");
 const { addZeroes, getOddsBelowOpeningValue, round } = require("./utils/utils");
+const { recosChannelId} = require('./config');
 const Odds = require("./models/odds");
 const ValueBet = require("./models/valueBet");
 const RecoBet = require("./models/recoBet");
@@ -417,9 +418,9 @@ const analyzeBets = async () => {
       console.log(`new value bet: ${valueBet.url}, betTo: ${valueBet.betTo}`);
       promises.push(sendHtmlMessage(composeNewValueBetMessage(valueBet)));
     });
-    newRecoBets.forEach(recoBet => {
-      promises.push(sendHtmlMessage(composeNewRecoBetMessage(recoBet)));
-    });
+    // newRecoBets.forEach(recoBet => {
+    //   promises.push(sendHtmlMessage(composeNewRecoBetMessage(recoBet),recosChannelId));
+    // });
     // driftedLines.forEach(driftedBet => {
     //   console.log(composeDriftedBet(driftedBet));
     // });

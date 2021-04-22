@@ -16,6 +16,7 @@ module.exports = {
   percentageDriftedBetLimit: process.env.PERCENTAGE_DRIFTED_BET_LIMIT || 7,
   botToken: process.env.BOT_TOKEN,
   chatId: process.env.CHAT_ID,
+  recosChannelId: process.env.RECOS_CHANNEL_ID,
   db: {
     uri: MONGO_URI,
   },

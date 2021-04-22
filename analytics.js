@@ -39,7 +39,6 @@ const twoLinesReco = ({ localWin, awayWin, awayWinAvg, localWinAvg, localUpTrend
   awayDiff = getDiffValue(awayWin);
   if(localWin <= 4 && localWin > localWinAvg && ((localWin * localDiff) >= localWinAvg)){
     return {
-      valueRatio: round(1 / localWin + awayAvg, 3),
       betTo: "local",
       odds: localWin,
       avgOdds: localAvg,
@@ -47,9 +46,8 @@ const twoLinesReco = ({ localWin, awayWin, awayWinAvg, localWinAvg, localUpTrend
       downTrend: localDownTrend,
     };
   }
-  if(awayWin <= 4 && awayWin > awayWinAvg && ((awayWin * localDiff) >= awayWinAvg)){
+  if(awayWin <= 4 && awayWin > awayWinAvg && ((awayWin * awayDiff) >= awayWinAvg)){
     return {
-      valueRatio: round(1 / awayWin + localAvg, 3),
       betTo: "away",
       odds: awayWin,
       avgOdds: awayAvg,
@@ -63,10 +61,11 @@ const overUnderReco = lines => {
     const { overOdds, underOdds, underOddsAvg, overOddsAvg, localUpTrend, localDownTrend, awayUpTrend, awayDownTrend } = line;
     localDiff = getDiffValue(overOdds);
     awayDiff = getDiffValue(underOdds);
+    if(overOdds <= 4 && overOdds > overOddsAvg)
+      console.log(`localDiff ${localDiff} over: ${overOdds}, avg: ${overOddsAvg} result: ${(overOdds * localDiff) >= overOddsAvg}`);
     if(overOdds <= 4 && overOdds > overOddsAvg && ((overOdds * localDiff) >= overOddsAvg)){
       list.push({
         ...line,
-        valueRatio: round(1 / overOdds + 1 / underOddsAvg, 3),
         betTo: "local",
         odds: overOdds,
         avgOdds: overOddsAvg,
@@ -74,10 +73,11 @@ const overUnderReco = lines => {
         downTrend: localDownTrend,
       });
     }
-    if(underOdds <= 4 && underOdds > underOddsAvg && ((underOdds * localDiff) >= underOddsAvg)){
+    if(overOdds <= 4 && overOdds > overOddsAvg)
+      console.log(`awayDiff ${awayDiff} under: ${underOdds}, avg: ${underOddsAvg} result: ${(underOdds * localDiff) >= underOddsAvg}`);
+    if(underOdds <= 4 && underOdds > underOddsAvg && ((underOdds * awayDiff) >= underOddsAvg)){
       list.push({
         ...line,
-        valueRatio: round(1 / underOdds + 1 / overOddsAvg, 3),
         betTo: "away",
         odds: underOdds,
         avgOdds: underOddsAvg,

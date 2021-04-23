@@ -2,36 +2,35 @@
 /* eslint-disable max-len */
 /* eslint-disable no-param-reassign */
 const fs = require("fs");
-const { addZeroes, getOddsBelowOpeningValue, round } = require("./utils/utils");
+const { addZeroes, round } = require("./utils/utils");
 const { recosChannelId} = require('./config');
 const Odds = require("./models/odds");
 const ValueBet = require("./models/valueBet");
 const RecoBet = require("./models/recoBet");
-const { sendHtmlMessage, sendMessage } = require("./telegram");
+const { sendHtmlMessage } = require("./telegram");
 const {
   composeNewValueBetMessage,
   composeNewRecoBetMessage,
-  composeDriftedBet
 } = require("./utils/messages");
 const CronJob = require("cron").CronJob;
 const { frequency, valueBetLimit, percentageRuleLimit, percentageDriftedBetLimit } = require("./config");
 
 const getDiffValue = (value) => {
   if (value > 2.5) return 0.85;
-  if (value > 2.4) return 0.88;
-  if (value > 2.3) return 0.89;
-  if (value > 2.2) return 0.89;
-  if (value > 2.1) return 0.89;
+  if (value > 2.4) return 0.87;
+  if (value > 2.3) return 0.88;
+  if (value > 2.2) return 0.88;
+  if (value > 2.1) return 0.88;
   if (value > 2) return 0.9;
-  if (value > 1.9) return 0.91;
-  if (value > 1.8) return 0.91;
-  if (value > 1.7) return 0.91;
-  if (value > 1.6) return 0.91;
-  if (value > 1.5) return 0.93;
-  if (value > 1.4) return 0.94;
-  if (value > 1.3) return 0.94;
-  if (value > 1.2) return 0.95;
-  if (value > 1.1) return 0.96;
+  if (value > 1.9) return 0.9;
+  if (value > 1.8) return 0.9;
+  if (value > 1.7) return 0.9;
+  if (value > 1.6) return 0.9;
+  if (value > 1.5) return 0.92;
+  if (value > 1.4) return 0.93;
+  if (value > 1.3) return 0.93;
+  if (value > 1.2) return 0.93;
+  if (value > 1.1) return 0.94;
   return 0.96
 }
 const twoLinesReco = ({ localWin, awayWin, awayWinAvg, localWinAvg, localUpTrend, localDownTrend, awayUpTrend, awayDownTrend }) => {
@@ -41,7 +40,7 @@ const twoLinesReco = ({ localWin, awayWin, awayWinAvg, localWinAvg, localUpTrend
     return {
       betTo: "local",
       odds: localWin,
-      avgOdds: localAvg,
+      avgOdds: localWinAvg,
       upTrend: localUpTrend,
       downTrend: localDownTrend,
     };
@@ -50,7 +49,7 @@ const twoLinesReco = ({ localWin, awayWin, awayWinAvg, localWinAvg, localUpTrend
     return {
       betTo: "away",
       odds: awayWin,
-      avgOdds: awayAvg,
+      avgOdds: awayWinAvg,
       upTrend: awayUpTrend,
       downTrend: awayDownTrend,
     };
@@ -307,7 +306,6 @@ const composePercentageBetLine = (match, line, path, valueBet, lineValue) => ({
 async function saveValueBetsToDatabase(valueBets) {
   const promises = [];
   const newValueBets = [];
-  const improvedLines = [];
   const entriesToNotify = [];
   for (let index = 0; index < valueBets.length; index++) {
     const bet = valueBets[index];
@@ -351,7 +349,6 @@ async function saveValueBetsToDatabase(valueBets) {
 async function saveRecoBetsToDatabase(recoBets) {
   const promises = [];
   const newRecoBets = [];
-  const improvedLines = [];
   const entriesToNotify = [];
   for (let index = 0; index < recoBets.length; index++) {
     const bet = recoBets[index];
@@ -368,7 +365,7 @@ async function saveRecoBetsToDatabase(recoBets) {
       // if (vb.valueRatio - bet.valueRatio >= 0.02) entriesToNotify.push(vb._id.toString());
       vb.valueRatio = bet.valueRatio;
     } else {
-      vb = new ValueBet(bet);
+      vb = new RecoBet(bet);
       entriesToNotify.push(vb._id.toString());
     }
     promises.push(vb.save());
@@ -414,9 +411,15 @@ const analyzeBets = async () => {
       console.log(`new value bet: ${valueBet.url}, betTo: ${valueBet.betTo}`);
       promises.push(sendHtmlMessage(composeNewValueBetMessage(valueBet)));
     });
-    newRecoBets.forEach(recoBet => {
-      promises.push(sendHtmlMessage(composeNewRecoBetMessage(recoBet),recosChannelId));
-    });
+    for (let index = 0; index < newValueBets.length; index++) {
+      const valueBet = newValueBets[index];
+      console.log(`new value bet: ${valueBet.url}, betTo: ${valueBet.betTo}`);
+      await sendHtmlMessage(composeNewValueBetMessage(valueBet));
+    }
+    for (let index = 0; index < newRecoBets.length; index++) {
+      const recoBet = newRecoBets[index];
+      await sendHtmlMessage(composeNewRecoBetMessage(recoBet),recosChannelId);
+    }
     // driftedLines.forEach(driftedBet => {
     //   console.log(composeDriftedBet(driftedBet));
     // });
@@ -425,7 +428,7 @@ const analyzeBets = async () => {
     //   promises.push(sendHtmlMessage(composeNewPercentageBetMessage(valueBet)));
     // })
   } catch (error) {
-    // console.log("Error: ", error);
+    console.log("ERROR!!!!!!!!!!: ", error);
   }
 };
 

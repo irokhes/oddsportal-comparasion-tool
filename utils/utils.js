@@ -24,7 +24,7 @@ const getDates = () => {
   return dates;
 };
 function getDateObj(dateString) {
-  //
+  return new Date();
 }
 
 const yyymmdd = (date) => {

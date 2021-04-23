@@ -23,9 +23,9 @@ const getDiffValue = (value) => {
   if (value > 2.1) return 0.88;
   if (value > 2) return 0.9;
   if (value > 1.9) return 0.9;
-  if (value > 1.8) return 0.9;
-  if (value > 1.7) return 0.9;
-  if (value > 1.6) return 0.9;
+  if (value > 1.8) return 0.91;
+  if (value > 1.7) return 0.91;
+  if (value > 1.6) return 0.91;
   if (value > 1.5) return 0.92;
   if (value > 1.4) return 0.93;
   if (value > 1.3) return 0.93;

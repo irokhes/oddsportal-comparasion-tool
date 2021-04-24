@@ -419,10 +419,7 @@ const analyzeBets = async () => {
     const newValueBets = await saveValueBetsToDatabase(valueBets);
     const newRecoBets = await saveRecoBetsToDatabase(recoBets);
     const promises = [];
-    newValueBets.forEach(valueBet => {
-      console.log(`new value bet: ${valueBet.url}, betTo: ${valueBet.betTo}`);
-      promises.push(sendHtmlMessage(composeNewValueBetMessage(valueBet)));
-    });
+
     for (let index = 0; index < newValueBets.length; index++) {
       const valueBet = newValueBets[index];
       console.log(`new value bet: ${valueBet.url}, betTo: ${valueBet.betTo}`);

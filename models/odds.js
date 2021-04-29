@@ -16,10 +16,10 @@ const OddsSchema = new Schema({
     type: String,
     required: true,
   },
-  // dateObj: {
-  //   type: Date,
-  //   required: true,
-  // },
+  dateObj: {
+    type: Date,
+    required: true,
+  },
   url: {
     type: String,
     required: true,

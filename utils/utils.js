@@ -23,8 +23,28 @@ const getDates = () => {
   }
   return dates;
 };
+const monthsMapping = {
+  Jan: '01',
+  Feb: '02',
+  Mar: '03',
+  Apr: '04',
+  May: '05',
+  June: '06',
+  July: '07',
+  Aug: '08',
+  Sep: '09',
+  Oct: '10',
+  Nov: '11',
+  Dic: '12',
+};
 function getDateObj(dateString) {
-  return new Date();
+  // Tomorrow, 24 Apr 2021, 00:00
+  const toArray = dateString.split(', ');
+  const dateInArray = toArray[1].split(' ');
+  const day = dateInArray[0];
+  const month = monthsMapping[dateInArray[1]];
+  const year = dateInArray[2];
+  return new Date(`${year}-${month}-${day}T${toArray[2]}:00Z`);
 }
 
 const yyymmdd = (date) => {

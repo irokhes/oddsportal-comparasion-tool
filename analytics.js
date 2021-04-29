@@ -418,7 +418,6 @@ const analyzeBets = async () => {
     // Save result to db
     const newValueBets = await saveValueBetsToDatabase(valueBets);
     const newRecoBets = await saveRecoBetsToDatabase(recoBets);
-    const promises = [];
 
     for (let index = 0; index < newValueBets.length; index++) {
       const valueBet = newValueBets[index];

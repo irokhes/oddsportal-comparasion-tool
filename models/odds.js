@@ -18,7 +18,6 @@ const OddsSchema = new Schema({
   },
   dateObj: {
     type: Date,
-    required: true,
   },
   url: {
     type: String,

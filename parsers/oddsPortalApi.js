@@ -32,6 +32,7 @@ const getOdds = async (page, data) => {
   odds.match = await getMatch(page);
   odds.date = await getDate(page);
   odds.dateObj = getDateObj(odds.date);
+  console.log('date is: ', odds.dateObj);
   odds.url = url;
   odds.sport = sport;
 

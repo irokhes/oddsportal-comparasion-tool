@@ -39,13 +39,11 @@ const monthsMapping = {
 };
 function getDateObj(dateString) {
   // Tomorrow, 24 Apr  2021, 00:00
-  console.log(dateString);
   const toArray = dateString.split(', ');
   const dateInArray = toArray[1].split(' ');
   const day = dateInArray[0];
   const month = monthsMapping[dateInArray[1]];
   const year = toArray[1].split('  ')[1];
-  console.log(`${year}-${month}-${day}T${toArray[2]}:00Z`);
   return new Date(`${year}-${month}-${day}T${toArray[2]}:00Z`);
 }
 

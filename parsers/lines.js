@@ -32,6 +32,7 @@ const parse3WaysLine = (lineJSON) => {
       return result;
     },
     {
+      availableInBet365: false,
       numOfBookies: 0,
       localWinSum: 0,
       awayWinSum: 0,
@@ -82,6 +83,7 @@ const parse2WaysLine = (lineJSON) => {
       return result;
     },
     {
+      availableInBet365: false,
       numOfBookies: 0,
       localWinSum: 0,
       awayWinSum: 0,
@@ -130,6 +132,7 @@ const parseOverUnderLine = (lineJSON) => {
       return result;
     },
     {
+      availableInBet365: false,
       numOfBookies: 0,
       overOddsSum: 0,
       underOddsSum: 0,

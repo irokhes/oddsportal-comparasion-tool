@@ -17,6 +17,9 @@ const RecoBetSchema = new Schema({
     type: String,
     required: true,
   },
+  dateObj: {
+    type: Date,
+  },
   url: {
     type: String,
     required: true,

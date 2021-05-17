@@ -389,6 +389,7 @@ const asianHandicap = lines => {
 const composeValueBetLine = (match, line, path, valueBet, lineValue) => ({
   match: match.match,
   date: match.date,
+  dateObj: match.dateObj,
   line,
   lineValue,
   url: match.url + path,
@@ -402,6 +403,7 @@ const composeValueBetLine = (match, line, path, valueBet, lineValue) => ({
 const composeRecoBetLine = (match, line, path, valueBet, lineValue) => ({
   match: match.match,
   date: match.date,
+  dateObj: match.dateObj,
   line,
   lineValue,
   url: match.url + path,

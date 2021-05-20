@@ -11,7 +11,11 @@ const enumerateDaysBetweenDates = (startDateString, endDateString) => {
   const endDate = moment(endDateString);
 
   const dates = [];
-  for (let m = moment(startDate); m.diff(endDate, 'days') <= 0; m.add(1, 'days')) {
+  for (
+    let m = moment(startDate);
+    m.diff(endDate, 'days') <= 0;
+    m.add(1, 'days')
+  ) {
     dates.push(m.format('YYYYMMDD'));
   }
   return dates;
@@ -19,7 +23,11 @@ const enumerateDaysBetweenDates = (startDateString, endDateString) => {
 const getDates = () => {
   const dates = [];
   for (let index = 0; index < 15; index++) {
-    dates.push(moment().add(index, 'days').format('YYYYMMDD'));
+    dates.push(
+      moment()
+        .add(index, 'days')
+        .format('YYYYMMDD'),
+    );
   }
   return dates;
 };
@@ -44,13 +52,17 @@ function getDateObj(dateString) {
   const day = dateInArray[0];
   const month = monthsMapping[dateInArray[1]];
   const year = toArray[1].split('  ')[1];
+  if (Number.isNaN(Date.parse(`${year}-${month}-${day}T${toArray[2]}:00Z`))) {
+    console.log('NO ES UNA FECHA... ', dateString);
+  }
   return new Date(`${year}-${month}-${day}T${toArray[2]}:00Z`);
 }
 
 const yyymmdd = (date) => {
   const mm = date.getMonth() + 1; // getMonth() is zero-based
   const dd = date.getDate();
-  return [date.getFullYear(),
+  return [
+    date.getFullYear(),
     (mm > 9 ? '' : '0') + mm,
     (dd > 9 ? '' : '0') + dd,
   ].join('');
@@ -60,12 +72,27 @@ const addZeroes = (num) => {
   const len = dec && dec.length > 2 ? dec.length : 2;
   return Number(num).toFixed(len);
 };
-function getOddsBelowOpeningValue(betytype, openingOddsType, _188BET, _1xBet, _Marathonbet, _Pinnacle) {
+function getOddsBelowOpeningValue(
+  betytype,
+  openingOddsType,
+  _188BET,
+  _1xBet,
+  _Marathonbet,
+  _Pinnacle,
+) {
   let currentOddsBelowOrigianl = 0;
-  if (_188BET[betytype] < _188BET[openingOddsType]) { currentOddsBelowOrigianl++; }
-  if (_1xBet[betytype] < _1xBet[openingOddsType]) { currentOddsBelowOrigianl++; }
-  if (_Marathonbet[betytype] < _Marathonbet[openingOddsType]) { currentOddsBelowOrigianl++; }
-  if (_Pinnacle[betytype] < _Pinnacle[openingOddsType]) { currentOddsBelowOrigianl++; }
+  if (_188BET[betytype] < _188BET[openingOddsType]) {
+    currentOddsBelowOrigianl++;
+  }
+  if (_1xBet[betytype] < _1xBet[openingOddsType]) {
+    currentOddsBelowOrigianl++;
+  }
+  if (_Marathonbet[betytype] < _Marathonbet[openingOddsType]) {
+    currentOddsBelowOrigianl++;
+  }
+  if (_Pinnacle[betytype] < _Pinnacle[openingOddsType]) {
+    currentOddsBelowOrigianl++;
+  }
   return currentOddsBelowOrigianl;
 }
 function round(value, decimals) {
@@ -92,7 +119,8 @@ function binarySearch(sortedArray, key) {
     if (sortedArray[middle] === key) {
       // found the key
       return middle;
-    } if (sortedArray[middle] < key) {
+    }
+    if (sortedArray[middle] < key) {
       // continue searching to the right
       start = middle + 1;
     } else {

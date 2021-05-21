@@ -37,7 +37,7 @@ const monthsMapping = {
   Mar: '03',
   Apr: '04',
   May: '05',
-  June: '06',
+  Jun: '06',
   July: '07',
   Aug: '08',
   Sep: '09',

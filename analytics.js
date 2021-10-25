@@ -539,10 +539,10 @@ const analyzeBets = async () => {
       const recoBet = newRecoBets[index];
       await sendHtmlMessage(composeNewRecoBetMessage(recoBet), recosChannelId);
     }
-    for (let index = 0; index < driftedLines.length; index++) {
-      const driftedBet = driftedLines[index];
-      await sendHtmlMessage(composeDriftedBet(driftedBet), driftedChannelId);
-    }
+    // for (let index = 0; index < driftedLines.length; index++) {
+    //   const driftedBet = driftedLines[index];
+    //   await sendHtmlMessage(composeDriftedBet(driftedBet), driftedChannelId);
+    // }
     // driftedLines.forEach(driftedBet => {
     //   console.log(composeDriftedBet(driftedBet));
     //   await

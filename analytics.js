@@ -3,14 +3,15 @@
 /* eslint-disable no-param-reassign */
 const fs = require("fs");
 const { addZeroes, round } = require("./utils/utils");
-const { recosChannelId } = require("./config");
+const { recosChannelId, driftedChannelId } = require("./config");
 const Odds = require("./models/odds");
 const ValueBet = require("./models/valueBet");
 const RecoBet = require("./models/recoBet");
 const { sendHtmlMessage } = require("./telegram");
 const {
   composeNewValueBetMessage,
-  composeNewRecoBetMessage
+  composeNewRecoBetMessage,
+  composeDriftedBet,
 } = require("./utils/messages");
 const CronJob = require("cron").CronJob;
 const {
@@ -521,7 +522,7 @@ const analyzeBets = async () => {
     matches.forEach(match => {
       valueBets.push(...getMatchValueBets(match));
       recoBets.push(...getMatchRecosBets(match));
-      // driftedLines.push(...getDriftedValueBets(match));
+      driftedLines.push(...getDriftedValueBets(match));
       // percentageBets.push(...getMatchValueBetsByPercentage(match));
     });
 
@@ -538,8 +539,14 @@ const analyzeBets = async () => {
       const recoBet = newRecoBets[index];
       await sendHtmlMessage(composeNewRecoBetMessage(recoBet), recosChannelId);
     }
+    for (let index = 0; index < driftedLines.length; index++) {
+      const driftedBet = driftedLines[index];
+      await sendHtmlMessage(composeDriftedBet(driftedBet), driftedChannelId);
+    }
     // driftedLines.forEach(driftedBet => {
     //   console.log(composeDriftedBet(driftedBet));
+    //   await
+    //   promises.push(sendHtmlMessage(composeNewPercentageBetMessage(valueBet), ));
     // });
     // percentageBets.forEach(valueBet => {
     //   console.log(`new percentage bet: ${valueBet.url} %: ${valueBet.percentage}`);

@@ -523,7 +523,7 @@ const analyzeBets = async () => {
     matches.forEach(match => {
       valueBets.push(...getMatchValueBets(match));
       recoBets.push(...getMatchRecosBets(match));
-      driftedLines.push(...getDriftedValueBets(match));
+      // driftedLines.push(...getDriftedValueBets(match));
       // percentageBets.push(...getMatchValueBetsByPercentage(match));
     });
 

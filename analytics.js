@@ -514,7 +514,8 @@ async function saveRecoBetsToDatabase(recoBets) {
 }
 const analyzeBets = async () => {
   try {
-    const matches = await Odds.find({dateObj: {$gt: new Date()}});
+    // const matches = await Odds.find({dateObj: {$gt: new Date()}});
+    const matches = await Odds.find();
     const valueBets = [];
     const recoBets = [];
     const percentageBets = [];

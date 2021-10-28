@@ -108,7 +108,6 @@ function execShellCommand(cmd) {
     });
   });
 }
-
 function binarySearch(sortedArray, key) {
   let start = 0;
   let end = sortedArray.length - 1;
@@ -131,6 +130,11 @@ function binarySearch(sortedArray, key) {
   // key wasn't found
   return -1;
 }
+function removeDuplicates(list) {
+  const urls = list.map((o) => o.url);
+  return list.filter(({ url }, index) => !urls.includes(url, index + 1));
+}
+
 module.exports = {
   delay,
   enumerateDaysBetweenDates,
@@ -141,4 +145,5 @@ module.exports = {
   round,
   execShellCommand,
   binarySearch,
+  removeDuplicates,
 };

@@ -2,7 +2,7 @@
 /* eslint-disable max-len */
 /* eslint-disable no-param-reassign */
 const fs = require("fs");
-const { addZeroes, round } = require("./utils/utils");
+const { addZeroes, round, removeDuplicates } = require("./utils/utils");
 const { recosChannelId, driftedChannelId } = require("./config");
 const Odds = require("./models/odds");
 const ValueBet = require("./models/valueBet");
@@ -514,7 +514,7 @@ async function saveRecoBetsToDatabase(recoBets) {
 }
 const analyzeBets = async () => {
   try {
-    const matches = await Odds.find();
+    const matches = await Odds.find({dateObj: {$gt: new Date()}});
     const valueBets = [];
     const recoBets = [];
     const percentageBets = [];
@@ -527,8 +527,11 @@ const analyzeBets = async () => {
     });
 
     // Save result to db
-    const newValueBets = await saveValueBetsToDatabase(valueBets);
-    const newRecoBets = await saveRecoBetsToDatabase(recoBets);
+    const vb = removeDuplicates(valueBets);
+    const newValueBets = await saveValueBetsToDatabase(vb);
+    const rc = removeDuplicates(recoBets);
+    const newRecoBets = await saveRecoBetsToDatabase(rc);
+
 
     for (let index = 0; index < newValueBets.length; index++) {
       const valueBet = newValueBets[index];

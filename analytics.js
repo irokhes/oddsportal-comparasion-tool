@@ -7,6 +7,7 @@ const { recosChannelId, pinnacleRecoBetChannelId, driftedChannelId } = require("
 const Odds = require("./models/odds");
 const ValueBet = require("./models/valueBet");
 const RecoBet = require("./models/recoBet");
+const PinnacleRecoBet = require("./models/pinncaleRecoBet");
 const { sendHtmlMessage } = require("./telegram");
 const {
   composeNewValueBetMessage,
@@ -627,10 +628,10 @@ async function savePinnacleRecobetsToDatabase(pinnacleRecoBets) {
     if (isNaN(bet.avgOdds)) console.log(bet);
     const filterOptions = { match: bet.match, line: bet.line };
     if (bet.line === "AH" || bet.line === "O/U") filterOptions.line = bet.line;
-    let vb = await RecoBet.findOne(filterOptions);
+    let vb = await RePinnacleRecoBetcoBet.findOne(filterOptions);
 
     if (!vb) {
-      vb = new RecoBet(bet);
+      vb = new PinnacleRecoBet(bet);
       entriesToNotify.push(vb._id.toString());
       promises.push(vb.save());
     }

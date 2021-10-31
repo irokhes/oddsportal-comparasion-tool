@@ -3,7 +3,7 @@
 /* eslint-disable no-param-reassign */
 const fs = require("fs");
 const { addZeroes, round, removeDuplicates } = require("./utils/utils");
-const { recosChannelId, driftedChannelId } = require("./config");
+const { recosChannelId, pinnacleRecoBetChannelId driftedChannelId, composeNewPinnacleRecoBetMessage } = require("./config");
 const Odds = require("./models/odds");
 const ValueBet = require("./models/valueBet");
 const RecoBet = require("./models/recoBet");
@@ -39,6 +39,24 @@ const getDiffValue = value => {
   if (value > 1.1) return 0.94;
   return 0.96;
 };
+const getPinnacleDiffValue = (value) => {
+  if (value > 2.5) return 0.85;
+  if (value > 2.4) return 0.87;
+  if (value > 2.3) return 0.88;
+  if (value > 2.2) return 0.88;
+  if (value > 2.1) return 0.88;
+  if (value > 2) return 0.9;
+  if (value > 1.9) return 0.9;
+  if (value > 1.8) return 0.91;
+  if (value > 1.7) return 0.91;
+  if (value > 1.6) return 0.91;
+  if (value > 1.5) return 0.92;
+  if (value > 1.4) return 0.93;
+  if (value > 1.3) return 0.93;
+  if (value > 1.2) return 0.93;
+  if (value > 1.1) return 0.94;
+  return 0.96
+}
 const twoLinesReco = ({
   localWin,
   awayWin,
@@ -72,6 +90,49 @@ const twoLinesReco = ({
     return {
       betTo: "away",
       odds: awayWin,
+      avgOdds: awayWinAvg,
+      upTrend: awayUpTrend,
+      downTrend: awayDownTrend
+    };
+  }
+};
+const twoLinesPinnacleReco = ({
+  localWin,
+  awayWin,
+  localWinAvg,
+  awayWinAvg,
+  pinnaLocalWin,
+  pinnaAwayWin,
+  localUpTrend,
+  localDownTrend,
+  awayUpTrend,
+  awayDownTrend
+}) => {
+  const localDiff = getPinnacleDiffValue(localWin);
+  const awayDiff = getPinnacleDiffValue(awayWin);
+  if (
+    localWin <= 4 &&
+    localWin > pinnaLocalWin &&
+    localWin * localDiff >= pinnaLocalWin
+  ) {
+    return {
+      betTo: "local",
+      odds: localWin,
+      pinnacleOdds: pinnaLocalWin,
+      avgOdds: localWinAvg,
+      upTrend: localUpTrend,
+      downTrend: localDownTrend
+    };
+  }
+  if (
+    awayWin <= 4 &&
+    awayWin > pinnaAwayWin &&
+    awayWin * awayDiff >= pinnaAwayWin
+  ) {
+    return {
+      betTo: "away",
+      odds: awayWin,
+      pinnacleOdds: pinnaAwayWin,
       avgOdds: awayWinAvg,
       upTrend: awayUpTrend,
       downTrend: awayDownTrend
@@ -121,6 +182,57 @@ const overUnderReco = lines => {
         betTo: "away",
         odds: underOdds,
         avgOdds: underOddsAvg,
+        upTrend: awayUpTrend,
+        downTrend: awayDownTrend
+      });
+    }
+    return list;
+  }, []);
+  return valueBets;
+};
+const overUnderPinnacleReco = lines => {
+  const valueBets = lines.reduce((list, line) => {
+    const {
+      availableInBet365,
+      availableInPinnacle,
+      overOdds,
+      underOdds,
+      pinnaUnderOdds,
+      pinnaOverOdds,
+      localUpTrend,
+      localDownTrend,
+      awayUpTrend,
+      awayDownTrend
+    } = line;
+
+    if (!availableInBet365 || !availableInPinnacle) return list;
+
+    const localDiff = getPinnacleDiffValue(overOdds);
+    const awayDiff = getPinnacleDiffValue(underOdds);
+    if (
+      overOdds <= 4 &&
+      overOdds > pinnaOverOdds &&
+      overOdds * localDiff >= pinnaOverOdds
+    ) {
+      list.push({
+        ...line,
+        betTo: "local",
+        odds: overOdds,
+        avgOdds: pinnaOverOdds,
+        upTrend: localUpTrend,
+        downTrend: localDownTrend
+      });
+    }
+    if (
+      underOdds <= 4 &&
+      underOdds > pinnaUnderOdds &&
+      underOdds * awayDiff >= pinnaUnderOdds
+    ) {
+      list.push({
+        ...line,
+        betTo: "away",
+        odds: underOdds,
+        avgOdds: pinnaUnderOdds,
         upTrend: awayUpTrend,
         downTrend: awayDownTrend
       });
@@ -480,18 +592,11 @@ async function saveRecoBetsToDatabase(recoBets) {
     if (bet.line === "AH" || bet.line === "O/U") filterOptions.line = bet.line;
     let vb = await RecoBet.findOne(filterOptions);
 
-    if (vb) {
-      if (!vb.bet && vb.valueRatio > bet.valueRatio)
-        console.log(
-          `line improved old ${vb.valueRatio} new ${bet.valueRatio}  ${bet.url}`
-        );
-      // if (vb.valueRatio - bet.valueRatio >= 0.02) entriesToNotify.push(vb._id.toString());
-      vb.valueRatio = bet.valueRatio;
-    } else {
+    if (!vb) {
       vb = new RecoBet(bet);
       entriesToNotify.push(vb._id.toString());
+      promises.push(vb.save());
     }
-    promises.push(vb.save());
   }
   (await Promise.all(promises)).forEach(valueBet => {
     if (entriesToNotify.includes(valueBet._id.toString()))
@@ -512,17 +617,54 @@ async function saveRecoBetsToDatabase(recoBets) {
   });
   return newRecoBets;
 }
+async function savePinnacleRecobetsToDatabase(pinnacleRecoBets) {
+  const promises = [];
+  const newPinnacleRecoBets = [];
+  const entriesToNotify = [];
+  for (let index = 0; index < recoBets.length; index++) {
+    const bet = recoBets[index];
+    if (isNaN(bet.avgOdds)) console.log(bet);
+    const filterOptions = { match: bet.match, line: bet.line };
+    if (bet.line === "AH" || bet.line === "O/U") filterOptions.line = bet.line;
+    let vb = await RecoBet.findOne(filterOptions);
+
+    if (!vb) {
+      vb = new RecoBet(bet);
+      entriesToNotify.push(vb._id.toString());
+      promises.push(vb.save());
+    }
+  }
+  (await Promise.all(promises)).forEach(valueBet => {
+    if (entriesToNotify.includes(valueBet._id.toString()))
+      newPinnacleRecoBets.push({
+        match: valueBet.match,
+        date: valueBet.date,
+        url: valueBet.url,
+        line: valueBet.line,
+        lineValue: valueBet.lineValue,
+        betTo: valueBet.betTo,
+        odds: valueBet.odds,
+        pinnacleOdds: valueBet.pinnacleOdds,
+        avgOdds: valueBet.avgOdds,
+        upTrend: valueBet.upTrend,
+        downTrend: valueBet.downTrend
+      });
+  });
+  return newPinnacleRecoBets;
+}
 const analyzeBets = async () => {
   try {
     // const matches = await Odds.find({dateObj: {$gt: new Date()}});
     const matches = await Odds.find();
     const valueBets = [];
     const recoBets = [];
+    const pinnacleRecoBets = [];
     const percentageBets = [];
     const driftedLines = [];
     matches.forEach(match => {
       valueBets.push(...getMatchValueBets(match));
       recoBets.push(...getMatchRecosBets(match));
+      pinnacleRecoBets.push(...getPinnacleRecoBets(match));
       // driftedLines.push(...getDriftedValueBets(match));
       // percentageBets.push(...getMatchValueBetsByPercentage(match));
     });
@@ -532,7 +674,7 @@ const analyzeBets = async () => {
     const newValueBets = await saveValueBetsToDatabase(vb);
     const rc = removeDuplicates(recoBets);
     const newRecoBets = await saveRecoBetsToDatabase(rc);
-
+    const newPinnacleRecoBets = await savePinnacleRecobetsToDatabase(pinnacleRecoBets);
 
     for (let index = 0; index < newValueBets.length; index++) {
       const valueBet = newValueBets[index];
@@ -542,6 +684,10 @@ const analyzeBets = async () => {
     for (let index = 0; index < newRecoBets.length; index++) {
       const recoBet = newRecoBets[index];
       await sendHtmlMessage(composeNewRecoBetMessage(recoBet), recosChannelId);
+    }
+    for (let index = 0; index < newPinnacleRecoBets.length; index++) {
+      const pinnacleRecoBet = newPinnacleRecoBets[index];
+      await sendHtmlMessage(composeNewPinnacleRecoBetMessage(pinnacleRecoBet), pinnacleRecoBetChannelId);
     }
     // for (let index = 0; index < driftedLines.length; index++) {
     //   const driftedBet = driftedLines[index];
@@ -688,6 +834,62 @@ function getMatchRecosBets(match) {
   }
   if (match.asianHandicap.length > 0) {
     const asianHandicapLines = overUnderReco(match.asianHandicap);
+    asianHandicapLines.forEach(line =>
+      results.push(
+        composeValueBetLine(
+          match,
+          "AH",
+          `#ah${delimiter};${addZeroes(line.line)};0`,
+          line,
+          line.line
+        )
+      )
+    );
+  }
+  return results;
+}
+
+function getPinnacleRecoBets(match) {
+  const lineDelimiterBySport = {
+    football: ";2",
+    basketball: ";1"
+  };
+  const delimiter = lineDelimiterBySport[match.sport];
+  const results = [];
+  if (match.moneyLine && match.moneyLine.availableInBet365 && match.moneyLine.availableInPinnacle) {
+    const result = twoLinesPinnacleReco(match.moneyLine);
+    if (result) results.push(composeRecoBetLine(match, "ML", "", result));
+  }
+  if (match.dnb && match.dnb.availableInBet365 && match.dnb.availableInPinnacle) {
+    const result = twoLinesPinnacleReco(match.dnb);
+    if (result)
+      results.push(
+        composeValueBetLine(match, "DNB", `#dnb${delimiter}`, result)
+      );
+  }
+  if (match.bts && match.bts.availableInBet365  && match.bts.availableInPinnacle) {
+    const result = twoLinesPinnacleReco(match.bts);
+    if (result)
+      results.push(
+        composeValueBetLine(match, "BTS", `#bts${delimiter}`, result)
+      );
+  }
+  if (match.overUnder.length > 0) {
+    const overUnderLines = overUnderPinnacleReco(match.overUnder);
+    overUnderLines.forEach(line =>
+      results.push(
+        composeValueBetLine(
+          match,
+          "O/U",
+          `#over-under${delimiter};${addZeroes(line.line)};0`,
+          line,
+          line.line
+        )
+      )
+    );
+  }
+  if (match.asianHandicap.length > 0) {
+    const asianHandicapLines = overUnderPinnacleReco(match.asianHandicap);
     asianHandicapLines.forEach(line =>
       results.push(
         composeValueBetLine(

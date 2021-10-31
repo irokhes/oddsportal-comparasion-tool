@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 
-const RecoBetSchema = new Schema({
+const PinnacleRecoBets = new Schema({
   sport: {
     type: String,
     default: 'football',
@@ -31,15 +31,15 @@ const RecoBetSchema = new Schema({
     type: String,
     required: false,
   },
-  valueRatio: {
-    type: Number,
-    required: false,
-  },
   betTo: {
     type: String,
     required: false,
   },
   odds: {
+    type: Number,
+    required: false,
+  },
+  pinnacleOdds: {
     type: Number,
     required: false,
   },
@@ -61,8 +61,8 @@ const RecoBetSchema = new Schema({
   },
 
 }, { timestamps: true });
-RecoBetSchema.index({ url: 1 });
-RecoBetSchema.index({ url: 1, line: 1 });
-RecoBetSchema.index({ url: 1, line: 1, lineValue: 1 });
+PinnacleRecoBets.index({ url: 1 });
+PinnacleRecoBets.index({ url: 1, line: 1 });
+PinnacleRecoBets.index({ url: 1, line: 1, lineValue: 1 });
 
-module.exports = mongoose.model('RecoBet', RecoBetSchema);
+module.exports = mongoose.model('RecoBet', PinnacleRecoBets);

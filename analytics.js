@@ -3,7 +3,7 @@
 /* eslint-disable no-param-reassign */
 const fs = require("fs");
 const { addZeroes, round, removeDuplicates } = require("./utils/utils");
-const { recosChannelId, pinnacleRecoBetChannelId, driftedChannelId, composeNewPinnacleRecoBetMessage } = require("./config");
+const { recosChannelId, pinnacleRecoBetChannelId, driftedChannelId } = require("./config");
 const Odds = require("./models/odds");
 const ValueBet = require("./models/valueBet");
 const RecoBet = require("./models/recoBet");
@@ -11,6 +11,7 @@ const { sendHtmlMessage } = require("./telegram");
 const {
   composeNewValueBetMessage,
   composeNewRecoBetMessage,
+  composeNewPinnacleRecoBetMessage,
   composeDriftedBet,
 } = require("./utils/messages");
 const CronJob = require("cron").CronJob;

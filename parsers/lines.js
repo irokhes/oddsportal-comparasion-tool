@@ -180,6 +180,8 @@ const parseOverUnderLine = (lineJSON) => {
     numOfBookies: parsedLine.numOfBookies,
     overOdds: parsedLine.overOdds,
     underOdds: parsedLine.underOdds,
+    pinnaOverOdds: parsedLine.pinnaOverOdds,
+    pinnaUnderOdds: parsedLine.pinnaUnderOdds,
     overOddsAvg: round(parsedLine.overOddsSum / parsedLine.numOfBookies, 3),
     underOddsAvg: round(parsedLine.underOddsSum / parsedLine.numOfBookies, 3),
     localUpTrend: round((parsedLine.localUpTrend / parsedLine.numOfBookies) * 100, 1),

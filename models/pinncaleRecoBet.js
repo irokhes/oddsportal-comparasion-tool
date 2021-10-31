@@ -65,4 +65,4 @@ PinnacleRecoBets.index({ url: 1 });
 PinnacleRecoBets.index({ url: 1, line: 1 });
 PinnacleRecoBets.index({ url: 1, line: 1, lineValue: 1 });
 
-module.exports = mongoose.model('RecoBet', PinnacleRecoBets);
+module.exports = mongoose.model('PinnacleRecoBet', PinnacleRecoBets);

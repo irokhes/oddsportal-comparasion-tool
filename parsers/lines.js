@@ -23,6 +23,11 @@ const parse3WaysLine = (lineJSON) => {
         result.localIsInitalOdd = !lineJSON.movement[key]['0'];
         result.awayIsInitalOdd = !lineJSON.movement[key]['2'];
       }
+      if (key === PINNACLE) {
+        result.availableInPinnacle = true;
+        result.pinnaLocalWin = lineJSON.odds[key]['0'];
+        result.pinnaAwayWin = lineJSON.odds[key]['2'];
+      }
 
       if (lineJSON.movement[key]['0'] === 'up') result.localUpTrend += 1;
       if (lineJSON.movement[key]['0'] === 'down') result.localDownTrend += 1;
@@ -33,6 +38,7 @@ const parse3WaysLine = (lineJSON) => {
     },
     {
       availableInBet365: false,
+      availableInPinnacle: false,
       numOfBookies: 0,
       localWinSum: 0,
       awayWinSum: 0,
@@ -42,12 +48,17 @@ const parse3WaysLine = (lineJSON) => {
       localDownTrend: 0,
       awayUpTrend: 0,
       awayDownTrend: 0,
+      pinnaLocalWin: 0,
+      pinnaAwayWin: 0,
     },
   );
   return {
     availableInBet365: parsedLine.availableInBet365,
+    availablePinnacle: parsedLine.availableInPinnacle,
     localWin: parsedLine.localWin,
     awayWin: parsedLine.awayWin,
+    pinnaLocalWin: parsedLine.pinnaLocalWin,
+    pinnaAwayWin: parsedLine.pinnaAwayWin,
     draw: parsedLine.draw,
     localWinAvg: round(parsedLine.localWinSum / parsedLine.numOfBookies, 3),
     awayWinAvg: round(parsedLine.awayWinSum / parsedLine.numOfBookies, 3),
@@ -74,6 +85,11 @@ const parse2WaysLine = (lineJSON) => {
         result.localIsInitalOdd = !lineJSON.movement[key]['0'];
         result.awayIsInitalOdd = !lineJSON.movement[key]['1'];
       }
+      if (key === PINNACLE) {
+        result.availableInPinnacle = true;
+        result.pinnaLocalWin = lineJSON.odds[key]['0'];
+        result.pinnaAwayWin = lineJSON.odds[key]['1'];
+      }
 
       if (lineJSON.movement[key]['0'] === 'up') result.localUpTrend += 1;
       if (lineJSON.movement[key]['0'] === 'down') result.localDownTrend += 1;
@@ -84,6 +100,7 @@ const parse2WaysLine = (lineJSON) => {
     },
     {
       availableInBet365: false,
+      availableInPinnacle: false,
       numOfBookies: 0,
       localWinSum: 0,
       awayWinSum: 0,
@@ -93,12 +110,17 @@ const parse2WaysLine = (lineJSON) => {
       localDownTrend: 0,
       awayUpTrend: 0,
       awayDownTrend: 0,
+      pinnaLocalWin: 0,
+      pinnaAwayWin: 0,
     },
   );
   return {
     availableInBet365: parsedLine.availableInBet365,
+    availablePinnacle: parsedLine.availableInPinnacle,
     localWin: parsedLine.localWin,
     awayWin: parsedLine.awayWin,
+    pinnaLocalWin: parsedLine.pinnaLocalWin,
+    pinnaAwayWin: parsedLine.pinnaAwayWin,
     localWinAvg: round(parsedLine.localWinSum / parsedLine.numOfBookies, 3),
     awayWinAvg: round(parsedLine.awayWinSum / parsedLine.numOfBookies, 3),
     localUpTrend: round((parsedLine.localUpTrend / parsedLine.numOfBookies) * 100, 1),
@@ -123,6 +145,11 @@ const parseOverUnderLine = (lineJSON) => {
         result.underOdds = lineJSON.odds[key]['1'];
         result.underIsInitalOdd = !lineJSON.movement[key]['1'];
       }
+      if (key === PINNACLE) {
+        result.availableInPinnacle = true;
+        result.pinnaOverOdds = lineJSON.odds[key]['0'];
+        result.pinnaUnderOdds = lineJSON.odds[key]['1'];
+      }
 
       if (lineJSON.movement[key]['0'] === 'up') result.localUpTrend += 1;
       if (lineJSON.movement[key]['0'] === 'down') result.localDownTrend += 1;
@@ -133,6 +160,7 @@ const parseOverUnderLine = (lineJSON) => {
     },
     {
       availableInBet365: false,
+      availableInPinnacle: false,
       numOfBookies: 0,
       overOddsSum: 0,
       underOddsSum: 0,
@@ -142,13 +170,18 @@ const parseOverUnderLine = (lineJSON) => {
       localDownTrend: 0,
       awayUpTrend: 0,
       awayDownTrend: 0,
+      pinnaOverOdds: 0,
+      pinnaUnderOdds: 0,
     },
   );
   return {
     availableInBet365: parsedLine.availableInBet365,
+    availablePinnacle: parsedLine.availableInPinnacle,
     numOfBookies: parsedLine.numOfBookies,
     overOdds: parsedLine.overOdds,
     underOdds: parsedLine.underOdds,
+    pinnaOverOdds: parsedLine.pinnaOverOdds,
+    pinnaUnderOdds: parsedLine.pinnaUnderOdds,
     overOddsAvg: round(parsedLine.overOddsSum / parsedLine.numOfBookies, 3),
     underOddsAvg: round(parsedLine.underOddsSum / parsedLine.numOfBookies, 3),
     localUpTrend: round((parsedLine.localUpTrend / parsedLine.numOfBookies) * 100, 1),

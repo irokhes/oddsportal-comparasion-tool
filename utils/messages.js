@@ -9,7 +9,7 @@ const composeNewRecoBetMessage = (valueBet) => {
   const trend = valueBet.upTrend !== undefined && valueBet.downTrend !== undefined ? `Tendencia: ⬇️🔴${valueBet.downTrend}%  -  ⬆️🟢${valueBet.upTrend}%\n` : '';
   return `${line}${trend}<a href="${valueBet.url}" target="_blank">${valueBet.match}</a>\n`;
 };
-const composeNewRecoBetMessage = (valueBet) => {
+const composeNewPinnacleRecoBetMessage = (valueBet) => {
   const line = `Linea: ${valueBet.line} ${valueBet.line === 'AH' || valueBet.line === 'O/U' ? valueBet.lineValue : ''} cuota: ${valueBet.odds} pinnacle: ${reco.pinnacleOdds} avg:${avgMsg} Bet to: ${valueBet.betTo}\n`;
   const trend = valueBet.upTrend !== undefined && valueBet.downTrend !== undefined ? `Tendencia: ⬇️🔴${valueBet.downTrend}%  -  ⬆️🟢${valueBet.upTrend}%\n` : '';
   return `${line}${trend}<a href="${valueBet.url}" target="_blank">${valueBet.match}</a>\n`;

@@ -17,6 +17,7 @@ module.exports = {
   botToken: process.env.BOT_TOKEN,
   chatId: process.env.CHAT_ID,
   recosChannelId: process.env.RECOS_CHANNEL_ID,
+  pinnacleRecoBetChannelId: process.env.PINNACLE_RECOS_CHANNEL_ID,
   driftedChannelId: process.env.DRIFTED_CHANNEL_ID,
   db: {
     uri: MONGO_URI,

@@ -9,6 +9,12 @@ const composeNewRecoBetMessage = (valueBet) => {
   const trend = valueBet.upTrend !== undefined && valueBet.downTrend !== undefined ? `Tendencia: ⬇️🔴${valueBet.downTrend}%  -  ⬆️🟢${valueBet.upTrend}%\n` : '';
   return `${line}${trend}<a href="${valueBet.url}" target="_blank">${valueBet.match}</a>\n`;
 };
+const composeNewRecoBetMessage = (valueBet) => {
+  const line = `Linea: ${valueBet.line} ${valueBet.line === 'AH' || valueBet.line === 'O/U' ? valueBet.lineValue : ''} cuota: ${valueBet.odds} pinnacle: ${reco.pinnacleOdds} avg:${avgMsg} Bet to: ${valueBet.betTo}\n`;
+  const trend = valueBet.upTrend !== undefined && valueBet.downTrend !== undefined ? `Tendencia: ⬇️🔴${valueBet.downTrend}%  -  ⬆️🟢${valueBet.upTrend}%\n` : '';
+  return `${line}${trend}<a href="${valueBet.url}" target="_blank">${valueBet.match}</a>\n`;
+};
+
 const composeNewPercentageBetMessage = (valueBet) => `PERCENTAGE\n\nLinea: ${valueBet.line}\n\n<a href="${valueBet.url}" target="_blank">${valueBet.match}</a>\n\nValue Percentage: ${valueBet.percentage}\n\n`;
 const composeDriftedBet = (driftedBet) => `Diferencia entre lineas AH ${driftedBet.lineValue}  ${driftedBet.dnb ? driftedBet.dnbOdds : driftedBet.dcOdds}\n\n<a href="${driftedBet.url}" target="_blank">${driftedBet.match}</a>\n\n`;
 const composeOddsChangeBetMessage = (bet, result) => (result.oddsChange
@@ -17,6 +23,7 @@ const composeOddsChangeBetMessage = (bet, result) => (result.oddsChange
 module.exports = {
   composeNewValueBetMessage,
   composeNewRecoBetMessage,
+  composeNewPinnacleRecoBetMessage,
   composeNewPercentageBetMessage,
   composeOddsChangeBetMessage,
   composeDriftedBet,

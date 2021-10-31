@@ -628,7 +628,7 @@ async function savePinnacleRecobetsToDatabase(pinnacleRecoBets) {
     if (isNaN(bet.avgOdds)) console.log(bet);
     const filterOptions = { match: bet.match, line: bet.line };
     if (bet.line === "AH" || bet.line === "O/U") filterOptions.line = bet.line;
-    let vb = await RePinnacleRecoBetcoBet.findOne(filterOptions);
+    let vb = await PinnacleRecoBet.findOne(filterOptions);
 
     if (!vb) {
       vb = new PinnacleRecoBet(bet);

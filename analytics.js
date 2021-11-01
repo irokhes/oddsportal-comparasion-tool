@@ -547,7 +547,6 @@ const composePercentageBetLine = (match, line, path, valueBet, lineValue) => ({
 async function saveValueBetsToDatabase(valueBets) {
   const promises = [];
   const newValueBets = [];
-  const entriesToNotify = [];
   for (let index = 0; index < valueBets.length; index++) {
     const bet = valueBets[index];
     if (isNaN(bet.avgOdds)) console.log(bet);
@@ -555,21 +554,12 @@ async function saveValueBetsToDatabase(valueBets) {
     if (bet.line === "AH" || bet.line === "O/U") filterOptions.line = bet.line;
     let vb = await ValueBet.findOne(filterOptions);
 
-    if (vb) {
-      if (!vb.bet && vb.valueRatio > bet.valueRatio)
-        console.log(
-          `line improved old ${vb.valueRatio} new ${bet.valueRatio}  ${bet.url}`
-        );
-      // if (vb.valueRatio - bet.valueRatio >= 0.02) entriesToNotify.push(vb._id.toString());
-      vb.valueRatio = bet.valueRatio;
-    } else {
+    if (!vb) {
       vb = new ValueBet(bet);
-      entriesToNotify.push(vb._id.toString());
+      promises.push(vb.save());
     }
-    promises.push(vb.save());
   }
   (await Promise.all(promises)).forEach(valueBet => {
-    if (entriesToNotify.includes(valueBet._id.toString()))
       newValueBets.push({
         match: valueBet.match,
         date: valueBet.date,

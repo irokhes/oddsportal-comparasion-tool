@@ -237,7 +237,7 @@ const overUnderPinnacleReco = lines => {
         ...line,
         betTo: "away",
         odds: underOdds,
-        avgOdds: overOddsAvg,
+        avgOdds: underOddsAvg,
         pinnacleOdds: pinnaUnderOdds,
         upTrend: awayUpTrend,
         downTrend: awayDownTrend
@@ -529,6 +529,20 @@ const composeRecoBetLine = (match, line, path, valueBet, lineValue) => ({
   betTo: valueBet.betTo,
   odds: valueBet.odds,
   avgOdds: isNaN(valueBet.avgOdds) ? 0 : valueBet.avgOdds,
+  upTrend: valueBet.upTrend,
+  downTrend: valueBet.downTrend
+});
+const composePinnacleRecoBetLine = (match, line, path, valueBet, lineValue) => ({
+  match: match.match,
+  date: match.date,
+  dateObj: match.dateObj,
+  line,
+  lineValue,
+  url: match.url + path,
+  betTo: valueBet.betTo,
+  odds: valueBet.odds,
+  avgOdds: isNaN(valueBet.avgOdds) ? 0 : valueBet.avgOdds,
+  pinnacleOdds: valueBet.pinnacleOdds,
   upTrend: valueBet.upTrend,
   downTrend: valueBet.downTrend
 });
@@ -852,20 +866,20 @@ function getPinnacleRecoBets(match) {
   const results = [];
   if (match.moneyLine && match.moneyLine.availableInBet365 && match.moneyLine.availableInPinnacle) {
     const result = twoLinesPinnacleReco(match.moneyLine);
-    if (result) results.push(composeRecoBetLine(match, "ML", "", result));
+    if (result) results.push(composePinnacleRecoBetLine(match, "ML", "", result));
   }
   if (match.dnb && match.dnb.availableInBet365 && match.dnb.availableInPinnacle) {
     const result = twoLinesPinnacleReco(match.dnb);
     if (result)
       results.push(
-        composeValueBetLine(match, "DNB", `#dnb${delimiter}`, result)
+        composePinnacleRecoBetLine(match, "DNB", `#dnb${delimiter}`, result)
       );
   }
   if (match.bts && match.bts.availableInBet365  && match.bts.availableInPinnacle) {
     const result = twoLinesPinnacleReco(match.bts);
     if (result)
       results.push(
-        composeValueBetLine(match, "BTS", `#bts${delimiter}`, result)
+        composePinnacleRecoBetLine(match, "BTS", `#bts${delimiter}`, result)
       );
   }
   if (match.overUnder.length > 0) {

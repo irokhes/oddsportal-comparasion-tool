@@ -516,6 +516,7 @@ const composeValueBetLine = (match, line, path, valueBet, lineValue) => ({
   betTo: valueBet.betTo,
   odds: valueBet.odds,
   avgOdds: isNaN(valueBet.avgOdds) ? 0 : valueBet.avgOdds,
+  pinnacleOdds: valueBet.pinnacleOdds,
   upTrend: valueBet.upTrend,
   downTrend: valueBet.downTrend
 });

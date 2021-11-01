@@ -199,6 +199,8 @@ const overUnderPinnacleReco = lines => {
       availableInPinnacle,
       overOdds,
       underOdds,
+      underOddsAvg,
+      overOddsAvg,
       pinnaUnderOdds,
       pinnaOverOdds,
       localUpTrend,
@@ -220,7 +222,8 @@ const overUnderPinnacleReco = lines => {
         ...line,
         betTo: "local",
         odds: overOdds,
-        avgOdds: pinnaOverOdds,
+        avgOdds: overOddsAvg,
+        pinnacleOdds: pinnaOverOdds,
         upTrend: localUpTrend,
         downTrend: localDownTrend
       });
@@ -234,7 +237,8 @@ const overUnderPinnacleReco = lines => {
         ...line,
         betTo: "away",
         odds: underOdds,
-        avgOdds: pinnaUnderOdds,
+        avgOdds: overOddsAvg,
+        pinnacleOdds: pinnaUnderOdds,
         upTrend: awayUpTrend,
         downTrend: awayDownTrend
       });

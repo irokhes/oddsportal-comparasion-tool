@@ -54,7 +54,7 @@ const parse3WaysLine = (lineJSON) => {
   );
   return {
     availableInBet365: parsedLine.availableInBet365,
-    availablePinnacle: parsedLine.availableInPinnacle,
+    availableInPinnacle: parsedLine.availableInPinnacle,
     localWin: parsedLine.localWin,
     awayWin: parsedLine.awayWin,
     pinnaLocalWin: parsedLine.pinnaLocalWin,
@@ -116,7 +116,7 @@ const parse2WaysLine = (lineJSON) => {
   );
   return {
     availableInBet365: parsedLine.availableInBet365,
-    availablePinnacle: parsedLine.availableInPinnacle,
+    availableInPinnacle: parsedLine.availableInPinnacle,
     localWin: parsedLine.localWin,
     awayWin: parsedLine.awayWin,
     pinnaLocalWin: parsedLine.pinnaLocalWin,
@@ -176,7 +176,7 @@ const parseOverUnderLine = (lineJSON) => {
   );
   return {
     availableInBet365: parsedLine.availableInBet365,
-    availablePinnacle: parsedLine.availableInPinnacle,
+    availableInPinnacle: parsedLine.availableInPinnacle,
     numOfBookies: parsedLine.numOfBookies,
     overOdds: parsedLine.overOdds,
     underOdds: parsedLine.underOdds,

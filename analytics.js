@@ -2,7 +2,7 @@
 /* eslint-disable max-len */
 /* eslint-disable no-param-reassign */
 const fs = require("fs");
-const { addZeroes, round, removeDuplicates } = require("./utils/utils");
+const { addZeroes, round, removeDuplicates, removePreferentialPicks } = require("./utils/utils");
 const { recosChannelId, pinnacleRecoBetChannelId, driftedChannelId } = require("./config");
 const Odds = require("./models/odds");
 const ValueBet = require("./models/valueBet");
@@ -678,24 +678,30 @@ const analyzeBets = async () => {
       // percentageBets.push(...getMatchValueBetsByPercentage(match));
     });
 
+    //revmoe preferential pick from secundary lists
+    const vb = removePreferentialPicks(valueBets, recoBets);
+
     // Save result to db
-    const vb = removeDuplicates(valueBets);
     const newValueBets = await saveValueBetsToDatabase(vb);
-    const rc = removeDuplicates(recoBets);
-    const newRecoBets = await saveRecoBetsToDatabase(rc);
+    const newRecoBets = await saveRecoBetsToDatabase(recoBets);
     const newPinnacleRecoBets = await savePinnacleRecobetsToDatabase(pinnacleRecoBets);
 
-    for (let index = 0; index < newValueBets.length; index++) {
-      const valueBet = newValueBets[index];
-      console.log(`new value bet: ${valueBet.url}, betTo: ${valueBet.betTo}`);
+
+    const newVb = removeDuplicates(newValueBets);
+    for (let index = 0; index < newVb.length; index++) {
+      const valueBet = newVb[index];
       await sendHtmlMessage(composeNewValueBetMessage(valueBet));
     }
-    for (let index = 0; index < newRecoBets.length; index++) {
-      const recoBet = newRecoBets[index];
+
+    const newRc = removeDuplicates(newRecoBets);
+    for (let index = 0; index < newRc.length; index++) {
+      const recoBet = newRc[index];
       await sendHtmlMessage(composeNewRecoBetMessage(recoBet), recosChannelId);
     }
-    for (let index = 0; index < newPinnacleRecoBets.length; index++) {
-      const pinnacleRecoBet = newPinnacleRecoBets[index];
+
+    const newPvb = removeDuplicates(newPinnacleRecoBets);
+    for (let index = 0; index < newPvb.length; index++) {
+      const pinnacleRecoBet = newPvb[index];
       await sendHtmlMessage(composeNewPinnacleRecoBetMessage(pinnacleRecoBet), pinnacleRecoBetChannelId);
     }
     // for (let index = 0; index < driftedLines.length; index++) {

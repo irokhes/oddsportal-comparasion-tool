@@ -134,6 +134,9 @@ function removeDuplicates(list) {
   const urls = list.map((o) => o.url);
   return list.filter(({ url }, index) => !urls.includes(url, index + 1));
 }
+function removePreferentialPicks(list, preferentialList) {
+  return list.filter((o1) => !preferentialList.some((o2) => o1.url === o2.url));
+}
 
 module.exports = {
   delay,
@@ -146,4 +149,5 @@ module.exports = {
   execShellCommand,
   binarySearch,
   removeDuplicates,
+  removePreferentialPicks,
 };

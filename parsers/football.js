@@ -1,5 +1,5 @@
 const { parse2WaysLine, parseOverUnderLine, parse3WaysLine} = require('./lines');
-const { MONEYLINE, DNB, DC, AH, OVER_UNDER, BTS } = require('../utils/constants');
+const { MONEYLINE, DNB, DC, AH, OVER_UNDER, BTS, MONEYLINE_FIRST_HALF } = require('../utils/constants');
 const { execShellCommand } = require('../utils/utils');
 
 const cmd = "curl 'https://fb.oddsportal.com/feed/match/1-1-#MATCH#-#LINE#-#PARAMS#' -H 'authority: fb.oddsportal.com' -H 'sec-ch-ua: \"Chromium\";v=\"88\", \"Google Chrome\";v=\"88\", \";Not A Brand\";v=\"99\"' -H 'sec-ch-ua-mobile: ?0' -H 'user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.96 Safari/537.36' -H 'accept: */*'  -H 'sec-fetch-site: same-site' -H 'sec-fetch-mode: no-cors' -H 'sec-fetch-dest: script' -H 'referer: https://www.oddsportal.com/' -H 'accept-language: es-ES,es;q=0.9,en;q=0.8' -H 'cookie: _ga=GA1.2.1614190317.1554620476; _gid=GA1.2.1578678168.1611570893'";
@@ -13,6 +13,7 @@ const getFootballOdds = async (apiUrl, odds, url) => {
 
 
     const mlResult = execShellCommand(cmd.replace('#MATCH#', match).replace('#PARAMS#', parameters).replace('#LINE#', MONEYLINE));
+    const mlFirstHalfResult = execShellCommand(cmd.replace('#MATCH#', match).replace('#PARAMS#', parameters).replace('#LINE#', MONEYLINE_FIRST_HALF));
     const dnbResult = execShellCommand(cmd.replace('#MATCH#', match).replace('#PARAMS#', parameters).replace('#LINE#', DNB));
     const btsResult = execShellCommand(cmd.replace('#MATCH#', match).replace('#PARAMS#', parameters).replace('#LINE#', BTS));
     const dcResult = execShellCommand(cmd.replace('#MATCH#', match).replace('#PARAMS#', parameters).replace('#LINE#', DC));
@@ -23,6 +24,14 @@ const getFootballOdds = async (apiUrl, odds, url) => {
         const moneyLineJSON = JSON.parse((await mlResult).replace(`globals.jsonpCallback('${baseUrl}', `, '').replace(');', ''));
         const moneyLineOdds = moneyLineJSON.d.oddsdata ? moneyLineJSON.d.oddsdata.back[`E-${MONEYLINE}-0-0-0`] : null;
         odds.moneyLine = parse3WaysLine(moneyLineOdds);
+    } catch (error) {
+        // console.log(`error parsing ML for ${url}`);
+    }
+    // ML 1ST HALF
+    try {
+        const moneyLineJSON = JSON.parse((await mlFirstHalfResult).replace(`globals.jsonpCallback('${baseUrl}', `, '').replace(');', ''));
+        const moneyLineFirstHalfOdds = moneyLineJSON.d.oddsdata ? moneyLineJSON.d.oddsdata.back[`E-${MONEYLINE_FIRST_HALF}-0-0-0`] : null;
+        odds.moneyLineFirstHalf = parse3WaysLine(moneyLineFirstHalfOdds);
     } catch (error) {
         // console.log(`error parsing ML for ${url}`);
     }

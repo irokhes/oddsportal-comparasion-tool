@@ -689,19 +689,19 @@ const analyzeBets = async () => {
 
     // const newVb = removeDuplicates(newValueBets);
     for (let index = 0; index < newValueBets.length; index++) {
-      const valueBet = newVb[index];
+      const valueBet = newValueBets[index];
       await sendHtmlMessage(composeNewValueBetMessage(valueBet));
     }
 
     // const newRc = removeDuplicates(newRecoBets);
     for (let index = 0; index < newRecoBets.length; index++) {
-      const recoBet = newRc[index];
+      const recoBet = newRecoBets[index];
       await sendHtmlMessage(composeNewRecoBetMessage(recoBet), recosChannelId);
     }
 
     // const newPvb = removeDuplicates(newPinnacleRecoBets);
     for (let index = 0; index < newPinnacleRecoBets.length; index++) {
-      const pinnacleRecoBet = newPvb[index];
+      const pinnacleRecoBet = newPinnacleRecoBets[index];
       await sendHtmlMessage(composeNewPinnacleRecoBetMessage(pinnacleRecoBet), pinnacleRecoBetChannelId);
     }
     // for (let index = 0; index < driftedLines.length; index++) {

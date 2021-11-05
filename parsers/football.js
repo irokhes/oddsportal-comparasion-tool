@@ -29,8 +29,9 @@ const getFootballOdds = async (apiUrl, odds, url) => {
     }
     // ML 1ST HALF
     try {
-        const moneyLineFirstHalfJSON = JSON.parse((await mlFirstHalfResult).replace(`globals.jsonpCallback('${baseUrl}', `, '').replace(');', ''));
-        console.log(moneyLineFirstHalfJSON)
+        const result = await mlFirstHalfResult;
+        console.log(result)
+        const moneyLineFirstHalfJSON = JSON.parse((result).replace(`globals.jsonpCallback('${baseUrl}', `, '').replace(');', ''));
         const moneyLineFirstHalfOdds = moneyLineFirstHalfJSON.d.oddsdata ? moneyLineFirstHalfJSON.d.oddsdata.back[`E-${MONEYLINE_FIRST_HALF}-0-0-0`] : null;
         odds.moneyLineFirstHalf = parse3WaysLine(moneyLineFirstHalfOdds);
     } catch (error) {

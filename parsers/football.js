@@ -29,6 +29,7 @@ const getFootballOdds = async (apiUrl, odds, url) => {
     }
     // ML 1ST HALF
     try {
+        console.log(cmd.replace('#MATCH#', match).replace('#PARAMS#', parameters).replace('#LINE#', MONEYLINE_FIRST_HALF));
         const moneyLineJSON = JSON.parse((await mlFirstHalfResult).replace(`globals.jsonpCallback('${baseUrl}', `, '').replace(');', ''));
         const moneyLineFirstHalfOdds = moneyLineJSON.d.oddsdata ? moneyLineJSON.d.oddsdata.back[`E-${MONEYLINE_FIRST_HALF}-0-0-0`] : null;
         odds.moneyLineFirstHalf = parse3WaysLine(moneyLineFirstHalfOdds);

@@ -1,5 +1,6 @@
 module.exports = {
   MONEYLINE: '1-2',
+  MONEYLINE_FIRST_HALF: '1-3',
   HOME_AWAY: '3-1',
   AH: '5-2',
   BASKET_AH: '5-1',

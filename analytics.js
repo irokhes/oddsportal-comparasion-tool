@@ -812,6 +812,10 @@ function getMatchRecosBets(match) {
     const result = twoLinesReco(match.moneyLine);
     if (result) results.push(composeRecoBetLine(match, "ML", "", result));
   }
+  if (match.moneyLineFirstHalf && match.moneyLineFirstHalf.availableInBet365) {
+    const result = twoLinesReco(match.moneyLineFirstHalf);
+    if (result) results.push(composeRecoBetLine(match, "1 ML", "#1X2;3", result));
+  }
   if (match.dnb && match.dnb.availableInBet365) {
     const result = twoLinesReco(match.dnb);
     if (result)
@@ -874,6 +878,10 @@ function getPinnacleRecoBets(match) {
   if (match.moneyLine && match.moneyLine.availableInBet365 && match.moneyLine.availableInPinnacle) {
     const result = twoLinesPinnacleReco(match.moneyLine);
     if (result) results.push(composePinnacleRecoBetLine(match, "ML", "", result));
+  }
+  if (match.moneyLineFirstHalf && match.moneyLineFirstHalf.availableInBet365 && match.moneyLineFirstHalf.availableInPinnacle) {
+    const result = twoLinesPinnacleReco(match.moneyLineFirstHalf);
+    if (result) results.push(composePinnacleRecoBetLine(match, "1 ML", "#1X2;3", result));
   }
   if (match.dnb && match.dnb.availableInBet365 && match.dnb.availableInPinnacle) {
     const result = twoLinesPinnacleReco(match.dnb);

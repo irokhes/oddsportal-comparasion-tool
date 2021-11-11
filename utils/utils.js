@@ -43,7 +43,7 @@ const monthsMapping = {
   Sep: '09',
   Oct: '10',
   Nov: '11',
-  Dic: '12',
+  Dec: '12',
 };
 function getDateObj(dateString) {
   // Tomorrow, 24 Apr  2021, 00:00

@@ -138,6 +138,15 @@ function removePreferentialPicks(list, preferentialList) {
   return list.filter((o1) => !preferentialList.some((o2) => o1.url === o2.url));
 }
 
+function shouldBeNotified(valueBet) {
+  const TERCERA_DIVISION_ESPANOLA = 'tercera-rfef-group';
+  if (valueBet.url.includes(TERCERA_DIVISION_ESPANOLA)) return false;
+
+  if (valueBet.upTrend >= 80) return false;
+
+  return true;
+}
+
 module.exports = {
   delay,
   enumerateDaysBetweenDates,
@@ -150,4 +159,5 @@ module.exports = {
   binarySearch,
   removeDuplicates,
   removePreferentialPicks,
+  shouldBeNotified,
 };

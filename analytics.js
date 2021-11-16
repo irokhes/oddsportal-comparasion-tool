@@ -2,7 +2,7 @@
 /* eslint-disable max-len */
 /* eslint-disable no-param-reassign */
 const fs = require("fs");
-const { addZeroes, round, removeDuplicates, removePreferentialPicks } = require("./utils/utils");
+const { addZeroes, round, removeDuplicates, removePreferentialPicks, shouldBeNotified } = require("./utils/utils");
 const { recosChannelId, pinnacleRecoBetChannelId, driftedChannelId } = require("./config");
 const Odds = require("./models/odds");
 const ValueBet = require("./models/valueBet");
@@ -690,18 +690,23 @@ const analyzeBets = async () => {
     // const newVb = removeDuplicates(newValueBets);
     for (let index = 0; index < newValueBets.length; index++) {
       const valueBet = newValueBets[index];
+      if(!shouldBeNotified(valueBet))continue;
       await sendHtmlMessage(composeNewValueBetMessage(valueBet));
     }
 
     // const newRc = removeDuplicates(newRecoBets);
     for (let index = 0; index < newRecoBets.length; index++) {
       const recoBet = newRecoBets[index];
+      if(!shouldBeNotified(recoBet))continue;
       await sendHtmlMessage(composeNewRecoBetMessage(recoBet), recosChannelId);
     }
 
     // const newPvb = removeDuplicates(newPinnacleRecoBets);
     for (let index = 0; index < newPinnacleRecoBets.length; index++) {
       const pinnacleRecoBet = newPinnacleRecoBets[index];
+      //REMOVE THIRD DIVISION
+      //REMOVE TREND DOWN OVER 80%
+      if(!shouldBeNotified(pinnacleRecoBet))continue;
       await sendHtmlMessage(composeNewPinnacleRecoBetMessage(pinnacleRecoBet), pinnacleRecoBetChannelId);
     }
     // for (let index = 0; index < driftedLines.length; index++) {

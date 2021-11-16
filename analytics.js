@@ -629,8 +629,6 @@ async function saveRecoBetsToDatabase(recoBets) {
   return newRecoBets;
 }
 async function savePinnacleRecobetsToDatabase(pinnacleRecoBets) {
-  console.log('EEEEEE TENEMOS PINACLE RECOS');
-  console.log(pinnacleRecoBets);
   const promises = [];
   const newPinnacleRecoBets = [];
   for (let index = 0; index < pinnacleRecoBets.length; index++) {
@@ -704,8 +702,6 @@ const analyzeBets = async () => {
     // const newPvb = removeDuplicates(newPinnacleRecoBets);
     for (let index = 0; index < newPinnacleRecoBets.length; index++) {
       const pinnacleRecoBet = newPinnacleRecoBets[index];
-      //REMOVE THIRD DIVISION
-      //REMOVE TREND DOWN OVER 80%
       if(!shouldBeNotified(pinnacleRecoBet))continue;
       await sendHtmlMessage(composeNewPinnacleRecoBetMessage(pinnacleRecoBet), pinnacleRecoBetChannelId);
     }

@@ -142,7 +142,7 @@ function shouldBeNotified(valueBet) {
   const TERCERA_DIVISION_ESPANOLA = 'tercera-rfef-group';
   if (valueBet.url.includes(TERCERA_DIVISION_ESPANOLA)) return false;
 
-  if (valueBet.upTrend >= 80) return false;
+  if (valueBet.upTrend >= 66) return false;
 
   return true;
 }

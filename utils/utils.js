@@ -140,7 +140,9 @@ function removePreferentialPicks(list, preferentialList) {
 
 function shouldBeNotified(valueBet) {
   const TERCERA_DIVISION_ESPANOLA = 'tercera-rfef-group';
+  const YOUTH_LEAGUE_ALEMANIA = 'junioren-bundesliga';
   if (valueBet.url.includes(TERCERA_DIVISION_ESPANOLA)) return false;
+  if (valueBet.url.includes(YOUTH_LEAGUE_ALEMANIA)) return false;
 
   if (valueBet.upTrend >= 66) return false;
 

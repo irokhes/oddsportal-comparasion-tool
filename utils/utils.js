@@ -22,7 +22,7 @@ const enumerateDaysBetweenDates = (startDateString, endDateString) => {
 };
 const getDates = () => {
   const dates = [];
-  for (let index = 0; index < 21; index++) {
+  for (let index = 0; index < 16; index++) {
     dates.push(
       moment()
         .add(index, 'days')

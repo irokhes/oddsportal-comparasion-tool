@@ -135,7 +135,7 @@ function removeDuplicates(list) {
   return list.filter(({ url }, index) => !urls.includes(url, index + 1));
 }
 function removePreferentialPicks(list, preferentialList) {
-  return list.filter((o1) => !preferentialList.some((o2) => o1.url === o2.url));
+  return list.filter((o1) => !preferentialList.some((o2) => o1.match === o2.match));
 }
 
 function shouldBeNotified(valueBet) {

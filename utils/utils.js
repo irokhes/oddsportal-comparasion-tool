@@ -144,12 +144,14 @@ function shouldBeNotified(valueBet) {
   const ITALIA_YOUTH_LEAGUE = 'primavera-';
   const ITALIA_SERIE_D = 'italy/serie-d';
   const UEFA_YOUTH_LEAGUE = 'uefa-youth-league';
+  const SAO_PAULO_JUNIOR = 'copa-sao-paulo-de-juniores';
 
   if (valueBet.url.includes(TERCERA_DIVISION_ESPANOLA)) return false;
   if (valueBet.url.includes(ALEMANIA_YOUTH_LEAGUE)) return false;
   if (valueBet.url.includes(ITALIA_YOUTH_LEAGUE)) return false;
   if (valueBet.url.includes(ITALIA_SERIE_D)) return false;
   if (valueBet.url.includes(UEFA_YOUTH_LEAGUE)) return false;
+  if (valueBet.url.includes(SAO_PAULO_JUNIOR)) return false;
 
   if (valueBet.upTrend >= 66) return false;
 

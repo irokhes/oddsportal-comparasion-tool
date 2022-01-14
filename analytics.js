@@ -661,8 +661,8 @@ async function savePinnacleRecobetsToDatabase(pinnacleRecoBets) {
 }
 const analyzeBets = async () => {
   try {
-    // const matches = await Odds.find({dateObj: {$gt: new Date()}});
-    const matches = await Odds.find();
+    const matches = await Odds.find({dateObj: {$gt: new Date()}});
+    // const matches = await Odds.find();
     const valueBets = [];
     const recoBets = [];
     const pinnacleRecoBets = [];

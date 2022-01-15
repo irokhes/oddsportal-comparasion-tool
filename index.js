@@ -75,7 +75,9 @@ const oddsChecker = require('./oddsChecker');
           const matchUrlLinks = Array.from(match.querySelectorAll('td.name.table-participant > a'));
           const matchUrl = matchUrlLinks.length > 1 ? matchUrlLinks[1].href : matchUrlLinks[0].href;
 
-          if (shouldGetMatches(matchUrl)) { matchesUrlList.push(matchUrl); }
+          if (shouldGetMatches(matchUrl)) {
+            matchesUrlList.push(matchUrl);
+          }
 
           return matchesUrlList;
         }, []);

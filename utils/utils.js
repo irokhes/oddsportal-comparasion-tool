@@ -137,15 +137,14 @@ function removeDuplicates(list) {
 function removePreferentialPicks(list, preferentialList) {
   return list.filter((o1) => !preferentialList.some((o2) => o1.match === o2.match));
 }
+const TERCERA_DIVISION_ESPANOLA = 'tercera-rfef-group';
+const ALEMANIA_YOUTH_LEAGUE = 'junioren-bundesliga';
+const ITALIA_YOUTH_LEAGUE = 'primavera-';
+const ITALIA_SERIE_D = 'italy/serie-d';
+const UEFA_YOUTH_LEAGUE = 'uefa-youth-league';
+const SAO_PAULO_JUNIOR = 'copa-sao-paulo-de-juniores';
 
 function shouldBeNotified(valueBet) {
-  const TERCERA_DIVISION_ESPANOLA = 'tercera-rfef-group';
-  const ALEMANIA_YOUTH_LEAGUE = 'junioren-bundesliga';
-  const ITALIA_YOUTH_LEAGUE = 'primavera-';
-  const ITALIA_SERIE_D = 'italy/serie-d';
-  const UEFA_YOUTH_LEAGUE = 'uefa-youth-league';
-  const SAO_PAULO_JUNIOR = 'copa-sao-paulo-de-juniores';
-
   if (valueBet.url.includes(TERCERA_DIVISION_ESPANOLA)) return false;
   if (valueBet.url.includes(ALEMANIA_YOUTH_LEAGUE)) return false;
   if (valueBet.url.includes(ITALIA_YOUTH_LEAGUE)) return false;
@@ -154,6 +153,18 @@ function shouldBeNotified(valueBet) {
   if (valueBet.url.includes(SAO_PAULO_JUNIOR)) return false;
 
   if (valueBet.upTrend >= 66) return false;
+
+  return true;
+}
+
+function shouldGetMatches(matchUrl) {
+  console.log(matchUrl);
+  if (matchUrl.includes(TERCERA_DIVISION_ESPANOLA)) return false;
+  if (matchUrl.includes(ALEMANIA_YOUTH_LEAGUE)) return false;
+  if (matchUrl.includes(ITALIA_YOUTH_LEAGUE)) return false;
+  if (matchUrl.includes(ITALIA_SERIE_D)) return false;
+  if (matchUrl.includes(UEFA_YOUTH_LEAGUE)) return false;
+  if (matchUrl.includes(SAO_PAULO_JUNIOR)) return false;
 
   return true;
 }
@@ -171,4 +182,5 @@ module.exports = {
   removeDuplicates,
   removePreferentialPicks,
   shouldBeNotified,
+  shouldGetMatches,
 };

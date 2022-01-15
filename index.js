@@ -2,7 +2,7 @@
 /* eslint-disable no-shadow */
 /* eslint-disable max-len */
 const { Cluster } = require('puppeteer-cluster');
-const { enumerateDaysBetweenDates, getDates } = require('./utils/utils');
+const { shouldGetMatches, getDates } = require('./utils/utils');
 const { maxConcurrency } = require('./config');
 
 const {
@@ -73,7 +73,10 @@ const oddsChecker = require('./oddsChecker');
           if (matchHasEnded) return matchesUrlList;
 
           const matchUrlLinks = Array.from(match.querySelectorAll('td.name.table-participant > a'));
-          matchesUrlList.push(matchUrlLinks.length > 1 ? matchUrlLinks[1].href : matchUrlLinks[0].href);
+          const matchUrl = matchUrlLinks.length > 1 ? matchUrlLinks[1].href : matchUrlLinks[0].href;
+
+          if (shouldGetMatches(matchUrl)) { matchesUrlList.push(matchUrl); }
+
           return matchesUrlList;
         }, []);
       })).forEach((matchUrl) => { extractOdds(matchUrl, sport); });

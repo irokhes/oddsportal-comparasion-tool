@@ -159,7 +159,9 @@ function shouldBeNotified(valueBet) {
 }
 
 function isABannedLeague(valueBet) {
+  console.log('url ', valueBet.url);
   const isABannedLeagueResult = bannedLeagues.some((league) => valueBet.url.includes(league));
+  console.log('result');
   return !isABannedLeagueResult;
 }
 

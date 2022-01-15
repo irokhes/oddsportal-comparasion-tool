@@ -59,7 +59,7 @@ const oddsChecker = require('./oddsChecker');
   };
 
   const extractMatches = async ({ page, data }) => {
-    const { url, sport, shouldGetMatches } = data;
+    const { url, sport } = data;
     page.on('console', (consoleObj) => console.log(consoleObj.text()));
 
     try {
@@ -74,10 +74,11 @@ const oddsChecker = require('./oddsChecker');
 
           const matchUrlLinks = Array.from(match.querySelectorAll('td.name.table-participant > a'));
           const matchUrl = matchUrlLinks.length > 1 ? matchUrlLinks[1].href : matchUrlLinks[0].href;
+          matchesUrlList.push(matchUrl);
 
-          if (shouldGetMatches(matchUrl)) {
-            matchesUrlList.push(matchUrl);
-          }
+          // if (shouldGetMatches(matchUrl)) {
+          //   matchesUrlList.push(matchUrl);
+          // }
 
           return matchesUrlList;
         }, []);
@@ -99,7 +100,7 @@ const oddsChecker = require('./oddsChecker');
       cluster.queue(async ({ page }) => {
         await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
         getDates().forEach((date) => {
-          cluster.queue({ url: `https://www.oddsportal.com/matches/soccer/${date}/`, sport: 'football', shouldGetMatches }, extractMatches);
+          cluster.queue({ url: `https://www.oddsportal.com/matches/soccer/${date}/`, sport: 'football' }, extractMatches);
           // cluster.queue({ url: `https://www.oddsportal.com/matches/basketball/${date}/`, sport: 'basketball' }, extractMatches);
         });
       });

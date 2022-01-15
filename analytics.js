@@ -703,7 +703,7 @@ const analyzeBets = async () => {
     // const newPvb = removeDuplicates(newPinnacleRecoBets);
     for (let index = 0; index < newPinnacleRecoBets.length; index++) {
       const pinnacleRecoBet = newPinnacleRecoBets[index];
-      if(isABannedLeague(recoBet))continue;
+      if(isABannedLeague(pinnacleRecoBet))continue;
       if(!shouldBeNotified(pinnacleRecoBet))continue;
       await sendHtmlMessage(composeNewPinnacleRecoBetMessage(pinnacleRecoBet), pinnacleRecoBetChannelId);
     }

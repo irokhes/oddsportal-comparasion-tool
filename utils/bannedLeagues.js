@@ -46,6 +46,7 @@ const leagues = [
   '/scotland/league-two/',
   '/spain/primera-division-women/',
   '/thailand/thai-league-1/',
+  '/thailand/thai-league-2/',
   '/turkey/3-lig-group-',
 ];
 

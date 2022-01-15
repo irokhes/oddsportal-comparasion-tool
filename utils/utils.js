@@ -2,6 +2,7 @@
 const { exec } = require('child_process');
 
 const moment = require('moment');
+const bannedLeagues = require('./bannedLeagues');
 
 const delay = (time) => new Promise((resolve) => {
   setTimeout(resolve, time);
@@ -157,6 +158,11 @@ function shouldBeNotified(valueBet) {
   return true;
 }
 
+function isABannedLeague(valueBet) {
+  const isABannedLeagueResult = bannedLeagues.some((league) => valueBet.url.includes(league));
+  return !isABannedLeagueResult;
+}
+
 function shouldGetMatches(matchUrl) {
   console.log(matchUrl);
   if (matchUrl.includes(TERCERA_DIVISION_ESPANOLA)) return false;
@@ -183,4 +189,5 @@ module.exports = {
   removePreferentialPicks,
   shouldBeNotified,
   shouldGetMatches,
+  isABannedLeague,
 };

@@ -2,7 +2,7 @@
 /* eslint-disable max-len */
 /* eslint-disable no-param-reassign */
 const fs = require("fs");
-const { addZeroes, round, removeDuplicates, removePreferentialPicks, shouldBeNotified } = require("./utils/utils");
+const { addZeroes, round, removeDuplicates, removePreferentialPicks, shouldBeNotified, isABannedLeague } = require("./utils/utils");
 const { recosChannelId, pinnacleRecoBetChannelId, driftedChannelId } = require("./config");
 const Odds = require("./models/odds");
 const ValueBet = require("./models/valueBet");
@@ -695,6 +695,7 @@ const analyzeBets = async () => {
     // const newRc = removeDuplicates(newRecoBets);
     for (let index = 0; index < newRecoBets.length; index++) {
       const recoBet = newRecoBets[index];
+      if(isABannedLeague(recoBet))continue;
       if(!shouldBeNotified(recoBet))continue;
       await sendHtmlMessage(composeNewRecoBetMessage(recoBet), recosChannelId);
     }
@@ -702,6 +703,7 @@ const analyzeBets = async () => {
     // const newPvb = removeDuplicates(newPinnacleRecoBets);
     for (let index = 0; index < newPinnacleRecoBets.length; index++) {
       const pinnacleRecoBet = newPinnacleRecoBets[index];
+      if(isABannedLeague(recoBet))continue;
       if(!shouldBeNotified(pinnacleRecoBet))continue;
       await sendHtmlMessage(composeNewPinnacleRecoBetMessage(pinnacleRecoBet), pinnacleRecoBetChannelId);
     }

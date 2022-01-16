@@ -39,6 +39,8 @@ const leagues = [
   '/northern-ireland/nifl-premiership',
   '/oman/professional-league/',
   '/portugal/campeonato-de-portugal/',
+  '/portugal/liga-3/',
+  '/portugal/liga-bpi-women/',
   '/portugal/liga-revelacao-u23/',
   '/qatar/qsl/',
   '/saudi-arabia/division-1/',

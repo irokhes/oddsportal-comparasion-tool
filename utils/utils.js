@@ -160,7 +160,7 @@ function shouldBeNotified(valueBet) {
 
 function isABannedLeague(valueBet) {
   const isABannedLeagueResult = bannedLeagues.some((league) => valueBet.url.includes(league));
-  console.log('result ', isABannedLeagueResult);
+  return isABannedLeagueResult;
 }
 
 function shouldGetMatches(matchUrl) {

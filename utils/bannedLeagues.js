@@ -31,7 +31,7 @@ const leagues = [
   '/israel/state-cup/',
   '/italy/serie-a-women/',
   '/kenya/premier-league/',
-  '/malta/premier-league',
+  '/malta/premier-league/',
   '/kuwait/division-1',
   '/mali/premiere-division/',
   '/mexico/liga-de-expansion-mx',

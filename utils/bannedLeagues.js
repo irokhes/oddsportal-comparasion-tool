@@ -1,5 +1,6 @@
 const leagues = [
   '/algeria/u21-league',
+  '/andorra/primera-divisio/',
   '/australia/ffa-cup/',
   '/brazil/campeonato-baiano/',
   '/brazil/campeonato-cearense/',

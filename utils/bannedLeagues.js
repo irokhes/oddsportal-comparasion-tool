@@ -39,6 +39,7 @@ const leagues = [
   '/mexico/liga-de-expansion-mx',
   '/mexico/liga-mx-u20/',
   '/netherlands/eredivisie-women/',
+  '/nicaragua/liga-primera/',
   '/northern-ireland/nifl-premiership',
   '/oman/professional-league/',
   '/portugal/campeonato-de-portugal/',

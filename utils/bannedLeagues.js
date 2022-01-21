@@ -60,6 +60,7 @@ const leagues = [
   '/spain/segunda-rfef-group-',
   '/thailand/thai-league-1/',
   '/thailand/thai-league-2/',
+  '/turkey/2-lig-r',
   '/turkey/3-lig-group-',
   '/united-arab-emirates/presidents-cup/',
 ];

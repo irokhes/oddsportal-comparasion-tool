@@ -23,6 +23,7 @@ const leagues = [
   '/england/southern-league-south-division/',
   '/england/women-s-super-league',
   '/england/women-s-league-cup/',
+  '/france/national-2-',
   '/france/national/',
   '/ghana/premier-league/',
   '/gibraltar/national-league/',

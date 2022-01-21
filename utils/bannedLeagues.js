@@ -66,6 +66,7 @@ const leagues = [
   '/turkey/3-lig-group-',
   '/united-arab-emirates/division-1/',
   '/united-arab-emirates/presidents-cup/',
+
 ];
 
 module.exports = leagues;

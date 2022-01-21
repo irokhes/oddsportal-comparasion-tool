@@ -25,6 +25,7 @@ const leagues = [
   '/england/women-s-league-cup/',
   '/france/national/',
   '/ghana/premier-league/',
+  '/gibraltar/national-league/',
   '/greece/super-league-2/',
   '/guatemala/liga-nacional/',
   '/iceland/reykjavik-cup/',

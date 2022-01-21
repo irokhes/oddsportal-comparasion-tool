@@ -1,4 +1,4 @@
-const leagues = [
+/spain/segunda-rfef-group-const leagues = [
   '/algeria/u21-league',
   '/andorra/primera-divisio/',
   '/australia/ffa-cup/',
@@ -6,6 +6,7 @@ const leagues = [
   '/brazil/campeonato-cearense/',
   '/brazil/campeonato-potiguar/',
   '/brazil/campeonato-piauiense/',
+  '/colombia/primera-b/',
   '/cyprus/cyprus-cup/',
   '/cyprus/first-division/',
   '/czech-republic/tipsport-liga/',
@@ -47,6 +48,7 @@ const leagues = [
   '/portugal/liga-3/',
   '/portugal/liga-bpi-women/',
   '/portugal/liga-revelacao-u23/',
+  '/qatar/division-2/',
   '/qatar/qsl/',
   '/saudi-arabia/division-1/',
   '/saudi-arabia/saudi-professional-league/',
@@ -55,6 +57,7 @@ const leagues = [
   '/scotland/league-two/',
   '/spain/primera-division-women/',
   '/spain/primera-rfef-group-',
+  '/spain/segunda-rfef-group-',
   '/thailand/thai-league-1/',
   '/thailand/thai-league-2/',
   '/turkey/3-lig-group-',

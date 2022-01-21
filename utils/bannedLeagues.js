@@ -1,4 +1,4 @@
-/spain/segunda-rfef-group-const leagues = [
+const leagues = [
   '/algeria/u21-league',
   '/andorra/primera-divisio/',
   '/australia/ffa-cup/',

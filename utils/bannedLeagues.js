@@ -3,6 +3,7 @@ const leagues = [
   '/andorra/primera-divisio/',
   '/australia/ffa-cup/',
   '/brazil/campeonato-baiano/',
+  '/brazil/campeonato-catarinense/',
   '/brazil/campeonato-cearense/',
   '/brazil/campeonato-potiguar/',
   '/brazil/campeonato-piauiense/',

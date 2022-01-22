@@ -67,7 +67,10 @@ const leagues = [
   '/turkey/3-lig-group-',
   '/united-arab-emirates/division-1/',
   '/united-arab-emirates/presidents-cup/',
-
+  '/wales/cymru-north/',
+  '/wales/cymru-premier/',
+  '/wales/cymru-south/',
+  '/zambia/super-league/',
 ];
 
 module.exports = leagues;

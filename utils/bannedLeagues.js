@@ -57,6 +57,7 @@ const leagues = [
   '/portugal/liga-revelacao-u23/',
   '/qatar/division-2/',
   '/qatar/qsl/',
+  '/rwanda/premier-league/',
   '/saudi-arabia/division-1/',
   '/saudi-arabia/saudi-professional-league/',
   '/scotland/championship/',

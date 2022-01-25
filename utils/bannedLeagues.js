@@ -1,4 +1,5 @@
 const leagues = [
+  '/algeria/ligue-1/',
   '/algeria/u21-league',
   '/andorra/primera-divisio/',
   '/australia/ffa-cup/',

@@ -8,6 +8,7 @@ const leagues = [
   '/brazil/campeonato-catarinense/',
   '/brazil/campeonato-cearense/',
   '/brazil/campeonato-goiano/',
+  '/brazil/campeonato-mineiro/',
   '/brazil/campeonato-paranaense/',
   '/brazil/campeonato-paulista-a2/',
   '/brazil/campeonato-potiguar/',

@@ -5,6 +5,7 @@ const leagues = [
   '/australia/ffa-cup/',
   '/belgium/pro-league-u21/',
   '/brazil/campeonato-baiano/',
+  '/brazil/campeonato-brasiliense/',
   '/brazil/campeonato-catarinense/',
   '/brazil/campeonato-cearense/',
   '/brazil/campeonato-goiano/',

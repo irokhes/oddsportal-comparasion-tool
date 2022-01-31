@@ -44,6 +44,7 @@ const leagues = [
   '/iran/division-1/',
   '/iran/persian-gulf-pro-league/',
   '/israel/leumit-league/',
+  '/israel/liga-alef-north/',
   '/israel/state-cup/',
   '/italy/serie-a-women/',
   '/italy/serie-c-',

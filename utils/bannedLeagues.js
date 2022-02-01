@@ -26,6 +26,7 @@ const leagues = [
   '/england/fa-trophy/',
   '/england/isthmian-league-premier-division',
   '/england/national-league-north',
+  '/england/national-league-south/',
   '/england/npl-premier-division/',
   '/england/premier-league-2',
   '/england/professional-development-league/',

@@ -3,6 +3,7 @@ const leagues = [
   '/algeria/u21-league',
   '/andorra/primera-divisio/',
   '/australia/ffa-cup/',
+  '/azerbaijan/azerbaijan-cup/',
   '/bahrain/bahrain-cup/',
   '/belgium/pro-league-u21/',
   '/brazil/campeonato-baiano/',

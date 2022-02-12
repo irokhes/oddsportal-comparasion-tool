@@ -38,6 +38,7 @@ const leagues = [
   '/france/division-1-women/',
   '/france/national-2-',
   '/france/national/',
+  '/germany/bundesliga-women/',
   '/ghana/premier-league/',
   '/gibraltar/national-league/',
   '/greece/super-league-2/',

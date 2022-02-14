@@ -31,6 +31,7 @@ const leagues = [
   '/england/national-league-south/',
   '/england/npl-premier-division/',
   '/england/premier-league-2',
+  '/england/premier-league-cup',
   '/england/professional-development-league/',
   '/england/southern-league-south-division/',
   '/england/women-s-super-league',

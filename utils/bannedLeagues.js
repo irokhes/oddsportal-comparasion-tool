@@ -74,6 +74,7 @@ const leagues = [
   '/qatar/division-2/',
   '/qatar/qsl/',
   '/rwanda/premier-league/',
+  '/san-marino/campionato-sammarinese/',
   '/saudi-arabia/division-1/',
   '/saudi-arabia/saudi-professional-league/',
   '/scotland/championship/',

@@ -83,6 +83,7 @@ const leagues = [
   '/scotland/championship/',
   '/scotland/league-one/',
   '/scotland/league-two/',
+  '/serbia/super-liga/',
   '/south-africa/premier-league/',
   '/spain/primera-division-women/',
   '/spain/primera-rfef-group-',

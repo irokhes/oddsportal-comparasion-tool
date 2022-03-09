@@ -69,6 +69,7 @@ const leagues = [
   '/kosovo/superliga/',
   '/malta/premier-league/',
   '/kuwait/division-1',
+  '/kuwait/premier-league/',
   '/mali/premiere-division/',
   '/mexico/liga-de-expansion-mx',
   '/mexico/liga-mx-u20/',

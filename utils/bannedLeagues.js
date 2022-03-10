@@ -29,6 +29,7 @@ const leagues = [
   '/cyprus/first-division/',
   '/czech-republic/tipsport-liga/',
   '/egypt/division-2-group',
+  '/egypt/egypt-cup/',
   '/egypt/league-cup/',
   '/egypt/premier-league/',
   '/el-salvador/primera-division/',

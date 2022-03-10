@@ -58,6 +58,7 @@ const leagues = [
   '/indonesia/liga-1/',
   '/iran/division-1/',
   '/iran/persian-gulf-pro-league/',
+  '/ireland/division-1/',
   '/israel/leumit-league/',
   '/israel/liga-alef-north/',
   '/israel/liga-alef-south/',

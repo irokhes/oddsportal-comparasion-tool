@@ -47,7 +47,7 @@ const leagues = [
   '/france/national-2-',
   '/france/national/',
   '/germany/bundesliga-women/',
-  '/germany/oberliga-bremen/'
+  '/germany/oberliga-bremen/',
   '/germany/regionalliga-north/',
   '/germany/regionalliga-sudwest/',
   '/ghana/premier-league/',

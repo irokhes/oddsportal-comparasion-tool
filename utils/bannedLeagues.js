@@ -107,6 +107,7 @@ const leagues = [
   '/serbia/prva-liga/',
   '/serbia/super-liga/',
   '/slovakia/fortuna-liga/',
+  '/slovenia/',
   '/south-africa/premier-league/',
   '/spain/primera-division-women/',
   '/spain/primera-rfef-group-',

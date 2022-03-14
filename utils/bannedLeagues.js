@@ -53,6 +53,7 @@ const leagues = [
   '/france/division-1-women/',
   '/france/national-2-',
   '/france/national/',
+  '/georgia/',
   '/germany/bundesliga-women/',
   '/germany/oberliga-bremen/',
   '/germany/regionalliga-bayern/',

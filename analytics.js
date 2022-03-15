@@ -700,6 +700,7 @@ const analyzeBets = async () => {
     // const newVb = removeDuplicates(newValueBets);
     for (let index = 0; index < newValueBets.length; index++) {
       const valueBet = newValueBets[index];
+      if(isABannedLeague(valueBet))continue;
       if(!shouldBeNotified(valueBet))continue;
       await sendHtmlMessage(composeGenericValueBet(valueBet));
     }
@@ -723,6 +724,8 @@ const analyzeBets = async () => {
       console.log(genericVb.length);
       console.log(genericVb);
       const vb = genericVb[index];
+      if(isABannedLeague(vb))continue;
+      if(!shouldBeNotified(vb))continue;
       await sendHtmlMessage(composeGenericValueBet(vb), driftedChannelId);
     }
     // driftedLines.forEach(driftedBet => {

@@ -34,6 +34,7 @@ const leagues = [
   '/cyprus/division-2/',
   '/cyprus/first-division/',
   '/czech-republic/tipsport-liga/',
+  '/czech-republic/u19-league/',
   '/denmark/2nd-division/',
   '/egypt/',
   '/el-salvador/primera-division/',
@@ -65,7 +66,8 @@ const leagues = [
   '/greece/super-league-2/',
   '/guatemala/liga-nacional/',
   '/iceland/reykjavik-cup/',
-  '/indonesia/liga-1/',
+  '/india/i-league/',
+  '/indonesia/',
   '/iran/division-1/',
   '/iran/persian-gulf-pro-league/',
   '/ireland/division-1/',
@@ -131,7 +133,7 @@ const leagues = [
   '/wales/cymru-north/',
   '/wales/cymru-premier/',
   '/wales/cymru-south/',
-  '/zambia/super-league/',
+  '/zambia/',
 ];
 
 module.exports = leagues;

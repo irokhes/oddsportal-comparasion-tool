@@ -682,6 +682,7 @@ const analyzeBets = async () => {
     // Save result to db
     const newValueBets = await saveValueBetsToDatabase(vb);
     const newRecoBets = await saveRecoBetsToDatabase(recoBets);
+    const culo = await saveValueBets(recoBets);
     const newPinnacleRecoBets = await savePinnacleRecobetsToDatabase(pinnacleRecoBets);
 
 

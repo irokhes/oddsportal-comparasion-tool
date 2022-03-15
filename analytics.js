@@ -696,7 +696,7 @@ const analyzeBets = async () => {
     const newPinnacleRecoBets = await savePinnacleRecobetsToDatabase(pinnacleRecoBets);
     const uniqueVb2 = await saveValueBets(newPinnacleRecoBets);
 
-    const genericVb = [...uniqueVb, uniqueVb2];
+    const genericVb = [...uniqueVb, ...uniqueVb2];
     // const newVb = removeDuplicates(newValueBets);
     for (let index = 0; index < newValueBets.length; index++) {
       const valueBet = newValueBets[index];

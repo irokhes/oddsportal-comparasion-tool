@@ -594,6 +594,7 @@ async function saveValueBetsToDatabase(valueBets) {
   return newValueBets;
 }
 async function saveValueBets(valueBets){
+  if(valueBets.length === 0) return [];
   const result = await request.post('http://localhost:3469/valuebet', {valueBets}).catch(function (error) {
     console.log(error);
     return [];

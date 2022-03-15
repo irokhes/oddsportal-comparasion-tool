@@ -595,12 +595,12 @@ async function saveValueBetsToDatabase(valueBets) {
 }
 async function saveValueBets(valueBets){
   if(valueBets.length === 0) return [];
-  const result = await request.post('http://localhost:3469/valuebet', {valueBets}).catch(function (error) {
+  const response = await request.post('http://localhost:3469/valuebet', {valueBets}).catch(function (error) {
     console.log(error);
     return [];
   });
-  console.log(result);
-  return result;
+  console.log(response.data.result);
+  return response.data.result;
 }
 async function saveRecoBetsToDatabase(recoBets) {
   const promises = [];

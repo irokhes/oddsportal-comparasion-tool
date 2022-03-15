@@ -77,6 +77,7 @@ const leagues = [
   '/israel/state-cup/',
   '/italy/serie-a-women/',
   '/italy/serie-c-',
+  '/jamaica/',
   '/kazakhstan/',
   '/jordan/shield-cup/',
   '/kenya/premier-league/',

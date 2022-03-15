@@ -2,6 +2,7 @@
 /* eslint-disable max-len */
 /* eslint-disable no-param-reassign */
 const fs = require("fs");
+const request = require('axios');
 const { addZeroes, round, removeDuplicates, removePreferentialPicks, shouldBeNotified, isABannedLeague } = require("./utils/utils");
 const { recosChannelId, pinnacleRecoBetChannelId, driftedChannelId } = require("./config");
 const Odds = require("./models/odds");
@@ -13,7 +14,7 @@ const {
   composeNewValueBetMessage,
   composeNewRecoBetMessage,
   composeNewPinnacleRecoBetMessage,
-  composeDriftedBet,
+  composeGenericValueBet,
 } = require("./utils/messages");
 const CronJob = require("cron").CronJob;
 const {
@@ -592,6 +593,14 @@ async function saveValueBetsToDatabase(valueBets) {
   });
   return newValueBets;
 }
+async function saveValueBets(valueBets){
+  const result = await request.post('http://localhost:3469/valuebet', valueBets).catch(function (error) {
+    console.log(error);
+    return [];
+  });
+  console.log(result);
+  return result;
+}
 async function saveRecoBetsToDatabase(recoBets) {
   const promises = [];
   const newRecoBets = [];
@@ -682,15 +691,16 @@ const analyzeBets = async () => {
     // Save result to db
     const newValueBets = await saveValueBetsToDatabase(vb);
     const newRecoBets = await saveRecoBetsToDatabase(recoBets);
-    const culo = await saveValueBets(recoBets);
+    const uniqueVb = await saveValueBets(newRecoBets);
     const newPinnacleRecoBets = await savePinnacleRecobetsToDatabase(pinnacleRecoBets);
+    const uniqueVb2 = await saveValueBets(newPinnacleRecoBets);
 
-
+    const genericVb = [...uniqueVb, uniqueVb2];
     // const newVb = removeDuplicates(newValueBets);
     for (let index = 0; index < newValueBets.length; index++) {
       const valueBet = newValueBets[index];
       if(!shouldBeNotified(valueBet))continue;
-      await sendHtmlMessage(composeNewValueBetMessage(valueBet));
+      await sendHtmlMessage(composeGenericValueBet(valueBet));
     }
 
     // const newRc = removeDuplicates(newRecoBets);
@@ -708,10 +718,10 @@ const analyzeBets = async () => {
       if(!shouldBeNotified(pinnacleRecoBet))continue;
       await sendHtmlMessage(composeNewPinnacleRecoBetMessage(pinnacleRecoBet), pinnacleRecoBetChannelId);
     }
-    // for (let index = 0; index < driftedLines.length; index++) {
-    //   const driftedBet = driftedLines[index];
-    //   await sendHtmlMessage(composeDriftedBet(driftedBet), driftedChannelId);
-    // }
+    for (let index = 0; index < genericVb.length; index++) {
+      const vb = genericVb[index];
+      await sendHtmlMessage(composeGenericValueBet(vb), driftedChannelId);
+    }
     // driftedLines.forEach(driftedBet => {
     //   console.log(composeDriftedBet(driftedBet));
     //   await

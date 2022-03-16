@@ -123,6 +123,7 @@ const leagues = [
   '/switzerland/challenge-league/',
   '/thailand/thai-league-1/',
   '/thailand/thai-league-2/',
+  '/tunisia/ligue-professionnelle-1/',
   '/turkey/2-lig-r',
   '/turkey/3-lig-group-',
   '/uganda/premier-league/',

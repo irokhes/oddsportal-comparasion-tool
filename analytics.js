@@ -721,8 +721,6 @@ const analyzeBets = async () => {
       await sendHtmlMessage(composeNewPinnacleRecoBetMessage(pinnacleRecoBet), pinnacleRecoBetChannelId);
     }
     for (let index = 0; index < genericVb.length; index++) {
-      console.log(genericVb.length);
-      console.log(genericVb);
       const vb = genericVb[index];
       if(isABannedLeague(vb))continue;
       if(!shouldBeNotified(vb))continue;

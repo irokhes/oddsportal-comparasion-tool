@@ -139,6 +139,7 @@ const leagues = [
   '/united-arab-emirates/uae-league/',
   '/uruguay/primera-division/',
   '/uzbekistan/super-league/',
+  '/venezuela/',
   '/wales/cymru-north/',
   '/wales/cymru-premier/',
   '/wales/cymru-south/',

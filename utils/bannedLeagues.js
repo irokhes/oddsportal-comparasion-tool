@@ -7,6 +7,7 @@ const leagues = [
   '/armenia/vbet-premier-league/',
   '/australia/ffa-cup/',
   '/australia/npl-queensland/',
+  '/australia/npl-victoria/',
   '/austria/2-liga/',
   '/austria/ofb-cup/',
   '/austria/regionalliga-central/',

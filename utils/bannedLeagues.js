@@ -57,6 +57,7 @@ const leagues = [
   '/england/women-s-super-league',
   '/england/women-s-league-cup/',
   '/ethiopia/',
+  '/europe/champions-league-women/',
   '/faroe-islands/',
   '/france/division-1-women/',
   '/france/national-2-',

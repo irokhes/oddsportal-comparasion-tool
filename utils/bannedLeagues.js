@@ -79,8 +79,7 @@ const leagues = [
   '/iceland/reykjavik-cup/',
   '/india/i-league/',
   '/indonesia/',
-  '/iran/division-1/',
-  '/iran/persian-gulf-pro-league/',
+  '/iran/',
   '/ireland/division-1/',
   '/israel/leumit-league/',
   '/israel/liga-alef-north/',
@@ -146,12 +145,14 @@ const leagues = [
   '/united-arab-emirates/presidents-cup/',
   '/united-arab-emirates/uae-league/',
   '/uruguay/primera-division/',
-  '/uzbekistan/super-league/',
+  '/usa/usl-championship/',
+  '/uzbekistan/',
   '/venezuela/',
   '/wales/cymru-north/',
   '/wales/cymru-premier/',
   '/wales/cymru-south/',
   '/zambia/',
+  'women',
 ];
 
 module.exports = leagues;

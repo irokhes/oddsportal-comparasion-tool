@@ -1,4 +1,5 @@
 const leagues = [
+  'albania',
   '/algeria/ligue-1/',
   '/algeria/u21-league',
   '/andorra/primera-divisio/',
@@ -33,7 +34,8 @@ const leagues = [
   '/brazil/campeonato-pernambucano/',
   '/brazil/campeonato-potiguar/',
   '/brazil/campeonato-piauiense/',
-  '/cambodia/cpl/',
+  '/cambodia/',
+  '/chile/primera-b/',
   '/colombia/primera-b/',
   '/croatia/2-hnl/',
   '/cyprus/cyprus-cup/',

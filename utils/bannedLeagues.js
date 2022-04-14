@@ -136,6 +136,7 @@ const leagues = [
   '/spain/primera-division-women/',
   '/spain/primera-rfef-group-',
   '/spain/segunda-rfef-group-',
+  '/sweden/division-2',
   '/switzerland/challenge-league/',
   '/tanzania/',
   '/thailand/thai-league-1/',

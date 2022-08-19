@@ -19,6 +19,7 @@ module.exports = {
   recosChannelId: process.env.RECOS_CHANNEL_ID,
   pinnacleRecoBetChannelId: process.env.PINNACLE_RECOS_CHANNEL_ID,
   driftedChannelId: process.env.DRIFTED_CHANNEL_ID,
+  bwinChannelId: process.env.BWIN_CHANNEL_ID,
   db: {
     uri: MONGO_URI,
   },

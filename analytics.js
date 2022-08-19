@@ -4,11 +4,13 @@
 const fs = require("fs");
 const request = require('axios');
 const { addZeroes, round, removeDuplicates, removePreferentialPicks, shouldBeNotified, isABannedLeague } = require("./utils/utils");
-const { recosChannelId, pinnacleRecoBetChannelId, driftedChannelId } = require("./config");
+const { recosChannelId, pinnacleRecoBetChannelId, driftedChannelId, bwinChannelId } = require("./config");
 const Odds = require("./models/odds");
 const ValueBet = require("./models/valueBet");
 const RecoBet = require("./models/recoBet");
 const PinnacleRecoBet = require("./models/pinncaleRecoBet");
+const Bwin = require('./bwin');
+const BwinService = require('./services/bwin.service');
 const { sendHtmlMessage } = require("./telegram");
 const {
   composeNewValueBetMessage,
@@ -678,12 +680,17 @@ const analyzeBets = async () => {
     const pinnacleRecoBets = [];
     const percentageBets = [];
     const driftedLines = [];
+    const bwinValueBets = [];
+    const bwinPinnacleValueBets = [];
     matches.forEach(match => {
       valueBets.push(...getMatchValueBets(match));
       recoBets.push(...getMatchRecosBets(match));
       pinnacleRecoBets.push(...getPinnacleRecoBets(match));
       // driftedLines.push(...getDriftedValueBets(match));
       // percentageBets.push(...getMatchValueBetsByPercentage(match));
+      bwinValueBets.push(...Bwin.getValueBets(match));
+      bwinPinnacleValueBets.push(...Bwin.getPinnacleRecoBets(match));
+
     });
 
     //revmoe preferential pick from secundary lists
@@ -695,6 +702,22 @@ const analyzeBets = async () => {
     const uniqueVb = await saveValueBets(newRecoBets);
     const newPinnacleRecoBets = await savePinnacleRecobetsToDatabase(pinnacleRecoBets);
     const uniqueVb2 = await saveValueBets(newPinnacleRecoBets);
+
+    //BWIN
+    const n1 = await BwinService.saveValueBetsToDatabase(bwinValueBets);
+    const n2 = await BwinService.saveValueBetsToDatabase(bwinPinnacleValueBets);
+    // const newRc = removeDuplicates(newRecoBets);
+    for (let index = 0; index < n1.length; index++) {
+      const recoBet = n1[index];
+      await sendHtmlMessage(composeNewRecoBetMessage(recoBet), bwinChannelId);
+    }
+    for (let index = 0; index < n2.length; index++) {
+      const pinnacleRecoBet = n2[index];
+      if(isABannedLeague(pinnacleRecoBet))continue;
+      if(!shouldBeNotified(pinnacleRecoBet))continue;
+      await sendHtmlMessage(composeNewPinnacleRecoBetMessage(pinnacleRecoBet), bwinChannelId);
+    }
+
 
     const genericVb = [...uniqueVb, ...uniqueVb2];
     // const newVb = removeDuplicates(newValueBets);

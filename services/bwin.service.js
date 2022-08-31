@@ -32,6 +32,7 @@ async function saveValueBetsToDatabase(valueBets) {
       avgOdds: valueBet.avgOdds,
       upTrend: valueBet.upTrend,
       downTrend: valueBet.downTrend,
+      pinnacleOdds: valueBet.pinnacleOdds,
     });
   });
   return newValueBets;

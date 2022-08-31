@@ -11,7 +11,6 @@ const {
 const { getOdds } = require('./parsers/oddsPortalApi');
 const db = require('./models/db');
 const analytics = require('./analytics');
-const oddsChecker = require('./oddsChecker');
 
 (async () => {
   const cluster = await Cluster.launch({
@@ -92,7 +91,6 @@ const oddsChecker = require('./oddsChecker');
     console.log('started');
     db.connect();
     analytics.start();
-    oddsChecker.start();
     await cluster.execute('https://www.oddsportal.com/login/', login);
 
     while (1) {

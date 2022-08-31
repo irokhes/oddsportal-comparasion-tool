@@ -4,13 +4,15 @@
 const fs = require("fs");
 const request = require('axios');
 const { addZeroes, round, removeDuplicates, removePreferentialPicks, shouldBeNotified, isABannedLeague } = require("./utils/utils");
-const { recosChannelId, pinnacleRecoBetChannelId, driftedChannelId, bwinChannelId } = require("./config");
+const { recosChannelId, pinnacleRecoBetChannelId, driftedChannelId, bwinChannelId, williamHillChannelId } = require("./config");
 const Odds = require("./models/odds");
 const ValueBet = require("./models/valueBet");
 const RecoBet = require("./models/recoBet");
 const PinnacleRecoBet = require("./models/pinncaleRecoBet");
 const Bwin = require('./bwin');
 const BwinService = require('./services/bwin.service');
+const WilliamHill = require('./williamHill')
+const WilliamHillService = require('./services/williamHill.service');
 const { sendHtmlMessage } = require("./telegram");
 const {
   composeNewValueBetMessage,
@@ -682,6 +684,8 @@ const analyzeBets = async () => {
     const driftedLines = [];
     const bwinValueBets = [];
     const bwinPinnacleValueBets = [];
+    const williamHillValueBets = [];
+    const williamHillPinnacleValueBets = [];
     matches.forEach(match => {
       valueBets.push(...getMatchValueBets(match));
       recoBets.push(...getMatchRecosBets(match));
@@ -690,7 +694,8 @@ const analyzeBets = async () => {
       // percentageBets.push(...getMatchValueBetsByPercentage(match));
       bwinValueBets.push(...Bwin.getValueBets(match));
       bwinPinnacleValueBets.push(...Bwin.getPinnacleRecoBets(match));
-
+      williamHillValueBets.push(...WilliamHill.getValueBets(match));
+      williamHillPinnacleValueBets.push(...WilliamHill.getPinnacleRecoBets(match));
     });
 
     //revmoe preferential pick from secundary lists
@@ -706,6 +711,11 @@ const analyzeBets = async () => {
     //BWIN
     const n1 = await BwinService.saveValueBetsToDatabase(bwinValueBets);
     const n2 = await BwinService.saveValueBetsToDatabase(bwinPinnacleValueBets);
+
+    //WILLIAM HILL
+    const wh1 = await WilliamHillService.saveValueBetsToDatabase(williamHillValueBets);
+    const wh2 = await WilliamHillService.saveValueBetsToDatabase(williamHillPinnacleValueBets);
+
     // const newRc = removeDuplicates(newRecoBets);
     for (let index = 0; index < n1.length; index++) {
       const recoBet = n1[index];
@@ -716,6 +726,17 @@ const analyzeBets = async () => {
       if(isABannedLeague(pinnacleRecoBet))continue;
       if(!shouldBeNotified(pinnacleRecoBet))continue;
       await sendHtmlMessage(composeNewPinnacleRecoBetMessage(pinnacleRecoBet), bwinChannelId);
+    }
+
+    for (let index = 0; index < wh1.length; index++) {
+      const recoBet = wh1[index];
+      await sendHtmlMessage(composeNewRecoBetMessage(recoBet), williamHillChannelId);
+    }
+    for (let index = 0; index < wh2.length; index++) {
+      const pinnacleRecoBet = wh2[index];
+      if(isABannedLeague(pinnacleRecoBet))continue;
+      if(!shouldBeNotified(pinnacleRecoBet))continue;
+      await sendHtmlMessage(composeNewPinnacleRecoBetMessage(pinnacleRecoBet), williamHillChannelId);
     }
 
 

@@ -719,6 +719,8 @@ const analyzeBets = async () => {
     // const newRc = removeDuplicates(newRecoBets);
     for (let index = 0; index < n1.length; index++) {
       const recoBet = n1[index];
+      if(isABannedLeague(recoBet))continue;
+      if(!shouldBeNotified(recoBet))continue;
       await sendHtmlMessage(composeNewRecoBetMessage(recoBet), bwinChannelId);
     }
     for (let index = 0; index < n2.length; index++) {
@@ -730,6 +732,8 @@ const analyzeBets = async () => {
 
     for (let index = 0; index < wh1.length; index++) {
       const recoBet = wh1[index];
+      if(isABannedLeague(recoBet))continue;
+      if(!shouldBeNotified(recoBet))continue;
       await sendHtmlMessage(composeNewRecoBetMessage(recoBet), williamHillChannelId);
     }
     for (let index = 0; index < wh2.length; index++) {

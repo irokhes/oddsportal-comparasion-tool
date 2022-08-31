@@ -3,7 +3,7 @@
 /* eslint-disable no-param-reassign */
 const fs = require("fs");
 const request = require('axios');
-const { addZeroes, round, removeDuplicates, removePreferentialPicks, shouldBeNotified, isABannedLeague } = require("./utils/utils");
+const { addZeroes, round, removeDuplicates, removePreferentialPicks, shouldBeNotified, isABannedLeague, shouldBeNotifiedWilliamHill } = require("./utils/utils");
 const { recosChannelId, pinnacleRecoBetChannelId, driftedChannelId, bwinChannelId, williamHillChannelId } = require("./config");
 const Odds = require("./models/odds");
 const ValueBet = require("./models/valueBet");
@@ -732,14 +732,12 @@ const analyzeBets = async () => {
 
     for (let index = 0; index < wh1.length; index++) {
       const recoBet = wh1[index];
-      if(isABannedLeague(recoBet))continue;
-      if(!shouldBeNotified(recoBet))continue;
+      if(!shouldBeNotifiedWilliamHill(recoBet))continue;
       await sendHtmlMessage(composeNewRecoBetMessage(recoBet), williamHillChannelId);
     }
     for (let index = 0; index < wh2.length; index++) {
       const pinnacleRecoBet = wh2[index];
-      if(isABannedLeague(pinnacleRecoBet))continue;
-      if(!shouldBeNotified(pinnacleRecoBet))continue;
+      if(!shouldBeNotifiedWilliamHill(pinnacleRecoBet))continue;
       await sendHtmlMessage(composeNewPinnacleRecoBetMessage(pinnacleRecoBet), williamHillChannelId);
     }
 

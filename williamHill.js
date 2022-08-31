@@ -311,13 +311,13 @@ function getPinnacleRecoBets(match) {
       const result = twoLinesPinnacleReco(match.moneyLineFirstHalf);
       if (result) results.push(composeRecoBetLine(match, "1 ML", "#1X2;3", result));
     }
-    if (match.dnb && match.dnb.availableInWilliamHill && match.dnb.availableInPinnacle) {
-      const result = twoLinesPinnacleReco(match.dnb);
-      if (result)
-        results.push(
-          composeRecoBetLine(match, "DNB", `#dnb${delimiter}`, result)
-        );
-    }
+    // if (match.dnb && match.dnb.availableInWilliamHill && match.dnb.availableInPinnacle) {
+    //   const result = twoLinesPinnacleReco(match.dnb);
+    //   if (result)
+    //     results.push(
+    //       composeRecoBetLine(match, "DNB", `#dnb${delimiter}`, result)
+    //     );
+    // }
     if (match.bts && match.bts.availableInWilliamHill  && match.bts.availableInPinnacle) {
       const result = twoLinesPinnacleReco(match.bts);
       if (result)

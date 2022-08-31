@@ -242,14 +242,14 @@ const getValueBets = match => {
     if (result)
       results.push(composeRecoBetLine(match, "1 ML", "#1X2;3", result));
   }
-  if (match.dnb && match.dnb.availableInWilliamHill) {
-    const result = twoLinesReco(match.dnb);
-    if (result) {
-      results.push(
-        composeValueBetLine(match, "DNB", `#dnb${delimiter}`, result)
-      );
-    }
-  }
+  // if (match.dnb && match.dnb.availableInWilliamHill) {
+  //   const result = twoLinesReco(match.dnb);
+  //   if (result) {
+  //     results.push(
+  //       composeValueBetLine(match, "DNB", `#dnb${delimiter}`, result)
+  //     );
+  //   }
+  // }
   if (match.doubleChance && match.doubleChance.availableInWilliamHill) {
     const result = twoLinesReco(match.doubleChance);
     if (result) {

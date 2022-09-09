@@ -3,8 +3,8 @@
 /* eslint-disable no-param-reassign */
 const fs = require("fs");
 const request = require('axios');
-const { addZeroes, round, removeDuplicates, removePreferentialPicks, shouldBeNotified, isABannedLeague, shouldBeNotifiedWilliamHill } = require("./utils/utils");
-const { recosChannelId, pinnacleRecoBetChannelId, driftedChannelId, bwinChannelId, williamHillChannelId } = require("./config");
+const { addZeroes, round, removeDuplicates, removePreferentialPicks, shouldBeNotified, isABannedLeague, shouldBeNotifiedWilliamHill, shouldBeNotifiedPinnacle } = require("./utils/utils");
+const { recosChannelId, pinnacleRecoBetChannelId, driftedChannelId, bwinChannelId, williamHillChannelId, pinnacleChannelId } = require("./config");
 const Odds = require("./models/odds");
 const ValueBet = require("./models/valueBet");
 const RecoBet = require("./models/recoBet");
@@ -13,6 +13,8 @@ const Bwin = require('./bwin');
 const BwinService = require('./services/bwin.service');
 const WilliamHill = require('./williamHill')
 const WilliamHillService = require('./services/williamHill.service');
+const Pinnacle = require('./pinnacle')
+const PinnacleService = require('./services/pinnacle.service');
 const { sendHtmlMessage } = require("./telegram");
 const {
   composeNewValueBetMessage,
@@ -686,6 +688,8 @@ const analyzeBets = async () => {
     const bwinPinnacleValueBets = [];
     const williamHillValueBets = [];
     const williamHillPinnacleValueBets = [];
+    const pinnacleValueBets = [];
+    const  = [];
     matches.forEach(match => {
       valueBets.push(...getMatchValueBets(match));
       recoBets.push(...getMatchRecosBets(match));
@@ -696,6 +700,8 @@ const analyzeBets = async () => {
       bwinPinnacleValueBets.push(...Bwin.getPinnacleRecoBets(match));
       williamHillValueBets.push(...WilliamHill.getValueBets(match));
       williamHillPinnacleValueBets.push(...WilliamHill.getPinnacleRecoBets(match));
+      pinnacleValueBets.push(...Pinnacle.getValueBets(match));
+      pinnacleBet365ValueBets.push(...Pinnacle.getBet365RecoBets(match));
     });
 
     //revmoe preferential pick from secundary lists
@@ -715,6 +721,10 @@ const analyzeBets = async () => {
     //WILLIAM HILL
     const wh1 = await WilliamHillService.saveValueBetsToDatabase(williamHillValueBets);
     const wh2 = await WilliamHillService.saveValueBetsToDatabase(williamHillPinnacleValueBets);
+
+    //PINNACLE
+    const pinn1 = await PinnacleService.saveValueBetsToDatabase(pinnacleValueBets);
+    const pinn2 = await PinnacleService.saveValueBetsToDatabase(pinnacleBet365ValueBets);
 
     // const newRc = removeDuplicates(newRecoBets);
     for (let index = 0; index < n1.length; index++) {
@@ -739,6 +749,17 @@ const analyzeBets = async () => {
       const pinnacleRecoBet = wh2[index];
       if(!shouldBeNotifiedWilliamHill(pinnacleRecoBet))continue;
       await sendHtmlMessage(composeNewPinnacleRecoBetMessage(pinnacleRecoBet), williamHillChannelId);
+    }
+
+    //PINNACLE
+    for (let index = 0; index < pinn1.length; index++) {
+      const recoBet = pinn1[index];
+      if(!shouldBeNotifiedPinnacle(recoBet))continue;
+      await sendHtmlMessage(composeNewRecoBetMessage(recoBet), pinnacleChannelId);
+    }
+    for (let index = 0; index < pinn2.length; index++) {
+      const pinnacleRecoBet = pinn2[index];
+      await sendHtmlMessage(composeNewBet365RecoBetMessage(pinnacleRecoBet), pinnacleChannelId);
     }
 
 

@@ -205,7 +205,7 @@ const composeRecoBetLine = (match, line, path, valueBet, lineValue) => ({
   betTo: valueBet.betTo,
   odds: valueBet.odds,
   avgOdds: isNaN(valueBet.avgOdds) ? 0 : valueBet.avgOdds,
-  pinnacleOdds: valueBet.pinnacleOdds,
+  bet365Odds: valueBet.bet365Odds,
   upTrend: valueBet.upTrend,
   downTrend: valueBet.downTrend
 });
@@ -220,7 +220,7 @@ const composeValueBetLine = (match, line, path, valueBet, lineValue) => ({
     betTo: valueBet.betTo,
     odds: valueBet.odds,
     avgOdds: isNaN(valueBet.avgOdds) ? 0 : valueBet.avgOdds,
-    pinnacleOdds: valueBet.pinnacleOdds,
+    bet365Odds: valueBet.bet365Odds,
     upTrend: valueBet.upTrend,
     downTrend: valueBet.downTrend
   });

@@ -5,24 +5,24 @@ const composeNewValueBetMessage = (valueBet) => {
   return `${line}${trend}<a href="${valueBet.url}" target="_blank">${valueBet.match}</a>\n\nValue Ratio: ${valueBet.valueRatio}\n\n Seq: ${valueBet.sequence}`;
 };
 const composeNewRecoBetMessage = (valueBet) => {
-  const line = `Linea: ${valueBet.line} ${valueBet.line === 'AH' || valueBet.line === 'O/U' ? valueBet.lineValue : ''} cuota: ${valueBet.odds}  Bet to: ${valueBet.betTo} avg:${valueBet.avgOdds}\n`;
+  const line = `Linea: ${valueBet.line} ${valueBet.line === 'AH' || valueBet.line === 'O/U' ? valueBet.lineValue : ''} cuota: ${valueBet.odds}  Bet to: ${valueBet.betTo} avg: ${valueBet.avgOdds}\n`;
   const trend = valueBet.upTrend !== undefined && valueBet.downTrend !== undefined ? `Tendencia: ⬇️🔴${valueBet.downTrend}%  -  ⬆️🟢${valueBet.upTrend}%\n` : '';
   return `${line}${trend}<a href="${valueBet.url}" target="_blank">${valueBet.match}</a>\n`;
 };
 const composeNewPinnacleRecoBetMessage = (valueBet) => {
-  const line = `Linea: ${valueBet.line} ${valueBet.line === 'AH' || valueBet.line === 'O/U' ? valueBet.lineValue : ''} cuota: ${valueBet.odds} pinnacle: ${valueBet.pinnacleOdds} avg:${valueBet.avgOdds} Bet to: ${valueBet.betTo}\n`;
+  const line = `Linea: ${valueBet.line} ${valueBet.line === 'AH' || valueBet.line === 'O/U' ? valueBet.lineValue : ''} cuota: ${valueBet.odds} pinnacle: ${valueBet.pinnacleOdds} avg: ${valueBet.avgOdds} Bet to: ${valueBet.betTo}\n`;
   const trend = valueBet.upTrend !== undefined && valueBet.downTrend !== undefined ? `Tendencia: ⬇️🔴${valueBet.downTrend}%  -  ⬆️🟢${valueBet.upTrend}%\n` : '';
   return `${line}${trend}<a href="${valueBet.url}" target="_blank">${valueBet.match}</a>\n`;
 };
 const composeNewBet365RecoBetMessage = (valueBet) => {
-  const line = `Linea: ${valueBet.line} ${valueBet.line === 'AH' || valueBet.line === 'O/U' ? valueBet.lineValue : ''} cuota: ${valueBet.odds} bet365: ${valueBet.bet365Odds} avg:${valueBet.avgOdds} Bet to: ${valueBet.betTo}\n`;
+  const line = `Linea: ${valueBet.line} ${valueBet.line === 'AH' || valueBet.line === 'O/U' ? valueBet.lineValue : ''} cuota: ${valueBet.odds} bet365: ${valueBet.bet365Odds} avg: ${valueBet.avgOdds} Bet to: ${valueBet.betTo}\n`;
   const trend = valueBet.upTrend !== undefined && valueBet.downTrend !== undefined ? `Tendencia: ⬇️🔴${valueBet.downTrend}%  -  ⬆️🟢${valueBet.upTrend}%\n` : '';
   return `${line}${trend}<a href="${valueBet.url}" target="_blank">${valueBet.match}</a>\n`;
 };
 
 const composeGenericValueBet = (valueBet) => {
   const pinnacleMsg = valueBet.pinnacleOdds ? `pinnacle: ${valueBet.pinnacleOdds}` : '';
-  const line = `Linea: ${valueBet.line} ${valueBet.line === 'AH' || valueBet.line === 'O/U' ? valueBet.lineValue : ''} cuota: ${valueBet.odds} ${pinnacleMsg} avg:${valueBet.avgOdds} Bet to: ${valueBet.betTo}\n`;
+  const line = `Linea: ${valueBet.line} ${valueBet.line === 'AH' || valueBet.line === 'O/U' ? valueBet.lineValue : ''} cuota: ${valueBet.odds} ${pinnacleMsg} avg: ${valueBet.avgOdds} Bet to: ${valueBet.betTo}\n`;
   const trend = valueBet.upTrend !== undefined && valueBet.downTrend !== undefined ? `Tendencia: ⬇️🔴${valueBet.downTrend}%  -  ⬆️🟢${valueBet.upTrend}%\n` : '';
   return `${line}${trend}<a href="${valueBet.url}" target="_blank">${valueBet.match}</a>\n`;
 };

@@ -760,6 +760,7 @@ const analyzeBets = async () => {
     }
     for (let index = 0; index < pinn2.length; index++) {
       const pinnacleRecoBet = pinn2[index];
+      if(!shouldBeNotifiedPinnacle(pinnacleRecoBet))continue;
       await sendHtmlMessage(composeNewBet365RecoBetMessage(pinnacleRecoBet), pinnacleChannelId);
     }
 

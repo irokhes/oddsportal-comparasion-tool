@@ -6,8 +6,8 @@ const twoLinesReco = ({
   pinnaAwayWin,
   awayWinAvg,
   localWinAvg,
-  bet365LocalWin,
-  bet365AwayWin,
+  localWin,
+  awayWin,
   localUpTrend,
   localDownTrend,
   awayUpTrend,
@@ -23,7 +23,7 @@ const twoLinesReco = ({
     return {
       betTo: "local",
       odds: pinnaLocalWin,
-      pinnacleOdds: bet365LocalWin,
+      pinnacleOdds: localWin,
       avgOdds: localWinAvg,
       upTrend: localUpTrend,
       downTrend: localDownTrend
@@ -37,7 +37,7 @@ const twoLinesReco = ({
     return {
       betTo: "away",
       odds: pinnaAwayWin,
-      pinnacleOdds: bet365AwayWin,
+      pinnacleOdds: awayWin,
       avgOdds: awayWinAvg,
       upTrend: awayUpTrend,
       downTrend: awayDownTrend
@@ -49,8 +49,8 @@ const twoLinesPinnacleReco = ({
     pinnaAwayWin,
     localWinAvg,
     awayWinAvg,
-    bet365LocalWin,
-    bet365AwayWin,
+    localWin,
+    awayWin,
     localUpTrend,
     localDownTrend,
     awayUpTrend,
@@ -60,13 +60,13 @@ const twoLinesPinnacleReco = ({
     const awayDiff = getPinnacleDiffValue(pinnaAwayWin);
     if (
       pinnaLocalWin <= 4 &&
-      pinnaLocalWin > bet365LocalWin &&
-      pinnaLocalWin * localDiff >= bet365LocalWin
+      pinnaLocalWin > localWin &&
+      pinnaLocalWin * localDiff >= localWin
     ) {
       return {
         betTo: "local",
         odds: pinnaLocalWin,
-        bet365Odds: bet365LocalWin,
+        bet365Odds: localWin,
         avgOdds: localWinAvg,
         upTrend: localUpTrend,
         downTrend: localDownTrend
@@ -74,13 +74,13 @@ const twoLinesPinnacleReco = ({
     }
     if (
       pinnaAwayWin <= 4 &&
-      pinnaAwayWin > bet365AwayWin &&
-      pinnaAwayWin * awayDiff >= bet365AwayWin
+      pinnaAwayWin > awayWin &&
+      pinnaAwayWin * awayDiff >= awayWin
     ) {
       return {
         betTo: "away",
         odds: pinnaAwayWin,
-        bet365Odds: bet365AwayWin,
+        bet365Odds: awayWin,
         avgOdds: awayWinAvg,
         upTrend: awayUpTrend,
         downTrend: awayDownTrend

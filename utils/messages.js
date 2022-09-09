@@ -5,7 +5,7 @@ const composeNewValueBetMessage = (valueBet) => {
   return `${line}${trend}<a href="${valueBet.url}" target="_blank">${valueBet.match}</a>\n\nValue Ratio: ${valueBet.valueRatio}\n\n Seq: ${valueBet.sequence}`;
 };
 const composeNewRecoBetMessage = (valueBet) => {
-  const line = `Linea: ${valueBet.line} ${valueBet.line === 'AH' || valueBet.line === 'O/U' ? valueBet.lineValue : ''} cuota: ${valueBet.odds}  Bet to: ${valueBet.betTo}\n`;
+  const line = `Linea: ${valueBet.line} ${valueBet.line === 'AH' || valueBet.line === 'O/U' ? valueBet.lineValue : ''} cuota: ${valueBet.odds}  Bet to: ${valueBet.betTo} avg:${valueBet.avgOdds}\n`;
   const trend = valueBet.upTrend !== undefined && valueBet.downTrend !== undefined ? `Tendencia: ⬇️🔴${valueBet.downTrend}%  -  ⬆️🟢${valueBet.upTrend}%\n` : '';
   return `${line}${trend}<a href="${valueBet.url}" target="_blank">${valueBet.match}</a>\n`;
 };

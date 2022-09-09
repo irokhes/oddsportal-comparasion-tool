@@ -689,7 +689,7 @@ const analyzeBets = async () => {
     const williamHillValueBets = [];
     const williamHillPinnacleValueBets = [];
     const pinnacleValueBets = [];
-    const  = [];
+    const pinnacleBet365ValueBets = [];
     matches.forEach(match => {
       valueBets.push(...getMatchValueBets(match));
       recoBets.push(...getMatchRecosBets(match));

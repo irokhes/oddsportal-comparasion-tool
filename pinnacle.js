@@ -2,8 +2,8 @@ const { addZeroes } = require("./utils/utils");
 const {getDiffValue, getPinnacleDiffValue} = require('./utils/diffValues');
 
 const twoLinesReco = ({
-  pinnacleLocalWin,
-  pinnacleAwayWin,
+  pinnaLocalWin,
+  pinnaAwayWin,
   awayWinAvg,
   localWinAvg,
   bet365LocalWin,
@@ -13,16 +13,16 @@ const twoLinesReco = ({
   awayUpTrend,
   awayDownTrend
 }) => {
-  const localDiff = getDiffValue(pinnacleLocalWin);
-  const awayDiff = getDiffValue(pinnacleAwayWin);
+  const localDiff = getDiffValue(pinnaLocalWin);
+  const awayDiff = getDiffValue(pinnaAwayWin);
   if (
-    pinnacleLocalWin <= 4 &&
-    pinnacleLocalWin > localWinAvg &&
-    pinnacleLocalWin * localDiff >= localWinAvg
+    pinnaLocalWin <= 4 &&
+    pinnaLocalWin > localWinAvg &&
+    pinnaLocalWin * localDiff >= localWinAvg
   ) {
     return {
       betTo: "local",
-      odds: pinnacleLocalWin,
+      odds: pinnaLocalWin,
       pinnacleOdds: bet365LocalWin,
       avgOdds: localWinAvg,
       upTrend: localUpTrend,
@@ -30,13 +30,13 @@ const twoLinesReco = ({
     };
   }
   if (
-    pinnacleAwayWin <= 4 &&
-    pinnacleAwayWin > awayWinAvg &&
-    pinnacleAwayWin * awayDiff >= awayWinAvg
+    pinnaAwayWin <= 4 &&
+    pinnaAwayWin > awayWinAvg &&
+    pinnaAwayWin * awayDiff >= awayWinAvg
   ) {
     return {
       betTo: "away",
-      odds: pinnacleAwayWin,
+      odds: pinnaAwayWin,
       pinnacleOdds: bet365AwayWin,
       avgOdds: awayWinAvg,
       upTrend: awayUpTrend,
@@ -45,8 +45,8 @@ const twoLinesReco = ({
   }
 };
 const twoLinesPinnacleReco = ({
-    pinnacleLocalWin,
-    pinnacleAwayWin,
+    pinnaLocalWin,
+    pinnaAwayWin,
     localWinAvg,
     awayWinAvg,
     bet365LocalWin,
@@ -56,16 +56,16 @@ const twoLinesPinnacleReco = ({
     awayUpTrend,
     awayDownTrend
   }) => {
-    const localDiff = getPinnacleDiffValue(pinnacleLocalWin);
-    const awayDiff = getPinnacleDiffValue(pinnacleAwayWin);
+    const localDiff = getPinnacleDiffValue(pinnaLocalWin);
+    const awayDiff = getPinnacleDiffValue(pinnaAwayWin);
     if (
-      pinnacleLocalWin <= 4 &&
-      pinnacleLocalWin > bet365LocalWin &&
-      pinnacleLocalWin * localDiff >= bet365LocalWin
+      pinnaLocalWin <= 4 &&
+      pinnaLocalWin > bet365LocalWin &&
+      pinnaLocalWin * localDiff >= bet365LocalWin
     ) {
       return {
         betTo: "local",
-        odds: pinnacleLocalWin,
+        odds: pinnaLocalWin,
         bet365Odds: bet365LocalWin,
         avgOdds: localWinAvg,
         upTrend: localUpTrend,
@@ -73,13 +73,13 @@ const twoLinesPinnacleReco = ({
       };
     }
     if (
-      pinnacleAwayWin <= 4 &&
-      pinnacleAwayWin > bet365AwayWin &&
-      pinnacleAwayWin * awayDiff >= bet365AwayWin
+      pinnaAwayWin <= 4 &&
+      pinnaAwayWin > bet365AwayWin &&
+      pinnaAwayWin * awayDiff >= bet365AwayWin
     ) {
       return {
         betTo: "away",
-        odds: pinnacleAwayWin,
+        odds: pinnaAwayWin,
         bet365Odds: bet365AwayWin,
         avgOdds: awayWinAvg,
         upTrend: awayUpTrend,
@@ -92,10 +92,8 @@ const overUnderReco = lines => {
     const {
       availableInPinnacle,
       numOfBookies,
-      pinnacleOverOdds,
-      pinnacleUnderOdds,
-      pinnaUnderOdds,
       pinnaOverOdds,
+      pinnaUnderOdds,
       underOddsAvg,
       overOddsAvg,
       localUpTrend,
@@ -106,17 +104,17 @@ const overUnderReco = lines => {
 
     if (!availableInPinnacle || numOfBookies <= 4) return list;
 
-    const localDiff = getDiffValue(pinnacleOverOdds);
-    const awayDiff = getDiffValue(pinnacleUnderOdds);
+    const localDiff = getDiffValue(pinnaOverOdds);
+    const awayDiff = getDiffValue(pinnaUnderOdds);
     if (
-      pinnacleOverOdds <= 4 &&
-      pinnacleOverOdds > overOddsAvg &&
-      pinnacleOverOdds * localDiff >= overOddsAvg
+      pinnaOverOdds <= 4 &&
+      pinnaOverOdds > overOddsAvg &&
+      pinnaOverOdds * localDiff >= overOddsAvg
     ) {
       list.push({
         ...line,
         betTo: "local",
-        odds: pinnacleOverOdds,
+        odds: pinnaOverOdds,
         avgOdds: overOddsAvg,
         pinnacleOdds: pinnaOverOdds,
         upTrend: localUpTrend,
@@ -124,14 +122,14 @@ const overUnderReco = lines => {
       });
     }
     if (
-      pinnacleUnderOdds <= 4 &&
-      pinnacleUnderOdds > underOddsAvg &&
-      pinnacleUnderOdds * awayDiff >= underOddsAvg
+      pinnaUnderOdds <= 4 &&
+      pinnaUnderOdds > underOddsAvg &&
+      pinnaUnderOdds * awayDiff >= underOddsAvg
     ) {
       list.push({
         ...line,
         betTo: "away",
-        odds: pinnacleUnderOdds,
+        odds: pinnaUnderOdds,
         avgOdds: underOddsAvg,
         pinnacleOdds: pinnaUnderOdds,
         upTrend: awayUpTrend,
@@ -147,8 +145,8 @@ const overUnderPinnacleReco = lines => {
       const {
         availableInPinnacle,
         availableInBet365,
-        pinnacleOverOdds,
-        pinnacleUnderOdds,
+        pinnaOverOdds,
+        pinnaUnderOdds,
         underOddsAvg,
         overOddsAvg,
         underOdds,
@@ -161,17 +159,17 @@ const overUnderPinnacleReco = lines => {
 
       if (!availableInPinnacle || !availableInBet365) return list;
 
-      const localDiff = getPinnacleDiffValue(pinnacleOverOdds);
-      const awayDiff = getPinnacleDiffValue(pinnacleUnderOdds);
+      const localDiff = getPinnacleDiffValue(pinnaOverOdds);
+      const awayDiff = getPinnacleDiffValue(pinnaUnderOdds);
       if (
-        pinnacleOverOdds <= 4 &&
-        pinnacleOverOdds > pinnaOverOdds &&
-        pinnacleOverOdds * localDiff >= pinnaOverOdds
+        pinnaOverOdds <= 4 &&
+        pinnaOverOdds > pinnaOverOdds &&
+        pinnaOverOdds * localDiff >= pinnaOverOdds
       ) {
         list.push({
           ...line,
           betTo: "local",
-          odds: pinnacleOverOdds,
+          odds: pinnaOverOdds,
           avgOdds: overOddsAvg,
           bet365Odds: overOdds,
           upTrend: localUpTrend,
@@ -179,14 +177,14 @@ const overUnderPinnacleReco = lines => {
         });
       }
       if (
-        pinnacleUnderOdds <= 4 &&
-        pinnacleUnderOdds > pinnaUnderOdds &&
-        pinnacleUnderOdds * awayDiff >= pinnaUnderOdds
+        pinnaUnderOdds <= 4 &&
+        pinnaUnderOdds > pinnaUnderOdds &&
+        pinnaUnderOdds * awayDiff >= pinnaUnderOdds
       ) {
         list.push({
           ...line,
           betTo: "away",
-          odds: pinnacleUnderOdds,
+          odds: pinnaUnderOdds,
           avgOdds: underOddsAvg,
           bet365Odds: underOdds,
           upTrend: awayUpTrend,

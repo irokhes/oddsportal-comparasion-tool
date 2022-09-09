@@ -21,6 +21,7 @@ const {
   composeNewRecoBetMessage,
   composeNewPinnacleRecoBetMessage,
   composeGenericValueBet,
+  composeNewBet365RecoBetMessage
 } = require("./utils/messages");
 const CronJob = require("cron").CronJob;
 const {

@@ -19,21 +19,7 @@ async function saveValueBetsToDatabase(valueBets) {
     }
   }
   (await Promise.all(promises)).forEach((valueBet) => {
-    newValueBets.push({
-      match: valueBet.match,
-      date: valueBet.date,
-      url: valueBet.url,
-      line: valueBet.line,
-      lineValue: valueBet.lineValue,
-      valueRatio: valueBet.valueRatio,
-      sequence: valueBet.sequence,
-      betTo: valueBet.betTo,
-      odds: valueBet.odds,
-      avgOdds: valueBet.avgOdds,
-      upTrend: valueBet.upTrend,
-      downTrend: valueBet.downTrend,
-      pinnacleOdds: valueBet.pinnacleOdds,
-    });
+    newValueBets.push(valueBet);
   });
   return newValueBets;
 }

@@ -22,6 +22,7 @@ module.exports = {
   bwinChannelId: process.env.BWIN_CHANNEL_ID,
   williamHillChannelId: process.env.WILLIAM_HILL_CHANNEL_ID,
   pinnacleChannelId: process.env.PINNACLE_CHANNEL_ID,
+  betfairChannelId: process.env.BETFAIR_CHANNEL_ID,
   db: {
     uri: MONGO_URI,
   },

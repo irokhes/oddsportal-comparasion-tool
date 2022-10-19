@@ -242,14 +242,14 @@ const getValueBets = match => {
     if (result)
       results.push(composeRecoBetLine(match, "1 ML", "#1X2;3", result));
   }
-  // if (match.dnb && match.dnb.availableInBetfair) {
-  //   const result = twoLinesReco(match.dnb);
-  //   if (result) {
-  //     results.push(
-  //       composeValueBetLine(match, "DNB", `#dnb${delimiter}`, result)
-  //     );
-  //   }
-  // }
+  if (match.dnb && match.dnb.availableInBetfair) {
+    const result = twoLinesReco(match.dnb);
+    if (result) {
+      results.push(
+        composeValueBetLine(match, "DNB", `#dnb${delimiter}`, result)
+      );
+    }
+  }
   if (match.doubleChance && match.doubleChance.availableInBetfair) {
     const result = twoLinesReco(match.doubleChance);
     if (result) {
@@ -311,13 +311,13 @@ function getPinnacleRecoBets(match) {
       const result = twoLinesPinnacleReco(match.moneyLineFirstHalf);
       if (result) results.push(composeRecoBetLine(match, "1 ML", "#1X2;3", result));
     }
-    // if (match.dnb && match.dnb.availableInBetfair && match.dnb.availableInPinnacle) {
-    //   const result = twoLinesPinnacleReco(match.dnb);
-    //   if (result)
-    //     results.push(
-    //       composeRecoBetLine(match, "DNB", `#dnb${delimiter}`, result)
-    //     );
-    // }
+    if (match.dnb && match.dnb.availableInBetfair && match.dnb.availableInPinnacle) {
+      const result = twoLinesPinnacleReco(match.dnb);
+      if (result)
+        results.push(
+          composeRecoBetLine(match, "DNB", `#dnb${delimiter}`, result)
+        );
+    }
     if (match.bts && match.bts.availableInBetfair  && match.bts.availableInPinnacle) {
       const result = twoLinesPinnacleReco(match.bts);
       if (result)

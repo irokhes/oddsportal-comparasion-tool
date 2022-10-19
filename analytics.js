@@ -4,7 +4,7 @@
 const fs = require("fs");
 const request = require('axios');
 const { addZeroes, round, removeDuplicates, removePreferentialPicks, shouldBeNotified, isABannedLeague, shouldBeNotifiedWilliamHill, shouldBeNotifiedPinnacle } = require("./utils/utils");
-const { recosChannelId, pinnacleRecoBetChannelId, driftedChannelId, bwinChannelId, williamHillChannelId, pinnacleChannelId } = require("./config");
+const { recosChannelId, pinnacleRecoBetChannelId, driftedChannelId, bwinChannelId, williamHillChannelId, pinnacleChannelId, betfairChannelId } = require("./config");
 const Odds = require("./models/odds");
 const ValueBet = require("./models/valueBet");
 const RecoBet = require("./models/recoBet");
@@ -15,6 +15,8 @@ const WilliamHill = require('./williamHill')
 const WilliamHillService = require('./services/williamHill.service');
 const Pinnacle = require('./pinnacle')
 const PinnacleService = require('./services/pinnacle.service');
+const Betfair = require('./betfair')
+const BetfairSerrvice = require('./services/betfair.service');
 const { sendHtmlMessage } = require("./telegram");
 const {
   composeNewValueBetMessage,
@@ -691,6 +693,8 @@ const analyzeBets = async () => {
     const williamHillPinnacleValueBets = [];
     const pinnacleValueBets = [];
     const pinnacleBet365ValueBets = [];
+    const betfairValueBets = [];
+    const betfairPinnacleValueBets = [];
     matches.forEach(match => {
       valueBets.push(...getMatchValueBets(match));
       recoBets.push(...getMatchRecosBets(match));
@@ -703,6 +707,8 @@ const analyzeBets = async () => {
       williamHillPinnacleValueBets.push(...WilliamHill.getPinnacleRecoBets(match));
       pinnacleValueBets.push(...Pinnacle.getValueBets(match));
       pinnacleBet365ValueBets.push(...Pinnacle.getBet365RecoBets(match));
+      betfairValueBets.push(...Betfair.getValueBets(match));
+      betfairPinnacleValueBets.push(...Betfair.getPinnacleRecoBets(match));
     });
 
     //revmoe preferential pick from secundary lists
@@ -726,6 +732,10 @@ const analyzeBets = async () => {
     //PINNACLE
     const pinn1 = await PinnacleService.saveValueBetsToDatabase(pinnacleValueBets);
     const pinn2 = await PinnacleService.saveValueBetsToDatabase(pinnacleBet365ValueBets);
+
+    //BETFAIR
+    const betfair1 = await BetfairSerrvice.saveValueBetsToDatabase(betfairValueBets);
+    const betfair2 = await BetfairSerrvice.saveValueBetsToDatabase(betfairPinnacleValueBets);
 
     // const newRc = removeDuplicates(newRecoBets);
     for (let index = 0; index < n1.length; index++) {
@@ -762,6 +772,16 @@ const analyzeBets = async () => {
       const pinnacleRecoBet = pinn2[index];
       if(!shouldBeNotifiedPinnacle(pinnacleRecoBet))continue;
       await sendHtmlMessage(composeNewBet365RecoBetMessage(pinnacleRecoBet), pinnacleChannelId);
+    }
+
+    //BETFAIR
+    for (let index = 0; index < betfair1.length; index++) {
+      const recoBet = betfair1[index];
+      await sendHtmlMessage(composeNewRecoBetMessage(recoBet), betfairChannelId);
+    }
+    for (let index = 0; index < betfair2.length; index++) {
+      const pinnacleRecoBet = betfair2[index];
+      await sendHtmlMessage(composeNewPinnacleRecoBetMessage(pinnacleRecoBet), betfairChannelId);
     }
 
 

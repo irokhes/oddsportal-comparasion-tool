@@ -169,6 +169,12 @@ function shouldBeNotifiedPinnacle(valueBet) {
   return true;
 }
 
+function shouldBeNotifiedBetfair(valueBet) {
+  if (valueBet.upTrend >= 50) return false;
+
+  return true;
+}
+
 function isABannedLeague(valueBet) {
   const isABannedLeagueResult = bannedLeagues.some((league) => valueBet.url.includes(league));
   return isABannedLeagueResult;
@@ -203,4 +209,5 @@ module.exports = {
   isABannedLeague,
   shouldBeNotifiedWilliamHill,
   shouldBeNotifiedPinnacle,
+  shouldBeNotifiedBetfair,
 };

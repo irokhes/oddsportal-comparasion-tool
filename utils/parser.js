@@ -2,6 +2,15 @@
 /* eslint-disable no-empty */
 const getMatch = (page) => page.evaluate(() => document.querySelector('h1').textContent);
 
+const getLeague = async (page) => {
+  page.evaluate(() => {
+    const elements = document.querySelector('#breadcrumb').textContent.trim().split('»');
+    const league = elements[elements.length - 2].trim();
+    const country = elements[elements.length - 2].trim();
+    return { league, country };
+  });
+};
+
 const getDate = (page) => page.evaluate(() => document.querySelector('.date').textContent);
 
 const getActiveTab = (page) => page.evaluate(() => document.querySelector('#bettype-tabs > ul > li.active').textContent);
@@ -64,6 +73,7 @@ const isElegibleMatch = async (page) => page.evaluate(() => {
 
 module.exports = {
   getMatch,
+  getLeague,
   getDate,
   getActiveTab,
   getSectionSelector,

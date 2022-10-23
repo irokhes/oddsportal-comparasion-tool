@@ -1,5 +1,7 @@
 /* eslint-disable max-len */
-const { getMatch, getDate, isElegibleMatch } = require('../utils/parser');
+const {
+  getMatch, getDate, isElegibleMatch, getLeague,
+} = require('../utils/parser');
 const { getDateObj } = require('../utils/utils');
 const { getFootballOdds } = require('./football');
 const { getBasketOdds } = require('./basket');
@@ -30,6 +32,9 @@ const getOdds = async (page, data) => {
   if (!elegibleMatch) return;
 
   odds.match = await getMatch(page);
+  const { league, country } = await getLeague(page);
+  odds.league = league;
+  odds.country = country;
   odds.date = await getDate(page);
   odds.dateObj = getDateObj(odds.date);
   odds.url = url;

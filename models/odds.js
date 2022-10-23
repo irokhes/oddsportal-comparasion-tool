@@ -12,6 +12,14 @@ const OddsSchema = new Schema({
     type: String,
     required: true,
   },
+  league: {
+    type: String,
+    required: false,
+  },
+  country: {
+    type: String,
+    required: false,
+  },
   date: {
     type: String,
     required: true,

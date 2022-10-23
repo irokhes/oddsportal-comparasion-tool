@@ -2,11 +2,12 @@
 /* eslint-disable no-empty */
 const getMatch = (page) => page.evaluate(() => document.querySelector('h1').textContent);
 
-const getLeague = async (page) => {
+const getLeague = (page) => {
   page.evaluate(() => {
     const elements = document.querySelector('#breadcrumb').textContent.trim().split('»');
     const league = elements[elements.length - 2].trim();
-    const country = elements[elements.length - 2].trim();
+    const country = elements[elements.length - 3].trim();
+    console.log({ league, country });
     return { league, country };
   });
 };

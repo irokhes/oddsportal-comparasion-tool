@@ -16,6 +16,14 @@ const OddsSchema = new Schema({
     type: String,
     required: false,
   },
+  local: {
+    type: String,
+    required: false,
+  },
+  away: {
+    type: String,
+    required: false,
+  },
   country: {
     type: String,
     required: false,

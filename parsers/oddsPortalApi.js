@@ -32,9 +32,13 @@ const getOdds = async (page, data) => {
   if (!elegibleMatch) return;
 
   odds.match = await getMatch(page);
-  const { league, country } = await getLeague(page);
+  const {
+    league, country, local, away,
+  } = await getLeague(page);
   odds.league = league;
   odds.country = country;
+  odds.local = local;
+  odds.away = away;
   odds.date = await getDate(page);
   odds.dateObj = getDateObj(odds.date);
   odds.url = url;

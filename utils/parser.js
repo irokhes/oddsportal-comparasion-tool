@@ -6,7 +6,7 @@ const getLeague = async (page) => page.evaluate(() => {
   const elements = document.querySelector('#breadcrumb').textContent.trim().split('»');
   const league = elements[elements.length - 2].trim();
   const country = elements[elements.length - 3].trim();
-  const teams = elements[elements.length - 3].trim().split(' - ');
+  const teams = elements[elements.length - 1].trim().split(' - ');
   return {
     league, country, local: teams[0].trim(), away: teams[1].trim(),
   };

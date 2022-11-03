@@ -34,14 +34,14 @@ const parse3WaysLine = (lineJSON) => {
         result.bwinAwayIsInitalOdd = !lineJSON.movement[key]['2'];
         result.availableInBwin = true;
       }
-      if (key === BETFAIR) {
-        result.betfairLocalWin = lineJSON.odds[key]['0'];
-        result.betfairDraw = lineJSON.odds[key]['1'];
-        result.betfairAwayWin = lineJSON.odds[key]['2'];
-        result.betfairLocalIsInitalOdd = !lineJSON.movement[key]['0'];
-        result.betfairAwayIsInitalOdd = !lineJSON.movement[key]['2'];
-        result.availableInBetfair = true;
-      }
+      // if (key === BETFAIR) {
+      //   result.betfairLocalWin = lineJSON.odds[key]['0'];
+      //   result.betfairDraw = lineJSON.odds[key]['1'];
+      //   result.betfairAwayWin = lineJSON.odds[key]['2'];
+      //   result.betfairLocalIsInitalOdd = !lineJSON.movement[key]['0'];
+      //   result.betfairAwayIsInitalOdd = !lineJSON.movement[key]['2'];
+      //   result.availableInBetfair = true;
+      // }
       if (key === WILLIAM_HILL) {
         result.williamHillLocalWin = lineJSON.odds[key]['0'];
         result.williamHillDraw = lineJSON.odds[key]['1'];
@@ -98,8 +98,8 @@ const parse3WaysLine = (lineJSON) => {
     pinnaAwayWin: parsedLine.pinnaAwayWin,
     bwinLocalWin: parsedLine.bwinLocalWin,
     bwinAwayWin: parsedLine.bwinAwayWin,
-    betfairLocalWin: parsedLine.betfairLocalWin,
-    betfairAwayWin: parsedLine.betfairAwayWin,
+    // betfairLocalWin: parsedLine.betfairLocalWin,
+    // betfairAwayWin: parsedLine.betfairAwayWin,
     williamHillLocalWin: parsedLine.williamHillLocalWin,
     williamHillAwayWin: parsedLine.williamHillAwayWin,
     draw: parsedLine.draw,
@@ -135,13 +135,13 @@ const parse2WaysLine = (lineJSON) => {
         result.bwinAwayIsInitalOdd = !lineJSON.movement[key]['1'];
         result.availableInBwin = true;
       }
-      if (key === BETFAIR) {
-        result.betfairLocalWin = lineJSON.odds[key]['0'];
-        result.betfairAwayWin = lineJSON.odds[key]['1'];
-        result.betfairLocalIsInitalOdd = !lineJSON.movement[key]['0'];
-        result.betfairAwayIsInitalOdd = !lineJSON.movement[key]['1'];
-        result.availableInBetfair = true;
-      }
+      // if (key === BETFAIR) {
+      //   result.betfairLocalWin = lineJSON.odds[key]['0'];
+      //   result.betfairAwayWin = lineJSON.odds[key]['1'];
+      //   result.betfairLocalIsInitalOdd = !lineJSON.movement[key]['0'];
+      //   result.betfairAwayIsInitalOdd = !lineJSON.movement[key]['1'];
+      //   result.availableInBetfair = true;
+      // }
       if (key === WILLIAM_HILL) {
         result.williamHillLocalWin = lineJSON.odds[key]['0'];
         result.williamHillAwayWin = lineJSON.odds[key]['1'];
@@ -197,8 +197,8 @@ const parse2WaysLine = (lineJSON) => {
     pinnaAwayWin: parsedLine.pinnaAwayWin,
     bwinLocalWin: parsedLine.bwinLocalWin,
     bwinAwayWin: parsedLine.bwinAwayWin,
-    betfairLocalWin: parsedLine.betfairLocalWin,
-    betfairAwayWin: parsedLine.betfairAwayWin,
+    // betfairLocalWin: parsedLine.betfairLocalWin,
+    // betfairAwayWin: parsedLine.betfairAwayWin,
     williamHillLocalWin: parsedLine.williamHillLocalWin,
     williamHillAwayWin: parsedLine.williamHillAwayWin,
     localWinAvg: round(parsedLine.localWinSum / parsedLine.numOfBookies, 3),
@@ -232,13 +232,13 @@ const parseOverUnderLine = (lineJSON) => {
         result.bwinUnderOdds = lineJSON.odds[key]['1'];
         result.bwinUnderIsInitalOdd = !lineJSON.movement[key]['1'];
       }
-      if (key === BETFAIR) {
-        result.availableInBetfair = true;
-        result.betfairOverOdds = lineJSON.odds[key]['0'];
-        result.betfairOverIsInitalOdd = !lineJSON.movement[key]['0'];
-        result.betfairUnderOdds = lineJSON.odds[key]['1'];
-        result.betfairUnderIsInitalOdd = !lineJSON.movement[key]['1'];
-      }
+      // if (key === BETFAIR) {
+      //   result.availableInBetfair = true;
+      //   result.betfairOverOdds = lineJSON.odds[key]['0'];
+      //   result.betfairOverIsInitalOdd = !lineJSON.movement[key]['0'];
+      //   result.betfairUnderOdds = lineJSON.odds[key]['1'];
+      //   result.betfairUnderIsInitalOdd = !lineJSON.movement[key]['1'];
+      // }
       if (key === WILLIAM_HILL) {
         result.availableInWilliamHill = true;
         result.williamHillOverOdds = lineJSON.odds[key]['0'];
@@ -295,8 +295,8 @@ const parseOverUnderLine = (lineJSON) => {
     pinnaUnderOdds: parsedLine.pinnaUnderOdds,
     bwinOverOdds: parsedLine.bwinOverOdds,
     bwinUnderOdds: parsedLine.bwinUnderOdds,
-    betfairOverOdds: parsedLine.betfairOverOdds,
-    betfairUnderOdds: parsedLine.betfairUnderOdds,
+    // betfairOverOdds: parsedLine.betfairOverOdds,
+    // betfairUnderOdds: parsedLine.betfairUnderOdds,
     williamHillOverOdds: parsedLine.williamHillOverOdds,
     williamHillUnderOdds: parsedLine.williamHillUnderOdds,
     overOddsAvg: round(parsedLine.overOddsSum / parsedLine.numOfBookies, 3),

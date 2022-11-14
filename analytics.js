@@ -701,12 +701,12 @@ const analyzeBets = async () => {
       pinnacleRecoBets.push(...getPinnacleRecoBets(match));
       // driftedLines.push(...getDriftedValueBets(match));
       // percentageBets.push(...getMatchValueBetsByPercentage(match));
-      bwinValueBets.push(...Bwin.getValueBets(match));
-      bwinPinnacleValueBets.push(...Bwin.getPinnacleRecoBets(match));
-      williamHillValueBets.push(...WilliamHill.getValueBets(match));
-      williamHillPinnacleValueBets.push(...WilliamHill.getPinnacleRecoBets(match));
-      pinnacleValueBets.push(...Pinnacle.getValueBets(match));
-      pinnacleBet365ValueBets.push(...Pinnacle.getBet365RecoBets(match));
+      // bwinValueBets.push(...Bwin.getValueBets(match));
+      // bwinPinnacleValueBets.push(...Bwin.getPinnacleRecoBets(match));
+      // williamHillValueBets.push(...WilliamHill.getValueBets(match));
+      // williamHillPinnacleValueBets.push(...WilliamHill.getPinnacleRecoBets(match));
+      // pinnacleValueBets.push(...Pinnacle.getValueBets(match));
+      // pinnacleBet365ValueBets.push(...Pinnacle.getBet365RecoBets(match));
       betfairValueBets.push(...Betfair.getValueBets(match));
       betfairPinnacleValueBets.push(...Betfair.getPinnacleRecoBets(match));
     });
@@ -721,7 +721,7 @@ const analyzeBets = async () => {
     const newPinnacleRecoBets = await savePinnacleRecobetsToDatabase(pinnacleRecoBets);
     const uniqueVb2 = await saveValueBets(newPinnacleRecoBets);
 
-    //BWIN
+    // //BWIN
     const n1 = await BwinService.saveValueBetsToDatabase(bwinValueBets);
     const n2 = await BwinService.saveValueBetsToDatabase(bwinPinnacleValueBets);
 

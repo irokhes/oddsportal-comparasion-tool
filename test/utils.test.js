@@ -1,10 +1,13 @@
 const { getDateObj, removePreferentialPicks } = require('../utils/utils');
 
 test('get Date object from string', () => {
-  expect(getDateObj('Tomorrow, 24 Apr  2021, 00:00').toISOString()).toStrictEqual('2021-04-24T00:00:00.000Z');
+  expect(getDateObj('Tomorrow, 24 Apr 2021, 00:00').toISOString()).toStrictEqual('2021-04-24T00:00:00.000Z');
 });
 test('get Date object from string', () => {
-  expect(getDateObj('Today, 29 Apr  2021, 17:00').toISOString()).toStrictEqual('2021-04-29T17:00:00.000Z');
+  expect(getDateObj('Today, 29 Apr 2021, 17:00').toISOString()).toStrictEqual('2021-04-29T17:00:00.000Z');
+});
+test('get another Date object from string', () => {
+  expect(getDateObj('Today, 26 Jan 2023, 14:15').toISOString()).toStrictEqual('2023-01-26T14:15:00.000Z');
 });
 const list = [{ url: 'url1', name: '1' }, { url: 'url2', name: '2' }];
 const preferentialList = [{ url: 'url1', name: '1' }, { url: 'url3', name: '3' }];

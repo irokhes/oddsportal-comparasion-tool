@@ -47,16 +47,19 @@ const monthsMapping = {
   Dec: '12',
 };
 function getDateObj(dateString) {
-  // Tomorrow, 24 Apr  2021, 00:00
+  console.log(dateString);
+  // Tomorrow, 24 Apr 2021, 00:00
   const toArray = dateString.split(', ');
-  const dateInArray = toArray[1].split(' ');
+  const dateAndTimeInArray = toArray[1].split(', ');
+  const time = dateAndTimeInArray[1];
+  const dateInArray = dateAndTimeInArray[0].split(' ');
   const day = dateInArray[0];
   const month = monthsMapping[dateInArray[1]];
-  const year = toArray[1].split('  ')[1];
-  if (Number.isNaN(Date.parse(`${year}-${month}-${day}T${toArray[2]}:00Z`))) {
+  const year = dateInArray[2];
+  if (Number.isNaN(Date.parse(`${year}-${month}-${day}T${time}:00Z`))) {
     console.log('NO ES UNA FECHA... ', dateString);
   }
-  return new Date(`${year}-${month}-${day}T${toArray[2]}:00Z`);
+  return new Date(`${year}-${month}-${day}T${time}:00Z`);
 }
 
 const yyymmdd = (date) => {

@@ -144,7 +144,7 @@ function shouldBeNotifiedWilliamHill(valueBet) {
   return true;
 }
 function shouldBeNotifiedPinnacle(valueBet) {
-  if (valueBet.upTrend >= 30 || valueBet.odds > 1.6) return false;
+  if (valueBet.upTrend >= 30 || valueBet.odds > 2) return false;
 
   return true;
 }

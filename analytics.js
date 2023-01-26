@@ -706,7 +706,7 @@ const analyzeBets = async () => {
       // williamHillValueBets.push(...WilliamHill.getValueBets(match));
       // williamHillPinnacleValueBets.push(...WilliamHill.getPinnacleRecoBets(match));
       // pinnacleValueBets.push(...Pinnacle.getValueBets(match));
-      // pinnacleBet365ValueBets.push(...Pinnacle.getBet365RecoBets(match));
+      pinnacleBet365ValueBets.push(...Pinnacle.getBet365RecoBets(match));
       betfairValueBets.push(...Betfair.getValueBets(match));
       betfairPinnacleValueBets.push(...Betfair.getPinnacleRecoBets(match));
     });

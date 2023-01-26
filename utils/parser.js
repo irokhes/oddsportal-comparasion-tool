@@ -1,20 +1,18 @@
 /* eslint-disable max-len */
 /* eslint-disable no-empty */
-const getMatch = (page) => page.evaluate(() => document.querySelector('h1').textContent);
 
-const getLeague = async (page) => page.evaluate(() => {
-  const elements = document.querySelector('#breadcrumb').textContent.trim().split('»');
-  const league = elements[elements.length - 2].trim();
-  const country = elements[elements.length - 3].trim();
-  const teams = elements[elements.length - 1].trim().split(' - ');
+const getMatchInfo = async (page) => page.evaluate(() => {
+  const elements = document.getElementsByClassName('capitalize font-normal text-[0.70rem] leading-4 max-mt:!hidden');
+  const league = elements[elements.length - 2].querySelector('a').textContent.trim();
+  const country = elements[elements.length - 3].querySelector('a').textContent.trim();
+  const match = elements[elements.length - 1].textContent.trim();
+  const teams = elements[elements.length - 1].textContent.trim().split(' - ');
   return {
-    league, country, local: teams[0].trim(), away: teams[1].trim(),
+    league, country, local: teams[0].trim(), away: teams[1].trim(), match,
   };
 });
 
-const getDate = (page) => page.evaluate(() => document.querySelector('.date').textContent);
-
-const getActiveTab = (page) => page.evaluate(() => document.querySelector('#bettype-tabs > ul > li.active').textContent);
+const getDate = (page) => page.evaluate(() => document.querySelector('.flex.text-xs.font-normal.text-gray-dark.font-main.item-center').textContent);
 
 const getSectionSelector = async (page, section) => {
   const sectionIndex = await page.evaluate((section) => {
@@ -63,24 +61,19 @@ const getBookies = (page, index = 1) => page.evaluate((i) => Array.from(document
   `#odds-data-table > div:nth-child(${i}) > table > tbody > tr.lo`,
 )), index);
 
-const isElegibleMatch = async (page) => page.evaluate(() => {
-  const selector = '#bettype-tabs > ul > li.active > strong > span';
-  const resultSelector = '.result';
-  const resultLiveSelector = '.result-live';
-  const resultAlertSelector = '.result-alert';
-  if (document.querySelector(selector) === null || document.querySelector(resultSelector) || document.querySelector(resultLiveSelector) || document.querySelector(resultAlertSelector)) return false;
-  return true;
+const isValidMatch = async (page) => page.evaluate(() => {
+  const liveResult = document.querySelector('.result-live');
+  const finishiedMatch = document.getElementsByClassName('relative w-4 h-4 mr-1 bg-center bg-no-repeat bg-exclamation-orange-icon');
+  return !(liveResult || finishiedMatch.length);
 });
 
 module.exports = {
-  getMatch,
-  getLeague,
+  getMatchInfo,
   getDate,
-  getActiveTab,
   getSectionSelector,
   getInitialOdds,
   getName,
   getBookies,
   getAverage,
-  isElegibleMatch,
+  isValidMatch,
 };

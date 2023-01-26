@@ -73,29 +73,6 @@ const addZeroes = (num) => {
   const len = dec && dec.length > 2 ? dec.length : 2;
   return Number(num).toFixed(len);
 };
-function getOddsBelowOpeningValue(
-  betytype,
-  openingOddsType,
-  _188BET,
-  _1xBet,
-  _Marathonbet,
-  _Pinnacle,
-) {
-  let currentOddsBelowOrigianl = 0;
-  if (_188BET[betytype] < _188BET[openingOddsType]) {
-    currentOddsBelowOrigianl++;
-  }
-  if (_1xBet[betytype] < _1xBet[openingOddsType]) {
-    currentOddsBelowOrigianl++;
-  }
-  if (_Marathonbet[betytype] < _Marathonbet[openingOddsType]) {
-    currentOddsBelowOrigianl++;
-  }
-  if (_Pinnacle[betytype] < _Pinnacle[openingOddsType]) {
-    currentOddsBelowOrigianl++;
-  }
-  return currentOddsBelowOrigianl;
-}
 function round(value, decimals) {
   return Number(`${Math.round(`${value}e${decimals}`)}e-${decimals}`);
 }
@@ -198,7 +175,6 @@ module.exports = {
   getDates,
   getDateObj,
   addZeroes,
-  getOddsBelowOpeningValue,
   round,
   execShellCommand,
   binarySearch,

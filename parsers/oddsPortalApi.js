@@ -1,9 +1,9 @@
 /* eslint-disable max-len */
 const {
-  getMatch, getDate, isElegibleMatch, getLeague,
+  getMatchInfo, getDate, isValidMatch, getLeague,
 } = require('../utils/parser');
 const { getDateObj } = require('../utils/utils');
-const { getFootballOdds } = require('./football');
+const { getFootballOdds } = require('./old_football');
 const { getBasketOdds } = require('./basket');
 const Odds = require('../models/odds');
 
@@ -18,7 +18,7 @@ const getOdds = async (page, data) => {
   await page.setRequestInterception(true);
   page.on('request', (request) => {
     const reqUrl = request.url().toString();
-    if (reqUrl.includes('/feed/match')) { apiUrl = reqUrl; }
+    if (reqUrl.includes('/feed/match-event')) { apiUrl = reqUrl; }
     request.continue();
   });
 
@@ -28,13 +28,12 @@ const getOdds = async (page, data) => {
     console.log('we did not get the base url');
     return;
   }
-  const elegibleMatch = await isElegibleMatch(page);
-  if (!elegibleMatch) return;
-
-  odds.match = await getMatch(page);
+  const validMatch = await isValidMatch(page);
+  if (!validMatch) return;
   const {
-    league, country, local, away,
-  } = await getLeague(page);
+    league, country, local, away, match,
+  } = await getMatchInfo(page);
+  odds.match = match;
   odds.league = league;
   odds.country = country;
   odds.local = local;

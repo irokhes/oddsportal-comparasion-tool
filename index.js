@@ -2,12 +2,9 @@
 /* eslint-disable no-shadow */
 /* eslint-disable max-len */
 const { Cluster } = require('puppeteer-cluster');
-const { shouldGetMatches, getDates } = require('./utils/utils');
+const { getDates } = require('./utils/utils');
 const { maxConcurrency } = require('./config');
 
-const {
-  getOdds5Bookies,
-} = require('./parsers/football');
 const { getOdds } = require('./parsers/oddsPortalApi');
 const db = require('./models/db');
 const analytics = require('./analytics');
@@ -45,9 +42,11 @@ const analytics = require('./analytics');
     await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
     console.log('login...');
     await page.goto(url);
-    await page.type('#login-username1', 'irokhes');
-    await page.type('#login-password1', 'Correoocio09');
-    await page.click('button[type="submit"]');
+    await page.type('#login-username-sign', 'irokhes');
+    await page.type('#login-password-sign', 'Correoocio09');
+    (await page.evaluate(() => {
+      document.querySelector('input[name="login-submit"]').click();
+    }));
     console.log('login ok!');
   }
 
@@ -65,23 +64,19 @@ const analytics = require('./analytics');
       await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
       await page.goto(url);
       (await page.evaluate(() => {
-        const matchesListQuerySelector = '#table-matches > table > tbody > tr[xeid]';
-        const matches = [...document.querySelectorAll(matchesListQuerySelector)];
+        const matchesListQuerySelector = 'flex flex-col border-b border-black-borders min-h-[35px]';
+        const matches = [...document.getElementsByClassName(matchesListQuerySelector)];
+
         return matches.reduce((matchesUrlList, match) => {
-          const matchHasEnded = match.querySelector('.table-score');
-          if (matchHasEnded) return matchesUrlList;
+          const notElegibleSelector = 'hidden flex-col items-center next-m:!flex justify-center gap-1 pt-1 pb-1 border-black-main border-opacity-10 min-w-[60px]';
+          const matchHasEnded = match.getElementsByClassName(notElegibleSelector);
+          if (matchHasEnded.length) return matchesUrlList;
 
-          const matchUrlLinks = Array.from(match.querySelectorAll('td.name.table-participant > a'));
-          const matchUrl = matchUrlLinks.length > 1 ? matchUrlLinks[1].href : matchUrlLinks[0].href;
+          const matchUrl = match.querySelector('.flex.group.border-l.border-r.border-black-borders > a').href;
           matchesUrlList.push(matchUrl);
-
-          // if (shouldGetMatches(matchUrl)) {
-          //   matchesUrlList.push(matchUrl);
-          // }
-
           return matchesUrlList;
         }, []);
-      })).forEach((matchUrl) => { extractOdds(matchUrl, sport); });
+      })).forEach((match) => { extractOdds(match, sport); });
     } catch (error) {
       console.log('Error::::::', error);
     }

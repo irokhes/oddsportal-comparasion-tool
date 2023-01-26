@@ -1,103 +1,95 @@
-const { parse2WaysLine, parseOverUnderLine, parse3WaysLine} = require('./lines');
-const { MONEYLINE, DNB, DC, AH, OVER_UNDER, BTS, MONEYLINE_FIRST_HALF } = require('../utils/constants');
-const { execShellCommand } = require('../utils/utils');
+/* eslint-disable max-len */
+// check if the match is live
+// .result-live
 
-const cmd = "curl 'https://fb.oddsportal.com/feed/match/1-1-#MATCH#-#LINE#-#PARAMS#' -H 'authority: fb.oddsportal.com' -H 'sec-ch-ua: \"Chromium\";v=\"88\", \"Google Chrome\";v=\"88\", \";Not A Brand\";v=\"99\"' -H 'sec-ch-ua-mobile: ?0' -H 'user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.96 Safari/537.36' -H 'accept: */*'  -H 'sec-fetch-site: same-site' -H 'sec-fetch-mode: no-cors' -H 'sec-fetch-dest: script' -H 'referer: https://www.oddsportal.com/' -H 'accept-language: es-ES,es;q=0.9,en;q=0.8' -H 'cookie: _ga=GA1.2.1614190317.1554620476; _gid=GA1.2.1578678168.1611570893'";
+const constants = require('../utils/parserConstants');
 
-const getFootballOdds = async (apiUrl, odds, url) => {
-    const matchDetails = apiUrl.split('https://fb.oddsportal.com/feed/match/1-1-')[1].split('-');
-    const baseUrl = apiUrl.split('https://fb.oddsportal.com')[1].split('?')[0];
-    const baseUrlTemplate = '/feed/match/1-1-#MATCH#-#LINE#-#PARAMS#';
-    const match = matchDetails[0];
-    const parameters = matchDetails[matchDetails.length - 1];
+// check if th match is finished
+// relative w-4 h-4 mr-1 bg-center bg-no-repeat bg-exclamation-orange-icon
+const parse3WaysLine = async (page) => {
+  page.on('console', (consoleObj) => console.log(consoleObj.text()));
+  const result = await page.evaluate((constants) => {
+    const BOOKIE_NAME = 0;
+    const LOCAL_WIN = 1;
+    const AWAY_WIN = 3;
+    const bookiesOdds = Array.from(document.getElementsByClassName('flex text-xs max-sm:h-[60px] h-9 border-b'));
+    const result = {
+      availableInBet365: false,
+      availableInPinnacle: false,
+      availableInBwin: false,
+      availableInBetfair: false,
+      availableInWilliamHill: false,
+      numOfBookies: 0,
+      localWinSum: 0,
+      awayWinSum: 0,
+      localWin: 0,
+      awayWin: 0,
+      localUpTrend: 0,
+      localDownTrend: 0,
+      awayUpTrend: 0,
+      awayDownTrend: 0,
+      pinnaLocalWin: 0,
+      pinnaAwayWin: 0,
+      bwinLocalWin: 0,
+      bwinAwayWin: 0,
+      williamHillLocalWin: 0,
+      williamHillAwayWin: 0,
+    };
+    console.log(bookiesOdds.length);
+    bookiesOdds.reduce((result, currentBookie) => {
+      const columns = currentBookie.querySelectorAll('.flex.items-center');
+      const bookieName = columns[BOOKIE_NAME].textContent;
+      const localWin = parseFloat(columns[LOCAL_WIN].textContent);
+      const awaylWin = parseFloat(columns[AWAY_WIN].textContent);
+      console.log(bookieName);
+      console.log(result.localWinSum);
+      console.log(localWin);
+      console.log(awaylWin);
+      console.log(result.awayWinSum);
+      result.localWinSum += localWin;
+      result.awayWinSum += awaylWin;
+      result.numOfBookies += 1;
+      if (bookieName === constants.BET365) {
+        result.localWin = localWin;
+        result.awayWin = awaylWin;
+        result.availableInBet365 = true;
+        result.localIsInitalOdd = !lineJSON.movement[key]['0'];
+        result.awayIsInitalOdd = !lineJSON.movement[key]['2'];
+      }
+      return result;
+    }, result);
+    return result;
+  }, constants);
+  return result;
+};
+const linesParsers = {
+  '1X2': { func: parse3WaysLine, name: 'moneyLine' },
+  double: { func: parse3WaysLine, name: 'doubleChance' },
+  bts: { func: () => {}, name: 'bts' },
+  dnb: { func: () => {}, name: 'dnb' },
+  'over-under': { func: () => {}, name: 'overUnder' },
+  ah: { func: () => {}, name: 'asianHandicap' },
+};
 
+const extractOdds = async (page, url, line) => {
+  console.log(url);
+  console.log(line);
+  try {
+    const odds = {};
+    if (!url.includes(line)) return;
 
-    const mlResult = execShellCommand(cmd.replace('#MATCH#', match).replace('#PARAMS#', parameters).replace('#LINE#', MONEYLINE));
-    const mlFirstHalfResult = execShellCommand(cmd.replace('#MATCH#', match).replace('#PARAMS#', parameters).replace('#LINE#', MONEYLINE_FIRST_HALF));
-    const dnbResult = execShellCommand(cmd.replace('#MATCH#', match).replace('#PARAMS#', parameters).replace('#LINE#', DNB));
-    const btsResult = execShellCommand(cmd.replace('#MATCH#', match).replace('#PARAMS#', parameters).replace('#LINE#', BTS));
-    const dcResult = execShellCommand(cmd.replace('#MATCH#', match).replace('#PARAMS#', parameters).replace('#LINE#', DC));
-    const oUResult = execShellCommand(cmd.replace('#MATCH#', match).replace('#PARAMS#', parameters).replace('#LINE#', OVER_UNDER));
-    const ahResult = execShellCommand(cmd.replace('#MATCH#', match).replace('#PARAMS#', parameters).replace('#LINE#', AH));
-    // ML
-    try {
-        const moneyLineJSON = JSON.parse((await mlResult).replace(`globals.jsonpCallback('${baseUrl}', `, '').replace(');', ''));
-        const moneyLineOdds = moneyLineJSON.d.oddsdata ? moneyLineJSON.d.oddsdata.back[`E-${MONEYLINE}-0-0-0`] : null;
-        odds.moneyLine = parse3WaysLine(moneyLineOdds);
-    } catch (error) {
-        // console.log(`error parsing ML for ${url}`);
-    }
-    // ML 1ST HALF
-    try {
-        const result = await mlFirstHalfResult;
-        const moneyLineFirstHalfJSON = JSON.parse((result).replace(`globals.jsonpCallback('${baseUrlTemplate.replace('#MATCH#', match).replace('#PARAMS#', parameters).replace('#LINE#', MONEYLINE_FIRST_HALF).split('?')[0]}', `, '').replace(');', ''));
-        const moneyLineFirstHalfOdds = moneyLineFirstHalfJSON.d.oddsdata ? moneyLineFirstHalfJSON.d.oddsdata.back[`E-${MONEYLINE_FIRST_HALF}-0-0-0`] : null;
-        odds.moneyLineFirstHalf = parse3WaysLine(moneyLineFirstHalfOdds);
-    } catch (error) {
-        // console.log(`error parsing ML for ${url}`);
-    }
-    // DNB
-    try {
-        const dnbJSON = JSON.parse((await dnbResult).replace(`globals.jsonpCallback('${baseUrlTemplate.replace('#MATCH#', match).replace('#PARAMS#', parameters).replace('#LINE#', DNB).split('?')[0]}', `, '').replace(');', ''));
-        const dnbLine = dnbJSON.d.oddsdata ? dnbJSON.d.oddsdata.back[`E-${DNB}-0-0-0`] : null;
-        odds.dnb = parse2WaysLine(dnbLine)
-    } catch (error) {
-        // console.log(`error parsing DNB for ${url}`);
-    }
-    // BTS
-    try {
-        const bttsJSON = JSON.parse((await btsResult).replace(`globals.jsonpCallback('${baseUrlTemplate.replace('#MATCH#', match).replace('#PARAMS#', parameters).replace('#LINE#', BTS).split('?')[0]}', `, '').replace(');', ''));
-        const bttsLine = bttsJSON.d.oddsdata ? bttsJSON.d.oddsdata.back[`E-${BTS}-0-0-0`] : null;
-        odds.bts = parse2WaysLine(bttsLine)
-    } catch (error) {
-        // console.log(`error parsing BTS for ${url}`);
-    }
-    // DC
-    try {
-        const dcJSON = JSON.parse((await dcResult).replace(`globals.jsonpCallback('${baseUrlTemplate.replace('#MATCH#', match).replace('#PARAMS#', parameters).replace('#LINE#', DC).split('?')[0]}', `, '').replace(');', ''));
-        const dcLine = dcJSON.d.oddsdata ? dcJSON.d.oddsdata.back[`E-${DC}-0-0-0`] : null;
-        odds.doubleChance = parse3WaysLine(dcLine)
-    } catch (error) {
-        // console.log(`error parsing DC for ${url}`);
-
-    }
-    // OVER UNDER GOALS
-    try {
-        const overUnderJSON = JSON.parse((await oUResult).replace(`globals.jsonpCallback('${baseUrlTemplate.replace('#MATCH#', match).replace('#PARAMS#', parameters).replace('#LINE#', OVER_UNDER).split('?')[0]}', `, '').replace(');', ''));
-        odds.overUnder = [];
-        if (overUnderJSON.d.oddsdata) {
-            Object.keys(overUnderJSON.d.oddsdata.back).forEach((key) => {
-                const val = overUnderJSON.d.oddsdata.back[key];
-                let line = key.replace(`E-${OVER_UNDER}-0-`, '');
-                line = line.substring(0, line.length - 2);
-                const oddsLine = parseOverUnderLine(overUnderJSON.d.oddsdata.back[key]);
-                if (oddsLine) odds.overUnder.push({ ...oddsLine, line });
-            });
-        }
-    } catch (error) {
-        // console.log(`error parsing O/U for ${url}`);
-
-    }
-    // ASIAN HANDICAP
-    try {
-        const asianHandicapJSON = JSON.parse((await ahResult).replace(`globals.jsonpCallback('${baseUrlTemplate.replace('#MATCH#', match).replace('#PARAMS#', parameters).replace('#LINE#', AH).split('?')[0]}', `, '').replace(');', ''));
-        odds.asianHandicap = [];
-        if (asianHandicapJSON.d.oddsdata) {
-            Object.keys(asianHandicapJSON.d.oddsdata.back).forEach((key) => {
-                const val = asianHandicapJSON.d.oddsdata.back[key];
-                let line = key.replace(`E-${AH}-0-`, '');
-                line = line.substring(0, line.length - 2);
-                const oddsLine = parseOverUnderLine(asianHandicapJSON.d.oddsdata.back[key]);
-                if (oddsLine) odds.asianHandicap.push({ ...oddsLine, line });
-            });
-        }
-    } catch (error) {
-        // console.log(`error parsing AH for ${url}`);
-    }
-
+    const isValidPage = await page.evaluate(() => {
+      const liveResult = document.querySelector('.result-live');
+      const finishiedMatch = document.getElementsByClassName('relative w-4 h-4 mr-1 bg-center bg-no-repeat bg-exclamation-orange-icon');
+      return !(liveResult || finishiedMatch.length);
+    });
+    if (isValidPage) { odds[linesParsers[line].name] = await linesParsers[line].func(page); }
     return odds;
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 module.exports = {
-    getFootballOdds,
+  extractOdds,
 };

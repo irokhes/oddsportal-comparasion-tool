@@ -42,7 +42,6 @@ const getOdds = async (page, data) => {
   odds.dateObj = getDateObj(odds.date);
   odds.url = url;
   odds.sport = sport;
-  console.log('DATE OBJ ', odds.dateObj);
   if (isFootball) {
     odds = await getFootballOdds(apiUrl, odds, url);
   } else {

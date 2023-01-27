@@ -47,7 +47,6 @@ const monthsMapping = {
   Dec: '12',
 };
 function getDateObj(dateString) {
-  console.log(dateString);
   // Tomorrow, 24 Apr 2021, 00:00
   const toArray = dateString.split(', ');
   const dateAndTimeInArray = toArray[1].split(', ');
@@ -62,15 +61,6 @@ function getDateObj(dateString) {
   return new Date(`${year}-${month}-${day}T${time}:00Z`);
 }
 
-const yyymmdd = (date) => {
-  const mm = date.getMonth() + 1; // getMonth() is zero-based
-  const dd = date.getDate();
-  return [
-    date.getFullYear(),
-    (mm > 9 ? '' : '0') + mm,
-    (dd > 9 ? '' : '0') + dd,
-  ].join('');
-};
 const addZeroes = (num) => {
   const dec = num.toString().split('.')[1];
   const len = dec && dec.length > 2 ? dec.length : 2;

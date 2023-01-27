@@ -35,17 +35,11 @@ const parse3WaysLine = async (page) => {
       williamHillLocalWin: 0,
       williamHillAwayWin: 0,
     };
-    console.log(bookiesOdds.length);
     bookiesOdds.reduce((result, currentBookie) => {
       const columns = currentBookie.querySelectorAll('.flex.items-center');
       const bookieName = columns[BOOKIE_NAME].textContent;
       const localWin = parseFloat(columns[LOCAL_WIN].textContent);
       const awaylWin = parseFloat(columns[AWAY_WIN].textContent);
-      console.log(bookieName);
-      console.log(result.localWinSum);
-      console.log(localWin);
-      console.log(awaylWin);
-      console.log(result.awayWinSum);
       result.localWinSum += localWin;
       result.awayWinSum += awaylWin;
       result.numOfBookies += 1;

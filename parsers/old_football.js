@@ -12,7 +12,7 @@ const getFootballOdds = async (apiUrl, odds, url) => {
     const match = matchDetails[0];
     const parameters = matchDetails[matchDetails.length - 1];
 
-    console.log(cmd.replace('#MATCH#', match).replace('#PARAMS#', parameters).replace('#LINE#', MONEYLINE));
+    // console.log(cmd.replace('#MATCH#', match).replace('#PARAMS#', parameters).replace('#LINE#', MONEYLINE));
     const mlResult = execShellCommand(cmd.replace('#MATCH#', match).replace('#PARAMS#', parameters).replace('#LINE#', MONEYLINE));
     const mlFirstHalfResult = execShellCommand(cmd.replace('#MATCH#', match).replace('#PARAMS#', parameters).replace('#LINE#', MONEYLINE_FIRST_HALF));
     const dnbResult = execShellCommand(cmd.replace('#MATCH#', match).replace('#PARAMS#', parameters).replace('#LINE#', DNB));

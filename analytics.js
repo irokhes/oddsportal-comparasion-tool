@@ -730,7 +730,7 @@ const analyzeBets = async () => {
     const wh2 = await WilliamHillService.saveValueBetsToDatabase(williamHillPinnacleValueBets);
 
     //PINNACLE
-    const pinn1 = await PinnacleService.saveValueBetsToDatabase(pinnacleValueBets);
+    // const pinn1 = await PinnacleService.saveValueBetsToDatabase(pinnacleValueBets);
     const pinn2 = await PinnacleService.saveValueBetsToDatabase(pinnacleBet365ValueBets);
 
     //BETFAIR
@@ -763,14 +763,14 @@ const analyzeBets = async () => {
     }
 
     //PINNACLE
-    for (let index = 0; index < pinn1.length; index++) {
-      const recoBet = pinn1[index];
-      if(!shouldBeNotifiedPinnacle(recoBet))continue;
-      await sendHtmlMessage(composeNewRecoBetMessage(recoBet), pinnacleChannelId);
-    }
+    // for (let index = 0; index < pinn1.length; index++) {
+    //   const recoBet = pinn1[index];
+    //   if(!shouldBeNotifiedPinnacle(recoBet))continue;
+    //   await sendHtmlMessage(composeNewRecoBetMessage(recoBet), pinnacleChannelId);
+    // }
     for (let index = 0; index < pinn2.length; index++) {
       const pinnacleRecoBet = pinn2[index];
-      if(!shouldBeNotifiedPinnacle(pinnacleRecoBet))continue;
+      // if(!shouldBeNotifiedPinnacle(pinnacleRecoBet))continue;
       await sendHtmlMessage(composeNewBet365RecoBetMessage(pinnacleRecoBet), pinnacleChannelId);
     }
 

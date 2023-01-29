@@ -731,7 +731,6 @@ const analyzeBets = async () => {
 
     //PINNACLE
     // const pinn1 = await PinnacleService.saveValueBetsToDatabase(pinnacleValueBets);
-    console.log('PINNA BET365 RECOS ', pinnacleBet365ValueBets);
     const pinn2 = await PinnacleService.saveValueBetsToDatabase(pinnacleBet365ValueBets);
 
     //BETFAIR
@@ -771,7 +770,7 @@ const analyzeBets = async () => {
     // }
     for (let index = 0; index < pinn2.length; index++) {
       const pinnacleRecoBet = pinn2[index];
-      // if(!shouldBeNotifiedPinnacle(pinnacleRecoBet))continue;
+      if(!shouldBeNotifiedPinnacle(pinnacleRecoBet))continue;
       await sendHtmlMessage(composeNewBet365RecoBetMessage(pinnacleRecoBet), pinnacleChannelId);
     }
 

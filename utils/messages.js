@@ -15,7 +15,7 @@ const composeNewPinnacleRecoBetMessage = (valueBet) => {
   return `${line}${trend}<a href="${valueBet.url}" target="_blank">${valueBet.match}</a>\n`;
 };
 const composeNewBet365RecoBetMessage = (valueBet) => {
-  const line = `Linea: ${valueBet.line} ${valueBet.line === 'AH' || valueBet.line === 'O/U' ? valueBet.lineValue : ''} cuota: ${valueBet.odds} bet365: ${valueBet.bet365Odds} avg: ${valueBet.avgOdds} Bet to: ${valueBet.betTo}\n`;
+  const line = `Linea: ${valueBet.line} ${valueBet.line === 'AH' || valueBet.line === 'O/U' ? valueBet.lineValue : ''} PINNA: ${valueBet.odds} BET365: ${valueBet.bet365Odds} Bet to: ${valueBet.betTo}\n`;
   const trend = valueBet.upTrend !== undefined && valueBet.downTrend !== undefined ? `Tendencia: ⬇️🔴${valueBet.downTrend}%  -  ⬆️🟢${valueBet.upTrend}%\n` : '';
   return `${line}${trend}<a href="${valueBet.url}" target="_blank">${valueBet.match}</a>\n`;
 };

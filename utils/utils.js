@@ -151,7 +151,6 @@ function isABannedLeague(valueBet) {
 }
 
 function shouldGetMatches(matchUrl) {
-  console.log(matchUrl);
   if (matchUrl.includes(TERCERA_DIVISION_ESPANOLA)) return false;
   if (matchUrl.includes(ALEMANIA_YOUTH_LEAGUE)) return false;
   if (matchUrl.includes(ITALIA_YOUTH_LEAGUE)) return false;

@@ -26,7 +26,6 @@ const getFootballOdds = async (apiUrl, odds, url) => {
         const moneyLineJSON = JSON.parse((await mlResult).replace(`globals.jsonpCallback('${baseUrl}', `, '').replace(');', ''));
         const moneyLineOdds = moneyLineJSON.d.oddsdata ? moneyLineJSON.d.oddsdata.back[`E-${MONEYLINE}-0-0-0`] : null;
         odds.moneyLine = parse3WaysLine(moneyLineOdds);
-        console.log(odds.moneyLine);
     } catch (error) {
         console.log(`error parsing ML for ${url}`);
         console.log('error ', errors);

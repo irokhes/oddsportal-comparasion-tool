@@ -731,6 +731,7 @@ const analyzeBets = async () => {
 
     //PINNACLE
     // const pinn1 = await PinnacleService.saveValueBetsToDatabase(pinnacleValueBets);
+    console.log('PINNA BET365 RECOS ', pinnacleBet365ValueBets);
     const pinn2 = await PinnacleService.saveValueBetsToDatabase(pinnacleBet365ValueBets);
 
     //BETFAIR

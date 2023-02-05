@@ -163,7 +163,7 @@ const overUnderPinnacleReco = lines => {
       const awayDiff = getPinnacleDiffValue(pinnaUnderOdds);
       if (
         pinnaOverOdds <= 4 &&
-        pinnaOverOdds > pinnaOverOdds &&
+        pinnaOverOdds > overOdds &&
         pinnaOverOdds * localDiff >= overOdds
       ) {
         list.push({
@@ -178,7 +178,7 @@ const overUnderPinnacleReco = lines => {
       }
       if (
         pinnaUnderOdds <= 4 &&
-        pinnaUnderOdds > pinnaUnderOdds &&
+        pinnaUnderOdds > underOdds &&
         pinnaUnderOdds * awayDiff >= underOdds
       ) {
         list.push({

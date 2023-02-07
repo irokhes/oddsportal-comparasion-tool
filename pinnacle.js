@@ -316,6 +316,14 @@ function getBet365RecoBets(match) {
           composeRecoBetLine(match, "DNB", `#dnb${delimiter}`, result)
         );
     }
+    if (match.doubleChance && match.doubleChance.availableInPinnacle && match.doubleChance.availableInBet365) {
+      const result = twoLinesPinnacleReco(match.doubleChance);
+      if (result) {
+        results.push(
+          composeValueBetLine(match, "DC", `#double${delimiter}`, result)
+        );
+      }
+    }
     if (match.bts && match.bts.availableInPinnacle  && match.bts.availableInBet365) {
       const result = twoLinesPinnacleReco(match.bts);
       if (result)

@@ -45,11 +45,11 @@ const getPinnacleDiffValue = (value) => {
   if (value > 1.8) return 0.93;
   if (value > 1.7) return 0.93;
   if (value > 1.6) return 0.93;
-  if (value > 1.5) return 0.93;
-  if (value > 1.4) return 0.93;
-  if (value > 1.3) return 0.93;
-  if (value > 1.2) return 0.93;
-  if (value > 1.1) return 0.93;
+  if (value > 1.5) return 0.925;
+  if (value > 1.4) return 0.925;
+  if (value > 1.3) return 0.925;
+  if (value > 1.2) return 0.925;
+  if (value > 1.1) return 0.925;
   return 0.93;
 };
 module.exports = {

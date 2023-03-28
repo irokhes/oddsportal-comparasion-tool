@@ -64,7 +64,7 @@ const analytics = require('./analytics');
       await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
       await page.goto(url);
       (await page.evaluate(() => {
-        const matchesListQuerySelector = 'flex flex-col border-b border-black-borders min-h-[35px]';
+        const matchesListQuerySelector = 'flex flex-col border-b border-black-borders';
         const matches = [...document.getElementsByClassName(matchesListQuerySelector)];
 
         return matches.reduce((matchesUrlList, match) => {

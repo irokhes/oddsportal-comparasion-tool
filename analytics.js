@@ -722,45 +722,47 @@ const analyzeBets = async () => {
     const uniqueVb2 = await saveValueBets(newPinnacleRecoBets);
 
     // //BWIN
-    const n1 = await BwinService.saveValueBetsToDatabase(bwinValueBets);
-    const n2 = await BwinService.saveValueBetsToDatabase(bwinPinnacleValueBets);
+    // const n1 = await BwinService.saveValueBetsToDatabase(bwinValueBets);
+    // const n2 = await BwinService.saveValueBetsToDatabase(bwinPinnacleValueBets);
 
     //WILLIAM HILL
-    const wh1 = await WilliamHillService.saveValueBetsToDatabase(williamHillValueBets);
-    const wh2 = await WilliamHillService.saveValueBetsToDatabase(williamHillPinnacleValueBets);
+    // const wh1 = await WilliamHillService.saveValueBetsToDatabase(williamHillValueBets);
+    // const wh2 = await WilliamHillService.saveValueBetsToDatabase(williamHillPinnacleValueBets);
 
     //PINNACLE
     const pinn1 = await PinnacleService.saveValueBetsToDatabase(pinnacleValueBets);
     const pinn2 = await PinnacleService.saveValueBetsToDatabase(pinnacleBet365ValueBets);
 
     //BETFAIR
-    const betfair1 = await BetfairSerrvice.saveValueBetsToDatabase(betfairValueBets);
-    const betfair2 = await BetfairSerrvice.saveValueBetsToDatabase(betfairPinnacleValueBets);
+    // const betfair1 = await BetfairSerrvice.saveValueBetsToDatabase(betfairValueBets);
+    // const betfair2 = await BetfairSerrvice.saveValueBetsToDatabase(betfairPinnacleValueBets);
 
     // const newRc = removeDuplicates(newRecoBets);
-    for (let index = 0; index < n1.length; index++) {
-      const recoBet = n1[index];
-      if(isABannedLeague(recoBet))continue;
-      if(!shouldBeNotified(recoBet))continue;
-      await sendHtmlMessage(composeNewRecoBetMessage(recoBet), bwinChannelId);
-    }
-    for (let index = 0; index < n2.length; index++) {
-      const pinnacleRecoBet = n2[index];
-      if(isABannedLeague(pinnacleRecoBet))continue;
-      if(!shouldBeNotified(pinnacleRecoBet))continue;
-      await sendHtmlMessage(composeNewPinnacleRecoBetMessage(pinnacleRecoBet), bwinChannelId);
-    }
+    //BWIN
+    // for (let index = 0; index < n1.length; index++) {
+    //   const recoBet = n1[index];
+    //   if(isABannedLeague(recoBet))continue;
+    //   if(!shouldBeNotified(recoBet))continue;
+    //   await sendHtmlMessage(composeNewRecoBetMessage(recoBet), bwinChannelId);
+    // }
+    // for (let index = 0; index < n2.length; index++) {
+    //   const pinnacleRecoBet = n2[index];
+    //   if(isABannedLeague(pinnacleRecoBet))continue;
+    //   if(!shouldBeNotified(pinnacleRecoBet))continue;
+    //   await sendHtmlMessage(composeNewPinnacleRecoBetMessage(pinnacleRecoBet), bwinChannelId);
+    // }
 
-    for (let index = 0; index < wh1.length; index++) {
-      const recoBet = wh1[index];
-      if(!shouldBeNotifiedWilliamHill(recoBet))continue;
-      await sendHtmlMessage(composeNewRecoBetMessage(recoBet), williamHillChannelId);
-    }
-    for (let index = 0; index < wh2.length; index++) {
-      const pinnacleRecoBet = wh2[index];
-      if(!shouldBeNotifiedWilliamHill(pinnacleRecoBet))continue;
-      await sendHtmlMessage(composeNewPinnacleRecoBetMessage(pinnacleRecoBet), williamHillChannelId);
-    }
+    //WILLIAM HILL
+    // for (let index = 0; index < wh1.length; index++) {
+    //   const recoBet = wh1[index];
+    //   if(!shouldBeNotifiedWilliamHill(recoBet))continue;
+    //   await sendHtmlMessage(composeNewRecoBetMessage(recoBet), williamHillChannelId);
+    // }
+    // for (let index = 0; index < wh2.length; index++) {
+    //   const pinnacleRecoBet = wh2[index];
+    //   if(!shouldBeNotifiedWilliamHill(pinnacleRecoBet))continue;
+    //   await sendHtmlMessage(composeNewPinnacleRecoBetMessage(pinnacleRecoBet), williamHillChannelId);
+    // }
 
     //PINNACLE
     for (let index = 0; index < pinn1.length; index++) {
@@ -775,16 +777,16 @@ const analyzeBets = async () => {
     }
 
     //BETFAIR
-    for (let index = 0; index < betfair1.length; index++) {
-      const recoBet = betfair1[index];
-      if(!shouldBeNotifiedBetfair(recoBet))continue;
-      await sendHtmlMessage(composeNewRecoBetMessage(recoBet), betfairChannelId);
-    }
-    for (let index = 0; index < betfair2.length; index++) {
-      const pinnacleRecoBet = betfair2[index];
-      if(!shouldBeNotifiedBetfair(recoBet))continue;
-      await sendHtmlMessage(composeNewPinnacleRecoBetMessage(pinnacleRecoBet), betfairChannelId);
-    }
+    // for (let index = 0; index < betfair1.length; index++) {
+    //   const recoBet = betfair1[index];
+    //   if(!shouldBeNotifiedBetfair(recoBet))continue;
+    //   await sendHtmlMessage(composeNewRecoBetMessage(recoBet), betfairChannelId);
+    // }
+    // for (let index = 0; index < betfair2.length; index++) {
+    //   const pinnacleRecoBet = betfair2[index];
+    //   if(!shouldBeNotifiedBetfair(recoBet))continue;
+    //   await sendHtmlMessage(composeNewPinnacleRecoBetMessage(pinnacleRecoBet), betfairChannelId);
+    // }
 
 
     const genericVb = [...uniqueVb, ...uniqueVb2];

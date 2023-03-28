@@ -73,7 +73,6 @@ const analytics = require('./analytics');
           if (matchHasEnded.length) return matchesUrlList;
 
           const matchUrl = match.querySelector('.flex.group.border-l.border-r.border-black-borders > a').href;
-          console.log(matchUrl);
           matchesUrlList.push(matchUrl);
           return matchesUrlList;
         }, []);

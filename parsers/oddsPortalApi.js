@@ -48,7 +48,6 @@ const getOdds = async (page, data) => {
     odds = await getBasketOdds(apiUrl, odds, url);
   }
   // save odds
-  console.log(odds);
   if (!odds || (!odds.moneyLine && !odds.moneyLineFirstHalf && !odds.homeAway && !odds.dnb && !odds.doubleChance && !odds.bts && (!odds.overUnder || odds.overUnder.length === 0) && (!odds.asianHandicap || odds.asianHandicap.length === 0))) return;
   await Odds.findOneAndUpdate({ url: odds.url }, odds, { upsert: true, setDefaultsOnInsert: true });
 };

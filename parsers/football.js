@@ -66,8 +66,6 @@ const linesParsers = {
 };
 
 const extractOdds = async (page, url, line) => {
-  console.log(url);
-  console.log(line);
   try {
     const odds = {};
     if (!url.includes(line)) return;
